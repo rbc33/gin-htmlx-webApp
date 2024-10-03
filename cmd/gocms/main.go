@@ -11,8 +11,7 @@ func main() {
 	r := gin.Default()
 
 	// Load HTML templates
-	r.LoadHTMLFiles("templates/contact-success.html")
-	// , "templates/contact-failure.html")
+	r.LoadHTMLFiles("templates/contact-success.html", "templates/contact-failure.html")
 
 	r.MaxMultipartMemory = 1
 	r.GET("/ping", func(c *gin.Context) {
@@ -30,23 +29,26 @@ func main() {
 		// parse email
 		_, err := mail.ParseAddress(email)
 		if err != nil {
-			c.HTML(http.StatusBadRequest, "contact-failure.html", gin.H{
+			c.HTML(http.StatusOK, "contact-failure.html", gin.H{
 				"email": email,
 				"error": "Invalid email address",
 			})
+			return
 		}
 		//make sure that name and message are reasonable
 		if len(name) > 200 {
-			c.HTML(http.StatusBadRequest, "contact-failure.html", gin.H{
+			c.HTML(http.StatusOK, "contact-failure.html", gin.H{
 				"email": email,
 				"error": "Name is too long",
 			})
+			return
 		}
 		if len(message) > 1000 {
-			c.HTML(http.StatusBadRequest, "contact-failure.html", gin.H{
+			c.HTML(http.StatusOK, "contact-failure.html", gin.H{
 				"email": email,
 				"error": "Invalid email address",
 			})
+			return
 		}
 
 		c.HTML(http.StatusOK, "contact-success.html", gin.H{

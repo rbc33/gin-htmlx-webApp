@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/mail"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
@@ -27,7 +28,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("couldn't connect to DB: %v", err)
 	}
-	db.Begin()
+	db.SetConnMaxLifetime(time.Minute * 3)
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(10)
+
 	r := gin.Default()
 	r.MaxMultipartMemory = 1
 

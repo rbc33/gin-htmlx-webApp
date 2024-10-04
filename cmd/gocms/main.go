@@ -1,24 +1,43 @@
 package main
 
 import (
+	"database/sql"
+	"log"
 	"net/http"
 	"net/mail"
+	"os"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
 
+func homeHandler(c *gin.Context) {
+	c.HTML(http.StatusAccepted, "index", gin.H{})
+}
+
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	MY_SQL_URL := os.Getenv("MY_SQL_URL")
+	db, err := sql.Open("mysql", MY_SQL_URL)
+	if err != nil {
+		log.Fatalf("couldn't connect to DB: %v", err)
+	}
+	db.Begin()
 	r := gin.Default()
+	r.MaxMultipartMemory = 1
 
 	// Load HTML templates
-	r.LoadHTMLFiles("templates/contact-success.html", "templates/contact-failure.html")
+	// r.LoadHTMLFiles("templates/contact-success.html", "templates/contact-failure.html")
+	r.LoadHTMLFiles("templates/index.html")
+	r.LoadHTMLGlob("templates/**/*")
 
-	r.MaxMultipartMemory = 1
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
+	r.GET("/", homeHandler)
+
 	// Contact form endpoint
 	r.POST("/contact-send", func(c *gin.Context) {
 		c.Request.ParseForm()
@@ -46,7 +65,7 @@ func main() {
 		if len(message) > 1000 {
 			c.HTML(http.StatusOK, "contact-failure.html", gin.H{
 				"email": email,
-				"error": "Invalid email address",
+				"error": "message too long",
 			})
 			return
 		}
@@ -57,6 +76,6 @@ func main() {
 		})
 
 	})
-	r.Static("/templates", "./templates")
+	r.Static("/static", "./static")
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }

@@ -13,16 +13,56 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func homeHandler(c *gin.Context) {
-	c.HTML(http.StatusAccepted, "index", gin.H{})
+type Post struct {
+	Title   string
+	Content string
+}
+type Database struct {
+	address    string
+	connection *sql.DB
 }
 
-func main() {
-	err := godotenv.Load()
+func (db Database) getPost() ([]Post, error) {
+	rows, err := db.connection.Query("SELECT title, content FROM posts")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		return make([]Post, 0), err
+	}
+	defer rows.Close()
+	all_posts := make([]Post, 0)
+	for rows.Next() {
+		var post Post
+		// Usa & para pasar los punteros a las variables
+		if err = rows.Scan(&post.Title, &post.Content); err != nil {
+			return make([]Post, 0), err
+		}
+		all_posts = append(all_posts, post)
 	}
 
+	// Verifica si hubo errores en el iterador
+	if err = rows.Err(); err != nil {
+		return make([]Post, 0), err
+	}
+
+	return all_posts, nil
+}
+
+func makeHomeHandler(db Database) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		posts, err := db.getPost()
+		if err != nil {
+			log.Fatal("Error ejecutando db.getPost()", err)
+		}
+		c.HTML(http.StatusAccepted, "index", gin.H{"posts": posts})
+	}
+}
+func makeDatabase() Database {
+	// load the .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
+	// set the db conf
 	MY_SQL_URL := os.Getenv("MY_SQL_URL")
 	db, err := sql.Open("mysql", MY_SQL_URL)
 	if err != nil {
@@ -32,15 +72,21 @@ func main() {
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
 
+	return Database{
+		address:    MY_SQL_URL,
+		connection: db,
+	}
+}
+
+func main() {
+	db_connection := makeDatabase()
 	r := gin.Default()
 	r.MaxMultipartMemory = 1
 
 	// Load HTML templates
-	// r.LoadHTMLFiles("templates/contact-success.html", "templates/contact-failure.html")
-	r.LoadHTMLFiles("templates/index.html")
 	r.LoadHTMLGlob("templates/**/*")
 
-	r.GET("/", homeHandler)
+	r.GET("/", makeHomeHandler(db_connection))
 
 	// Contact form endpoint
 	r.POST("/contact-send", func(c *gin.Context) {

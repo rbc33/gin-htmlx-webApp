@@ -1,56 +1,55 @@
 {{ define "index" }}
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Menu & Contact Form</title>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Menu and Contact Form</title>
     <!-- Minified version -->
-    <link rel="stylesheet" href="/static/simple.min.css" />
+    <link rel="stylesheet" href="/static/simple.min.css">
     <script src="/static/htmx.min.js"></script>
     <script src="/static/client-side-templates.js"></script>
-  </head>
-  <body>
-    <!-- Unordered List Menu -->
+</head>
+
+<body>
     <header>
-      <nav>
-        <ul>
-          <li><a href="#home">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </nav>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
     </header>
+    <br>
 
-    <!-- Contact Form -->
     <!--
-      <div id="contact-form">
+    <div id="contact-form">
         <h2>Contact Us</h2>
-        <form action="#" method="POST" hx-post="/contact-send" hx-target="#contact-form">
-          <label for="name">Name:</label><br />
-          <input type="text" id="name" name="name" /><br /><br />
-          
-          <label for="email">Email:</label><br />
-          <input type="email" id="email" name="email" /><br /><br />
-          
-          <label for="message">Message:</label><br />
-          <textarea id="message" name="message" rows="4" cols="50"></textarea
-            ><br /><br />
-            
-            <button type="submit">Send</button>
-          </form>
-        </div>
-      -->
-      {{ range $post := .posts }}
-      <main>
-        <article>
-          <h3>{{ $post.Title }}</h3>
-          <p>{{ $post.Content}}</p>
-        </article>
-      </main>
-     {{ end }}
+        <form action="#" method="post" hx-post="/contact-send" hx-target="#contact-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
 
-  </body>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br><br>
+
+            <label for="message">Message:</label><br>
+            <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    -->
+    <main>
+        {{ range $post := .posts }}
+        <article>
+            <h2>{{ $post.Title }}</h2>
+            <p>{{ $post.Content }}</p>
+        </article>
+        {{end}}
+    </main>
+</body>
+
 </html>
 {{ end }}

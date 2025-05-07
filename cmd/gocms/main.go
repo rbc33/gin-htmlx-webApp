@@ -19,6 +19,7 @@ func main() {
 	db_connection, err := database.MakeSqlConnection()
 	if err != nil {
 		log.Error().Msgf("could not create database connection: %v", err)
+		return
 	}
 	setupLogger()
 	app.Run(db_connection)

@@ -17,7 +17,7 @@ type Database struct {
 // / This function gets all the posts from the current
 // / database connection.
 func (db Database) GetPosts() ([]common.Post, error) {
-	rows, err := db.Connection.Query("SELECT title, content FROM posts")
+	rows, err := db.Connection.Query("SELECT title, excerpt, id FROM posts")
 	if err != nil {
 		return make([]common.Post, 0), err
 	}
@@ -25,7 +25,7 @@ func (db Database) GetPosts() ([]common.Post, error) {
 	all_posts := make([]common.Post, 0)
 	for rows.Next() {
 		var post common.Post
-		if err = rows.Scan(&post.Title, &post.Content); err != nil {
+		if err = rows.Scan(&post.Title, &post.Excerpt, &post.Id); err != nil {
 			return make([]common.Post, 0), err
 		}
 		all_posts = append(all_posts, post)

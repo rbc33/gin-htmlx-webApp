@@ -1,10 +1,14 @@
 package app
 
 import (
+	"html/template"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gomarkdown/markdown"
+	"github.com/gomarkdown/markdown/html"
+	"github.com/gomarkdown/markdown/parser"
 	"github.com/rbc33/database"
 	"github.com/rs/zerolog/log"
 )
@@ -13,6 +17,19 @@ type PostBinding struct {
 	Id string `uri:"id" binding:"required"`
 }
 
+func mdToHTML(md []byte) []byte {
+	// create markdown parser with extensions
+	extensions := parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock
+	p := parser.NewWithExtensions(extensions)
+	doc := p.Parse(md)
+
+	// create HTML renderer with extensions
+	htmlFlags := html.CommonFlags | html.HrefTargetBlank
+	opts := html.RendererOptions{Flags: htmlFlags}
+	renderer := html.NewRenderer(opts)
+
+	return markdown.Render(doc, renderer)
+}
 func makePostHandler(db database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		// Get post with the ID
@@ -38,9 +55,13 @@ func makePostHandler(db database.Database) func(*gin.Context) {
 		}
 
 		// Markdown to HTML
+		post.Content = string(mdToHTML([]byte(post.Content)))
 
 		// Serve the templated page here
 		log.Warn().Msgf("Post: %v", post)
-		c.HTML(http.StatusOK, "post", post)
+		c.HTML(http.StatusOK, "post", gin.H{
+			"Title":   post.Title,
+			"Content": template.HTML(post.Content),
+		})
 	}
 }

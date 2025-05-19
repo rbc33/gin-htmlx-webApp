@@ -23,6 +23,9 @@ func Run(database database.Database) error {
 	// Post related endpoints
 	r.GET("/post/:id", makePostHandler(database))
 
+	// Service  
+	r.GET("/services", makeServiceHandler())
+
 	r.Static("/static", "./static")
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 

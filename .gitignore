@@ -1,3 +1,3 @@
 .env
 __debug_*
-*mysql.MySQLError {Number: 1241, SQLState: [5]uint8 [50,49,48,48,48], Message: "Operand should contain 1 column(s)"}
+*_templ.go

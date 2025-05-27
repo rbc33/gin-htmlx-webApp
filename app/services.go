@@ -2,7 +2,9 @@ package app
 
 import (
 	"net/http"
+
 	"github.com/gin-gonic/gin"
+	views "github.com/rbc33/views/services"
 	"github.com/rs/zerolog/log"
 )
 
@@ -10,6 +12,6 @@ import (
 func makeServiceHandler() func(*gin.Context) {
 	return func(c *gin.Context) {
 		log.Info().Msg("Testing")
-		c.HTML(http.StatusAccepted, "services", gin.H{})
+		TemplRender(c, http.StatusOK, views.MakeServicesPage())
 	}
-} 
+}

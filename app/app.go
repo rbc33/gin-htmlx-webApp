@@ -5,25 +5,25 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rbc33/database"
+	views "github.com/rbc33/views/index"
 	"github.com/rs/zerolog/log"
 )
 
 func Run(database database.Database) error {
 	r := gin.Default()
 	r.MaxMultipartMemory = 1
-	//r.LoadHTMLFiles("./templates/contact/contact-success.html", "./templates/contact/contact-failure.html")
-	r.LoadHTMLGlob("templates/**/*")
+	// r.LoadHTMLGlob("views/**/*")
 
 	r.GET("/", makeHomeHandler(database))
 
 	// Contact form related endpoints
-	r.GET("/contact", makeContactPageHandler(database))
+	r.GET("/contact", makeContactPageHandler())
 	r.POST("/contact-send", makeContactFormHandler())
 
 	// Post related endpoints
 	r.GET("/post/:id", makePostHandler(database))
 
-	// Service  
+	// Service
 	r.GET("/services", makeServiceHandler())
 
 	r.Static("/static", "./static")
@@ -41,7 +41,7 @@ func makeHomeHandler(db database.Database) func(*gin.Context) {
 			log.Error().Msgf("error loading posts: %v\n", err)
 			return
 		}
-
-		c.HTML(http.StatusAccepted, "index", gin.H{"posts": posts})
+		TemplRender(c, http.StatusOK, views.MakeIndex(posts))
+		// c.HTML(http.StatusOK, "", views.MakeIndex(posts))
 	}
 }

@@ -1,0 +1,38 @@
+package views
+
+import (
+	"fmt"
+	. "github.com/rbc33/common"
+	. "github.com/rbc33/views/footer"
+	. "github.com/rbc33/views/header"
+)
+
+templ MakeIndex(posts []Post) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<title>Menu and Contact Form</title>
+			<!-- Minified version -->
+			<link rel="stylesheet" href="/static/simple.min.css"/>
+			<script src="/static/htmx.min.js"></script>
+			<script src="/static/client-side-templates.js"></script>
+		</head>
+		<body>
+			@MakeNavBar([]Link{Link{Name: "Home", Href: "/"}, Link{Name: "About", Href: "/about"}, Link{Name: "Services", Href: "/services"}, Link{Name: "Contact", Href: "/contact"}})
+			<br/>
+			<main>
+				for _, post := range posts {
+					<article>
+						<h2>{ post.Title }</h2>
+						<p>
+							{ post.Excerpt }
+							<a href={ templ.URL(fmt.Sprintf("/post/%d", post.Id)) }>read more... </a>
+						</p>
+					</article>
+				}
+			</main>
+		</body>
+	</html>
+	@MakeFooter()
+}

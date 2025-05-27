@@ -1,0 +1,22 @@
+package views
+
+type Link struct {
+	Href string
+	Name string
+}
+
+templ MakeNavBar(links []Link) {
+	<header>
+		<nav>
+			<ul>
+				for _, link := range links {
+					<li><a href={ templ.URL(link.Href) }>{ link.Name }</a></li>
+				}
+				// <li><a href="/">Home</a></li>
+				// <li><a href="#">About</a></li>
+				// <li><a href="/services">Services</a></li>
+				// <li><a href="/contact">Contact</a></li>
+			</ul>
+		</nav>
+	</header>
+}

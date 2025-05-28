@@ -2,18 +2,21 @@ GOCMD=go
 TEMPL=templ
 BUILD_DIR=./tmp
 BINARY_NAME=gocms
+ADMIN_BINARY_NAME=gocms-admin
 GOCMS_PATH=./cmd/$(BINARY_NAME)
+GOCMS_ADMIN_PATH=./cmd/$(ADMIN_BINARY_NAME)
 
 all: build test
 
 build:
 	$(TEMPL) generate
 	$(GOCMD) build -v -o $(BUILD_DIR)/$(BINARY_NAME) $(GOCMS_PATH)
+	$(GOCMD) build -v -o $(BUILD_DIR)/$(ADMIN_BINARY_NAME) $(GOCMS_ADMIN_PATH)
 test:
 	$(GOCMD) test -v ./...
-run:
-	$(GOCMD) run -v -o $(BUILD_DIR)/$(BINARY_NAME)
+
 clean:
 	$(GOCMD) clean
 	rm -rf $(BUILD_DIR)/$(BINARY_NAME)
+.PHONY: all build test clean
 		

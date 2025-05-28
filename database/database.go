@@ -7,6 +7,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/rbc33/common"
+	"github.com/rs/zerolog/log"
 )
 
 type Database struct {
@@ -35,7 +36,7 @@ func (db Database) GetPosts() ([]common.Post, error) {
 }
 
 // return post by id
-func (db Database) GetPost(post_id int) (common.Post, error) {
+func (db *Database) GetPost(post_id int) (common.Post, error) {
 	rows, err := db.Connection.Query("SELECT title, content FROM posts WHERE id=?;", post_id)
 	if err != nil {
 		return common.Post{}, err
@@ -48,6 +49,74 @@ func (db Database) GetPost(post_id int) (common.Post, error) {
 	}
 
 	return post, nil
+}
+
+// / This function adds a post to the database
+func (db *Database) AddPost(title string, excerpt string, content string) (int, error) {
+	res, err := db.Connection.Exec("INSERT INTO posts(content, title, excerpt) VALUES(?, ?, ?)", content, title, excerpt)
+	if err != nil {
+		return -1, err
+	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		log.Warn().Msgf("could not get last ID: %v", err)
+		return -1, nil
+	}
+
+	// TODO : possibly unsafe int conv,
+	// make sure all IDs are i64 in the
+	// future
+	return int(id), nil
+}
+
+// / This function changes a post based on the values
+// / provided. Note that empty strings will mean that
+// / the value will not be updated.
+func (db *Database) ChangePost(id int, title string, excerpt string, content string) error {
+	tx, err := db.Connection.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	if len(title) > 0 {
+		_, err := tx.Exec("UPDATE posts SET title = ? WHERE id = ?;", title, id)
+		if err != nil {
+			return err
+		}
+	}
+
+	if len(excerpt) > 0 {
+		_, err := tx.Exec("UPDATE posts SET excerpt = ? WHERE id = ?;", excerpt, id)
+		if err != nil {
+			return err
+		}
+	}
+
+	if len(content) > 0 {
+		_, err := tx.Exec("UPDATE posts SET content = ? WHERE id = ?;", content, id)
+		if err != nil {
+			return err
+		}
+	}
+
+	if err = tx.Commit(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// / This function changes a post based on the values
+// / provided. Note that empty strings will mean that
+// / the value will not be updated.
+func (db *Database) DeletePost(id int) error {
+	if _, err := db.Connection.Exec("DELETE FROM posts WHERE id=?;", id); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func MakeSqlConnection() (Database, error) {

@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rbc33/database"
 	views "github.com/rbc33/views/index"
+	"github.com/rbc33/views/tailwind"
 	"github.com/rs/zerolog/log"
 )
 
@@ -15,6 +16,7 @@ func Run(database database.Database) error {
 	// r.LoadHTMLGlob("views/**/*")
 
 	r.GET("/", makeHomeHandler(database))
+	r.GET("/tailwind", makeHomeHandlertailwind(database))
 
 	// Contact form related endpoints
 	r.GET("/contact", makeContactPageHandler())
@@ -42,6 +44,17 @@ func makeHomeHandler(db database.Database) func(*gin.Context) {
 			return
 		}
 		TemplRender(c, http.StatusOK, views.MakeIndex(posts))
+		// c.HTML(http.StatusOK, "", views.MakeIndex(posts))
+	}
+}
+func makeHomeHandlertailwind(db database.Database) func(*gin.Context) {
+	return func(c *gin.Context) {
+		posts, err := db.GetPosts()
+		if err != nil {
+			log.Error().Msgf("error loading posts: %v\n", err)
+			return
+		}
+		TemplRender(c, http.StatusOK, tailwind.MakeIndex(posts))
 		// c.HTML(http.StatusOK, "", views.MakeIndex(posts))
 	}
 }

@@ -1,8 +1,11 @@
 GOCMD=go
 TEMPL=templ
+# TAILWIND=tailwindcss-macos-arm64
+TAILWIND=tailwinds-macos-3.4.1
 BUILD_DIR=./tmp
 BINARY_NAME=gocms
 ADMIN_BINARY_NAME=gocms-admin
+
 GOCMS_PATH=./cmd/$(BINARY_NAME)
 GOCMS_ADMIN_PATH=./cmd/$(ADMIN_BINARY_NAME)
 
@@ -10,6 +13,7 @@ all: build test
 
 build:
 	$(TEMPL) generate
+	$(TAILWIND) -i ./static/style.css -o ./static/output.css -m  
 	$(GOCMD) build -v -o $(BUILD_DIR)/$(BINARY_NAME) $(GOCMS_PATH)
 	$(GOCMD) build -v -o $(BUILD_DIR)/$(ADMIN_BINARY_NAME) $(GOCMS_ADMIN_PATH)
 test:

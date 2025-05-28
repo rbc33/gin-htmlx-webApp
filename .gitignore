@@ -1,3 +1,4 @@
 .env
 __debug_*
 *_templ.go
+tmp/

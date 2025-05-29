@@ -11,6 +11,7 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
+	github.com/fossoreslp/go-uuid-v4 v1.0.0
 	github.com/stretchr/testify v1.10.0 // indirect
 )
 

@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"os"
 	"time"
 
@@ -15,7 +16,7 @@ type Database struct {
 	Connection *sql.DB
 }
 
-// / This function gets all the posts from the current
+// / GetPosts gets all the posts from the current
 // / database connection.
 func (db Database) GetPosts() ([]common.Post, error) {
 	rows, err := db.Connection.Query("SELECT title, excerpt, id FROM posts")
@@ -51,7 +52,7 @@ func (db *Database) GetPost(post_id int) (common.Post, error) {
 	return post, nil
 }
 
-// / This function adds a post to the database
+// AddPost adds a post to the database
 func (db *Database) AddPost(title string, excerpt string, content string) (int, error) {
 	res, err := db.Connection.Exec("INSERT INTO posts(content, title, excerpt) VALUES(?, ?, ?)", content, title, excerpt)
 	if err != nil {
@@ -70,9 +71,9 @@ func (db *Database) AddPost(title string, excerpt string, content string) (int, 
 	return int(id), nil
 }
 
-// / This function changes a post based on the values
-// / provided. Note that empty strings will mean that
-// / the value will not be updated.
+// ChangePost changes a post based on the values
+// provided. Note that empty strings will mean that
+// the value will not be updated.
 func (db *Database) ChangePost(id int, title string, excerpt string, content string) error {
 	tx, err := db.Connection.Begin()
 	if err != nil {
@@ -108,14 +109,44 @@ func (db *Database) ChangePost(id int, title string, excerpt string, content str
 	return nil
 }
 
-// / This function changes a post based on the values
-// / provided. Note that empty strings will mean that
-// / the value will not be updated.
+// DeletePost changes a post based on the values
+// provided. Note that empty strings will mean that
+// the value will not be updated.
 func (db *Database) DeletePost(id int) error {
 	if _, err := db.Connection.Exec("DELETE FROM posts WHERE id=?;", id); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+// AddImage will add the image metadata to the db.
+// name - file name saved to disk
+// alt - alternative text
+// return(uuid, nil) if succeeded, ("", err) otherwise
+func (db *Database) AddImage(uuid string, name string, alt string) error {
+	tx, err := db.Connection.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	if name == "" {
+		return fmt.Errorf("cannot have empty names")
+	}
+	if alt == "" {
+		return fmt.Errorf("cannot have empty alt text")
+	}
+
+	query := "INSERT INTO images(uuid, name, alt) VALUES (?, ?, ?);"
+	_, err = tx.Exec(query, uuid, name, alt)
+	if err != nil {
+		return err
+	}
+
+	if err = tx.Commit(); err != nil {
+		return err
+	}
 	return nil
 }
 

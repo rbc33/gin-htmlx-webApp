@@ -9,6 +9,8 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 )
 
+require git.zutto.fi/zutto/shardedmap v0.0.0-20180626051319-5cd9a7713908 // indirect
+
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/fossoreslp/go-uuid-v4 v1.0.0
@@ -38,6 +40,7 @@ require (
 	github.com/rs/zerolog v1.31.0
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
+	github.com/zutto/shardedmap v0.0.0-20180201164343-415202d0910e
 	golang.org/x/arch v0.3.0 // indirect
 	golang.org/x/crypto v0.37.0 // indirect
 	golang.org/x/net v0.39.0 // indirect

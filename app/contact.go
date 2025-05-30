@@ -1,10 +1,12 @@
 package app
 
 import (
+	"bytes"
 	"net/http"
 	"net/mail"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rbc33/database"
 	views "github.com/rbc33/views/contact"
 )
 
@@ -40,16 +42,11 @@ func makeContactFormHandler() func(*gin.Context) {
 }
 
 // TODO : This is a duplicate of the index handler... abstract
-// func makeContactPageHandler(db database.Database) func(*gin.Context) {
-func makeContactPageHandler() func(*gin.Context) {
-	return func(c *gin.Context) {
-		// 	posts, err := db.GetPosts()
-		// 	if err != nil {
-		// 		log.Error().Msgf("error loading posts: %v\n", err)
-		// 		return
-		// 	}
 
-		// c.HTML(http.StatusAccepted, "contact", gin.H{"posts": posts})
-		TemplRender(c, http.StatusOK, views.MakeContactPage())
-	}
+func contactHandler(c *gin.Context, db *database.Database) ([]byte, error) {
+	index_view := views.MakeContactPage()
+	html_buffer := bytes.NewBuffer(nil)
+	index_view.Render(c, html_buffer)
+
+	return html_buffer.Bytes(), nil
 }

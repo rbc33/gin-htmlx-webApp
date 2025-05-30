@@ -1,7 +1,7 @@
 package app
 
 import (
-	"net/http"
+	"bytes"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +10,6 @@ import (
 	"github.com/gomarkdown/markdown/parser"
 	"github.com/rbc33/database"
 	views "github.com/rbc33/views/post"
-	"github.com/rs/zerolog/log"
 )
 
 type PostBinding struct {
@@ -30,35 +29,28 @@ func mdToHTML(md []byte) []byte {
 
 	return markdown.Render(doc, renderer)
 }
-func makePostHandler(db database.Database) func(*gin.Context) {
-	return func(c *gin.Context) {
-		// Get post with the ID
-		var post_binding PostBinding
-		if err := c.ShouldBindUri(&post_binding); err != nil {
-			// TODO redo this error to serve error page
-			c.JSON(400, gin.H{"msg": err})
-			return
-		}
-		// Get the post with the ID
-		post_id, err := strconv.Atoi(post_binding.Id)
-		if err != nil {
-			// TODO redo this error to serve error page
-			c.JSON(400, gin.H{"msg": err})
-			return
-		}
-
-		post, err := db.GetPost(post_id)
-		if err != nil {
-			// TODO redo this error to serve error page
-			c.JSON(400, gin.H{"msg": err})
-			return
-		}
-
-		// Markdown to HTML
-		post.Content = string(mdToHTML([]byte(post.Content)))
-
-		// Serve the templated page here
-		log.Warn().Msgf("Post: %v", post)
-		TemplRender(c, http.StatusOK, views.MakePostPage(post.Title, post.Content))
+func postHandler(c *gin.Context, database *database.Database) ([]byte, error) {
+	var post_binding PostBinding
+	if err := c.ShouldBindUri(&post_binding); err != nil {
+		return nil, err
 	}
+
+	// Get the post with the ID
+	post_id, err := strconv.Atoi(post_binding.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	post, err := database.GetPost(post_id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Generate HTML page
+	post.Content = string(mdToHTML([]byte(post.Content)))
+	post_view := views.MakePostPage(post.Title, post.Content)
+	html_buffer := bytes.NewBuffer(nil)
+	post_view.Render(c, html_buffer)
+
+	return html_buffer.Bytes(), nil
 }

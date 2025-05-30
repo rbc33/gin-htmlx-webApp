@@ -1,5 +1,8 @@
 .env
 __debug_*
 *_templ.go
+/tmp/
 tmp/
+
 starters.md
+tmp/gocms-admin

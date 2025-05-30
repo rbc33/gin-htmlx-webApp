@@ -5,4 +5,4 @@ __debug_*
 tmp/
 
 starters.md
-tmp/gocms-admin
+/tmp/*

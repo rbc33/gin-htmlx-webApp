@@ -6,3 +6,6 @@ tmp/
 
 starters.md
 /tmp/*
+tmp/gocms-admin
+tmp/gocms
+tmp/build-errors.log

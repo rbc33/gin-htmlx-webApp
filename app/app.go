@@ -7,7 +7,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rbc33/database"
-	views "github.com/rbc33/views/index"
 	"github.com/rbc33/views/tailwind"
 	"github.com/rs/zerolog/log"
 )
@@ -26,17 +25,12 @@ func Run(database *database.Database) error {
 
 	// Contact form related endpoints
 	r.POST("/contact-send", makeContactFormHandler())
-	r.POST("/t/contact-send", makeContactFormHandlerTailwind())
 
 	// Service
 	r.GET("/services", makeServiceHandler())
-	r.GET("/t/services", makeServiceHandlerTailwind())
-	addCacheHandler(r, "GET", "/t", homeHandlertailwind, &cache, database)
 	addCacheHandler(r, "GET", "/", homeHandler, &cache, database)
 	addCacheHandler(r, "GET", "/contact", contactHandler, &cache, database)
-	addCacheHandler(r, "GET", "/t/contact", contactHandlerTailwind, &cache, database)
 	addCacheHandler(r, "GET", "/post/:id", postHandler, &cache, database)
-	addCacheHandler(r, "GET", "/t/post/:id", postHandlerTailwind, &cache, database)
 
 	r.Static("/static", "./static")
 	r.Run()
@@ -90,19 +84,7 @@ func homeHandler(c *gin.Context, db *database.Database) ([]byte, error) {
 	}
 
 	// if not cached, create the cache
-	index_view := views.MakeIndex(posts)
-	html_buffer := bytes.NewBuffer(nil)
-	index_view.Render(c, html_buffer)
-	return html_buffer.Bytes(), nil
-}
-
-func homeHandlertailwind(c *gin.Context, db *database.Database) ([]byte, error) {
-	posts, err := db.GetPosts()
-	if err != nil {
-		return nil, err
-	}
-
-	// if not cached, create the cache
+	// index_view := views.MakeIndex(posts)
 	index_view := tailwind.MakeIndex(posts)
 	html_buffer := bytes.NewBuffer(nil)
 	index_view.Render(c, html_buffer)

@@ -1,8 +1,11 @@
 package tailwind
 
-import views "github.com/rbc33/views/header"
+type Link struct {
+	Href string
+	Name string
+}
 
-templ MakeNavBarTailwind(links []views.Link) {
+templ MakeNavBar(links []views.Link) {
 	<header>
 		<nav class="bg-gray-800">
 			<div class="max-w-7xl x-auto px-4 ml-24 sm:px-6 lg:px-8">

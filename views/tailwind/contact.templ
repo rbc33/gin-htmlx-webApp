@@ -1,7 +1,5 @@
 package tailwind
 
-import . "github.com/rbc33/views/header"
-import . "github.com/rbc33/views/footer"
 
 templ MakeContactPage() {
 	<!DOCTYPE html>
@@ -19,7 +17,7 @@ templ MakeContactPage() {
 				<div class="absolute -bottom-40 -left-40 w-96 h-96 bg-gray-500/30 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
 			</div>
 			<div class="relative z-10">
-			@MakeNavBarTailwind([]Link{{Name: "Home", Href: "/t"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/t/services"}, {Name: "Contact", Href: "/t/contact"}})
+			@MakeNavBar([]Link{{Name: "Home", Href: "/"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/services"}, {Name: "Contact", Href: "/contact"}})
 				<br/>
 				<main class="container mx-auto px-4 py-8">
 					<div id="contact-form" class="max-w-xl mx-auto bg-gray-900/95 backdrop-blur-sm shadow-2xl p-8 relative overflow-hidden rounded-xl border border-gray-700/50">

@@ -3,9 +3,8 @@ __debug_*
 *_templ.go
 /tmp/
 tmp/
-
+/.vscode/
 starters.md
 /tmp/*
 tmp/gocms-admin
 tmp/gocms
-tmp/build-errors.log

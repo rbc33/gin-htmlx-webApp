@@ -3,7 +3,6 @@ package tailwind
 import (
 	"fmt"
 	. "github.com/rbc33/common"
-	views "github.com/rbc33/views/header"
 )
 
 templ MakeIndex(posts []Post) {
@@ -19,7 +18,7 @@ templ MakeIndex(posts []Post) {
 			// <script src="/static/client-side-templates.js"></script>
 		</head>
 		<body class="font-roboto bg-gray-800">
-			@MakeNavBarTailwind([]views.Link{{Name: "Home", Href: "/t"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/t/services"}, {Name: "Contact", Href: "/t/contact"}})
+			@MakeNavBar([]Link{{Name: "Home", Href: "/"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/services"}, {Name: "Contact", Href: "/contact"}})
 			<br/>
 			<main class="flex flex-col h-screen">
 				for _, post := range posts {
@@ -28,12 +27,12 @@ templ MakeIndex(posts []Post) {
 						<h2 class="text-2xl text-gray-400 font-bold mb-2">{ post.Title }</h2>
 						<p class="text-white mb-4">
 							{ post.Excerpt }
-							<a class="text-blue-400 font-bold underline" href={ templ.URL(fmt.Sprintf("/t/post/%d", post.Id)) }>read more... </a>
+							<a class="text-blue-400 font-bold underline" href={ templ.URL(fmt.Sprintf("/post/%d", post.Id)) }>read more... </a>
 						</p>
 					</article>
 				}
 			</main>
 		</body>
-	</html>
 	@MakeFooterTailwind()
+	</html>
 }

@@ -1,7 +1,5 @@
 package tailwind
 
-import . "github.com/rbc33/views/footer"
-import . "github.com/rbc33/views/header"
 
 templ MakePostPage(title string, content string) {
 	<!DOCTYPE html>
@@ -15,7 +13,7 @@ templ MakePostPage(title string, content string) {
 			<script src="/static/client-side-templates.js"></script>
 		</head>
 		<body class="font-roboto bg-gray-800">
-			@MakeNavBarTailwind([]Link{{Name: "Home", Href: "/t"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/t/services"}, {Name: "Contact", Href: "/t/contact"}})
+			@MakeNavBar([]Link{{Name: "Home", Href: "/"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/services"}, {Name: "Contact", Href: "/contact"}})
 			<br/>
 			<main class="flex flex-col h-screen">
 				<article class="container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md p-6 m-4 max-w-xxl w-4/6">

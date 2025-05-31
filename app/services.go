@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	views "github.com/rbc33/views/services"
+	"github.com/rbc33/views/tailwind"
 	"github.com/rs/zerolog/log"
 )
 
@@ -13,5 +14,12 @@ func makeServiceHandler() func(*gin.Context) {
 	return func(c *gin.Context) {
 		log.Info().Msg("Testing")
 		TemplRender(c, http.StatusOK, views.MakeServicesPage())
+	}
+}
+
+func makeServiceHandlerTailwind() func(*gin.Context) {
+	return func(c *gin.Context) {
+		log.Info().Msg("Testing")
+		TemplRender(c, http.StatusOK, tailwind.MakeServicesPage())
 	}
 }

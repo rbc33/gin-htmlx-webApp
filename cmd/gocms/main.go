@@ -17,5 +17,5 @@ func main() {
 		return
 	}
 	common.SetupLogger()
-	app.Run(db_connection)
+	app.Run(&db_connection)
 }

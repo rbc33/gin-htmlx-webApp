@@ -10,6 +10,7 @@ import (
 	"github.com/gomarkdown/markdown/parser"
 	"github.com/rbc33/database"
 	views "github.com/rbc33/views/post"
+	"github.com/rbc33/views/tailwind"
 )
 
 type PostBinding struct {
@@ -49,6 +50,31 @@ func postHandler(c *gin.Context, database *database.Database) ([]byte, error) {
 	// Generate HTML page
 	post.Content = string(mdToHTML([]byte(post.Content)))
 	post_view := views.MakePostPage(post.Title, post.Content)
+	html_buffer := bytes.NewBuffer(nil)
+	post_view.Render(c, html_buffer)
+
+	return html_buffer.Bytes(), nil
+}
+func postHandlerTailwind(c *gin.Context, database *database.Database) ([]byte, error) {
+	var post_binding PostBinding
+	if err := c.ShouldBindUri(&post_binding); err != nil {
+		return nil, err
+	}
+
+	// Get the post with the ID
+	post_id, err := strconv.Atoi(post_binding.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	post, err := database.GetPost(post_id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Generate HTML page
+	post.Content = string(mdToHTML([]byte(post.Content)))
+	post_view := tailwind.MakePostPage(post.Title, post.Content)
 	html_buffer := bytes.NewBuffer(nil)
 	post_view.Render(c, html_buffer)
 

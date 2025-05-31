@@ -16,22 +16,27 @@ const CACHE_TIMEOUT = 20 * time.Second
 
 type Generator = func(*gin.Context, *database.Database) ([]byte, error)
 
-func Run(database database.Database) error {
+func Run(database *database.Database) error {
 
 	cache := makeCache(4, time.Minute*10)
 
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.MaxMultipartMemory = 1
 
 	// Contact form related endpoints
 	r.POST("/contact-send", makeContactFormHandler())
+	r.POST("/t/contact-send", makeContactFormHandlerTailwind())
 
 	// Service
 	r.GET("/services", makeServiceHandler())
-	addCacheHandler(r, "GET", "/tailwind", homeHandlertailwind, &cache, &database)
-	addCacheHandler(r, "GET", "/", homeHandler, &cache, &database)
-	addCacheHandler(r, "GET", "/", contactHandler, &cache, &database)
-	addCacheHandler(r, "GET", "/post/:id", postHandler, &cache, &database)
+	r.GET("/t/services", makeServiceHandlerTailwind())
+	addCacheHandler(r, "GET", "/t", homeHandlertailwind, &cache, database)
+	addCacheHandler(r, "GET", "/", homeHandler, &cache, database)
+	addCacheHandler(r, "GET", "/contact", contactHandler, &cache, database)
+	addCacheHandler(r, "GET", "/t/contact", contactHandlerTailwind, &cache, database)
+	addCacheHandler(r, "GET", "/post/:id", postHandler, &cache, database)
+	addCacheHandler(r, "GET", "/t/post/:id", postHandlerTailwind, &cache, database)
 
 	r.Static("/static", "./static")
 	r.Run()
@@ -76,8 +81,8 @@ func addCacheHandler(e *gin.Engine, method string, endpoint string, generator Ge
 	}
 }
 
-// / This function will act as the handler for
-// / the home page
+// This function will act as the handler for
+// the home page
 func homeHandler(c *gin.Context, db *database.Database) ([]byte, error) {
 	posts, err := db.GetPosts()
 	if err != nil {

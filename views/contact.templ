@@ -1,8 +1,5 @@
 package views
 
-import . "github.com/rbc33/views/header"
-import . "github.com/rbc33/views/footer"
-
 templ MakeContactPage() {
 	<!DOCTYPE html>
 	<html lang="en">
@@ -15,7 +12,7 @@ templ MakeContactPage() {
 			<script src="/static/client-side-templates.js"></script>
 		</head>
 		<body>
-			@MakeNavBar([]Link{Link{Name: "Home", Href: "/"}, Link{Name: "About", Href: "/about"}, Link{Name: "Services", Href: "/services"}, Link{Name: "Contact", Href: "/contact"}})
+			@MakeNavBar([]Link{{Name: "Home", Href: "/"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/services"}, {Name: "Contact", Href: "/contact"}})
 			<br/>
 			<main>
 				<div id="contact-form">

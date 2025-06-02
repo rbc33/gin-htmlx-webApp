@@ -1,9 +1,11 @@
-
 package views
 
-import . "github.com/rbc33/views/header"
+import (
+	"fmt"
+	. "github.com/rbc33/common"
+)
 
-templ MakeServicesPage() {
+templ MakeIndex(posts []Post) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -18,13 +20,17 @@ templ MakeServicesPage() {
 			@MakeNavBar([]Link{Link{Name: "Home", Href: "/"}, Link{Name: "About", Href: "/about"}, Link{Name: "Services", Href: "/services"}, Link{Name: "Contact", Href: "/contact"}})
 			<br/>
 			<main>
-				<article>
-					<h1>Services</h1>
-					<p>
-						This is a test page for services.
-					</p>
-				</article>
+				for _, post := range posts {
+					<article>
+						<h2>{ post.Title }</h2>
+						<p>
+							{ post.Excerpt }
+							<a href={ templ.URL(fmt.Sprintf("/post/%d", post.Id)) }>read more... </a>
+						</p>
+					</article>
+				}
 			</main>
 		</body>
 	</html>
+	@MakeFooter()
 }

@@ -1,12 +1,9 @@
-
 FROM ubuntu:latest
-
-
 ENV TZ=Europe/London
 ENV DEBIAN_FRONTEND="noninteractive"
 
 ARG TARGETARCH=amd64
-ENV PATH="${PATH}:/usr/local/go/bin"
+ENV PATH="${PATH}:/usr/local/go/bin:/usr/local/bin" 
 
 #
 LABEL maintainer="ricardobenthem@gmail.com"
@@ -18,11 +15,15 @@ RUN apt-get update \
     make \
     pkg-config \
     wget \
-    && wget "https://go.dev/dl/go1.22.0.linux-${TARGETARCH}.tar.gz" -P golang-install \
-    && cd golang-install \
-    && rm -rf /usr/local/go && tar -C /usr/local -xzf "go1.22.0.linux-${TARGETARCH}.tar.gz" \
+    \
+    && wget "https://go.dev/dl/go1.22.0.linux-${TARGETARCH}.tar.gz" -P /tmp/ \
+    && rm -rf /usr/local/go && tar -C /usr/local -xzf "/tmp/go1.22.0.linux-${TARGETARCH}.tar.gz" \
+    && rm -f "/tmp/go1.22.0.linux-${TARGETARCH}.tar.gz" \
+    \
     && GOBIN=/usr/local/bin go install github.com/pressly/goose/v3/cmd/goose@v3.18.0 \
     && GOBIN=/usr/local/bin go install github.com/a-h/templ/cmd/templ@v0.2.543 \
+    && GOBIN=/usr/local/bin go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.57.1 \
+    \
     && apt-get remove -y wget \
     && apt-get clean \
     && apt-get autoremove -y \
@@ -31,5 +32,4 @@ RUN apt-get update \
     && go clean --modcache \
     && go clean --testcache \
     && go clean --fuzzcache \
-    && rm -rf golang-install \
-    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/apt/lists/* # This was the end of your original Dockerfile

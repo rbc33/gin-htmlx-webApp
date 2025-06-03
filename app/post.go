@@ -10,6 +10,7 @@ import (
 	"github.com/gomarkdown/markdown/parser"
 	"github.com/rbc33/database"
 	"github.com/rbc33/views/tailwind"
+	"github.com/rs/zerolog/log"
 )
 
 type PostBinding struct {
@@ -51,7 +52,10 @@ func postHandler(c *gin.Context, database *database.Database) ([]byte, error) {
 	// post_view := views.MakePostPage(post.Title, post.Content)
 	post_view := tailwind.MakePostPage(post.Title, post.Content)
 	html_buffer := bytes.NewBuffer(nil)
-	post_view.Render(c, html_buffer)
+	err = post_view.Render(c, html_buffer)
+	if err != nil {
+		log.Error().Msgf("%s", err)
+	}
 
 	return html_buffer.Bytes(), nil
 }

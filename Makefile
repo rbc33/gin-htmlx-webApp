@@ -1,7 +1,6 @@
 GOCMD=go
 TEMPL=templ
-# TAILWIND=tailwindcss-macos-arm64
-TAILWIND=tailwinds-macos-3.4.1
+TAILWIND=tailwindcss
 BUILD_DIR=./tmp
 BINARY_NAME=gocms
 ADMIN_BINARY_NAME=gocms-admin

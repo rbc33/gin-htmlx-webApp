@@ -33,7 +33,11 @@ func Run(database *database.Database) error {
 	addCacheHandler(r, "GET", "/post/:id", postHandler, &cache, database)
 
 	r.Static("/static", "./static")
-	r.Run()
+	err := r.Run()
+	if err != nil {
+		log.Error().Msgf("could not run app: %v", err)
+		return err
+	}
 
 	return nil
 }
@@ -87,6 +91,9 @@ func homeHandler(c *gin.Context, db *database.Database) ([]byte, error) {
 	// index_view := views.MakeIndex(posts)
 	index_view := tailwind.MakeIndex(posts)
 	html_buffer := bytes.NewBuffer(nil)
-	index_view.Render(c, html_buffer)
+	err = index_view.Render(c, html_buffer)
+	if err != nil {
+		return nil, err
+	}
 	return html_buffer.Bytes(), nil
 }

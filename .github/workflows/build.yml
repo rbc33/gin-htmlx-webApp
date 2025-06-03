@@ -13,7 +13,7 @@ jobs:
       image: rbenthem/gocms:0.1
       options: --user 1001
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checking Out Repo 👀
       - name: Golang Build 🐹
         run: make build
@@ -22,7 +22,7 @@ jobs:
           mkdir gocms-ubuntu-build
           cp tmp/gocms gocms-ubuntu-build/
           cp tmp/gocms-admin gocms-ubuntu-build/
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: gocms-ubuntu-build
           path: gocms-ubuntu-build

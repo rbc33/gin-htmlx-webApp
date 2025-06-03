@@ -1,8 +1,8 @@
 package common
 
 type Post struct {
-	Title   string
-	Content string
-	Excerpt string
-	Id      int
+	Id      int    `json:"id"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
+	Excerpt string `json:"excerpt"`
 }

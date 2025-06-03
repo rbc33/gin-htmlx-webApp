@@ -17,5 +17,9 @@ func main() {
 		return
 	}
 	common.SetupLogger()
-	app.Run(&db_connection)
+	err = app.Run(&db_connection)
+	if err != nil {
+		log.Error().Msgf("%s", err)
+	}
+
 }

@@ -9,8 +9,6 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 )
 
-require git.zutto.fi/zutto/shardedmap v0.0.0-20180626051319-5cd9a7713908 // indirect
-
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/fossoreslp/go-uuid-v4 v1.0.0

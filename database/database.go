@@ -81,7 +81,11 @@ func (db *Database) ChangePost(id int, title string, excerpt string, content str
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() {
+		if rbErr := tx.Rollback(); rbErr != nil && err == nil {
+			err = fmt.Errorf("tx rollback error: %v", rbErr)
+		}
+	}()
 
 	if len(title) > 0 {
 		_, err := tx.Exec("UPDATE posts SET title = ? WHERE id = ?;", title, id)
@@ -131,7 +135,11 @@ func (db *Database) AddImage(uuid string, name string, alt string) error {
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() {
+		if rbErr := tx.Rollback(); rbErr != nil && err == nil {
+			err = fmt.Errorf("tx rollback error: %v", rbErr)
+		}
+	}()
 
 	if name == "" {
 		return fmt.Errorf("cannot have empty names")

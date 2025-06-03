@@ -13,6 +13,10 @@ func makeServiceHandler() func(*gin.Context) {
 	return func(c *gin.Context) {
 		log.Info().Msg("Testing")
 		// TemplRender(c, http.StatusOK, views.MakeServicesPage())
-		TemplRender(c, http.StatusOK, tailwind.MakeServicesPage())
+		err := TemplRender(c, http.StatusOK, tailwind.MakeServicesPage())
+		if err != nil {
+			log.Error().Msgf("%s", err)
+		}
+
 	}
 }

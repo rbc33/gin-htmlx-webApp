@@ -1,3 +1,7 @@
+
+networks:
+  common-net:
+
 services:
   gocms:
     image: rbenthem/gocms:latest
@@ -32,8 +36,10 @@ services:
       interval: 10s
       timeout: 10s
       retries: 10
+    volumes:
+      - mysql_data:/var/lib/mysql
     networks:
       - common-net
 
-networks:
-  common-net: {}
+volumes:
+  mysql_data:

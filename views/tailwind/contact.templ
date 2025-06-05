@@ -1,12 +1,11 @@
 package tailwind
 
-
 templ MakeContactPage() {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
 			<meta charset="UTF-8"/>
-			<title>Contact Us | Your Company</title>
+			<title>Contact Us</title>
 			<link rel="stylesheet" href="/static/output.css"/>
 			<script src="/static/htmx.min.js"></script>
 		</head>
@@ -17,7 +16,7 @@ templ MakeContactPage() {
 				<div class="absolute -bottom-40 -left-40 w-96 h-96 bg-gray-500/30 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
 			</div>
 			<div class="relative z-10">
-			@MakeNavBar([]Link{{Name: "Home", Href: "/"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/services"}, {Name: "Contact", Href: "/contact"}})
+				@MakeNavBar([]Link{{Name: "Home", Href: "/"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/services"}, {Name: "Contact", Href: "/contact"}})
 				<br/>
 				<main class="container mx-auto px-4 py-8">
 					<div id="contact-form" class="max-w-xl mx-auto bg-gray-900/95 backdrop-blur-sm shadow-2xl p-8 relative overflow-hidden rounded-xl border border-gray-700/50">

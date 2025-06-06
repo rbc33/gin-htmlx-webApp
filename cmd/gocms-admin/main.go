@@ -1,4 +1,4 @@
-package main
+package admin
 
 import (
 	admin_app "gocms/admin-app"

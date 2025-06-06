@@ -54,11 +54,11 @@ func addCacheHandler(e *gin.Engine, method string, endpoint string, generator Ge
 
 	handler := func(c *gin.Context) {
 		// if the endpoint is cached
-		cached_endpoint, err := cache.Get(c.Request.RequestURI)
-		if err == nil {
-			c.Data(http.StatusOK, "text/html; charset=utf-8", cached_endpoint.contents)
-			return
-		}
+		// cached_endpoint, err := cache.Get(c.Request.RequestURI)
+		// if err == nil {
+		// 	c.Data(http.StatusOK, "text/html; charset=utf-8", cached_endpoint.contents)
+		// 	return
+		// }
 
 		// Before handler call (retrieve from cache)
 		html_buffer, err := generator(c, db)

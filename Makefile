@@ -1,11 +1,11 @@
 GOCMD=go
 TEMPL=templ
-BUILD_DIR=./tmp
+# BUILD_DIR=./
 BINARY_NAME=gocms
 ADMIN_BINARY_NAME=gocms-admin
 GOOSE=goose
 
-GOCMS_PATH=./$(BINARY_NAME)
+GOCMS_PATH=.
 
 DB_DRIVER=mysql
 MIGRATIONS_DIR=./migrations
@@ -19,7 +19,7 @@ all: build test
 build:
 	$(TEMPL) generate
 	tailwindcss -i ./static/style.css -o ./static/output.css -m 
-	$(GOCMD) build -v -o $(BUILD_DIR)/$(BINARY_NAME) $(GOCMS_PATH)
+	$(GOCMD) build -v -o $(BINARY_NAME) $(GOCMS_PATH)
 
 # Production build (sin tailwind, CSS ya debe existir)
 build-prod:
@@ -37,6 +37,8 @@ test:
 clean:
 	$(GOCMD) clean
 	rm -rf $(BUILD_DIR)/$(BINARY_NAME)
+	rm  ./static/output.css
+	rm ./views/tailwind/*.go
 	
 migrate-up:
 	$(GOOSE) -dir $(MIGRATIONS_DIR) $(DB_DRIVER) "$(DEV_DB_URL)" up

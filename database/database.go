@@ -19,9 +19,9 @@ type Database struct {
 
 func GetDatabaseURL() (string, error) {
 	// En producción (Clever Cloud)
-	if os.Getenv("ENVIRONMENT") == "production" {
-		return buildCleverCloudMySQLURL(), nil
-	}
+	// if os.Getenv("ENVIRONMENT") == "production" {
+	// 	return buildCleverCloudMySQLURL(), nil
+	// }
 
 	// En desarrollo (tu configuración local)
 	err := godotenv.Load()
@@ -31,25 +31,23 @@ func GetDatabaseURL() (string, error) {
 	return os.Getenv("MY_SQL_URL"), nil
 }
 
-func buildCleverCloudMySQLURL() string {
-	host := os.Getenv("MYSQL_ADDON_HOST")
-	port := os.Getenv("MYSQL_ADDON_PORT")
-	user := os.Getenv("MYSQL_ADDON_USER")
-	password := os.Getenv("MYSQL_ADDON_PASSWORD")
-	database := os.Getenv("MYSQL_ADDON_DB")
+// func buildCleverCloudMySQLURL() string {
+// 	host := os.Getenv("MYSQL_ADDON_HOST")
+// 	port := os.Getenv("MYSQL_ADDON_PORT")
+// 	user := os.Getenv("MYSQL_ADDON_USER")
+// 	password := os.Getenv("MYSQL_ADDON_PASSWORD")
+// 	database := os.Getenv("MYSQL_ADDON_DB")
 
-	if host == "" || user == "" || password == "" || database == "" {
-		// Fallback a variable personalizada si existe
-		if customURL := os.Getenv("MY_SQL_URL"); customURL != "" {
-			return customURL
-		}
-		panic("Database configuration not found")
-	}
+// 	if host == "" || user == "" || password == "" || database == "" {
+// 		log.Warn().Msg("MySQL addon variables not available yet")
+// 		// TEMPORAL: Retornar URL dummy para que la app inicie
+// 		return "dummy:dummy@tcp(localhost:3306)/dummy"
+// 	}
 
-	// Formato directo para Go MySQL driver: user:password@tcp(host:port)/database
-	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		user, password, host, port, database)
-}
+// 	// Formato directo para Go MySQL driver: user:password@tcp(host:port)/database
+// 	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
+// 		user, password, host, port, database)
+// }
 
 // / GetPosts gets all the posts from the current
 // / database connection.

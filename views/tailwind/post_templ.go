@@ -50,7 +50,7 @@ func MakePostPage(title string, content string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<br><main class=\"flex flex-col h-screen\"><article class=\"container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md p-6 max-w-xxl w-fit overflow-x-auto overflow-y-auto\"><h2 class=\"text-2xl text-gray-400 font-bold mb-2\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<br><main class=\"flex flex-col h-screen\"><article class=\"container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md p-6 max-w-xxl w-fit overflow-auto\"><h2 class=\"text-2xl text-gray-400 font-bold mb-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -1,6 +1,13 @@
 {
 	"type": "go",
 	"build": {
-		"type": "go"
+		"type": "go",
+		"command": "./cmd/gocms",
+		"env": {
+			"GO111MODULE": "on"
+		}
+	},
+	"deploy": {
+		"goal": "./cmd/gocms"
 	}
 }

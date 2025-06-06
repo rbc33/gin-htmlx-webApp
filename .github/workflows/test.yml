@@ -8,7 +8,7 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
-      image: rbenthem/gocms:01
+      image: rbenthem/gocms:0.1
       options: --user 1001
 
     steps:

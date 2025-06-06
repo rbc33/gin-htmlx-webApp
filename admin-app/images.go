@@ -6,10 +6,11 @@ import (
 	"os"
 	"path/filepath"
 
+	"gocms/database"
+
 	"github.com/fossoreslp/go-uuid-v4"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/rbc33/database"
 	"github.com/rs/zerolog/log"
 )
 

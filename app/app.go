@@ -3,11 +3,13 @@ package app
 import (
 	"bytes"
 	"net/http"
+	"os"
 	"time"
 
+	"gocms/database"
+	"gocms/views/tailwind"
+
 	"github.com/gin-gonic/gin"
-	"github.com/rbc33/database"
-	"github.com/rbc33/views/tailwind"
 	"github.com/rs/zerolog/log"
 )
 
@@ -33,7 +35,13 @@ func Run(database *database.Database) error {
 	addCacheHandler(r, "GET", "/post/:id", postHandler, &cache, database)
 
 	r.Static("/static", "./static")
-	err := r.Run()
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	err := r.Run(":" + port)
 	if err != nil {
 		log.Error().Msgf("could not run app: %v", err)
 		return err

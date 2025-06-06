@@ -3,8 +3,9 @@ package app
 import (
 	"net/http"
 
+	"gocms/views/tailwind"
+
 	"github.com/gin-gonic/gin"
-	"github.com/rbc33/views/tailwind"
 	"github.com/rs/zerolog/log"
 )
 

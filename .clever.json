@@ -1,0 +1,12 @@
+{
+  "apps": [
+    {
+      "app_id": "app_e88b6b6f-613c-42cd-8624-3663a76b98c1",
+      "org_id": "user_c7cad238-e105-4336-8a4c-c194f1ef5f48",
+      "deploy_url": "https://push-n3-par-clevercloud-customers.services.clever-cloud.com/app_e88b6b6f-613c-42cd-8624-3663a76b98c1.git",
+      "git_ssh_url": "git+ssh://git@push-n3-par-clevercloud-customers.services.clever-cloud.com/app_e88b6b6f-613c-42cd-8624-3663a76b98c1.git",
+      "name": "gocms-app",
+      "alias": "gocms-app"
+    }
+  ]
+}

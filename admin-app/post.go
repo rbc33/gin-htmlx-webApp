@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"gocms/database"
+
 	"github.com/gin-gonic/gin"
-	"github.com/rbc33/database"
 	"github.com/rs/zerolog/log"
 )
 

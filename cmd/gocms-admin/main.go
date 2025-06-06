@@ -1,10 +1,11 @@
 package main
 
 import (
+	admin_app "gocms/admin-app"
+	"gocms/common"
+	"gocms/database"
+
 	_ "github.com/go-sql-driver/mysql"
-	admin_app "github.com/rbc33/admin-app"
-	"github.com/rbc33/common"
-	"github.com/rbc33/database"
 	"github.com/rs/zerolog/log"
 )
 

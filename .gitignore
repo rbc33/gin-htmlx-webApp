@@ -1,10 +1,24 @@
-.env
-__debug_*
-*_templ.go
-/tmp/
+# Binarios
 tmp/
-/.vscode/
-starters.md
-/tmp/*
-tmp/gocms-admin
-tmp/gocms
+gocms
+gocms-admin
+
+# Environment
+.env
+envfile
+
+# Logs
+*.log
+build-errors.log
+
+# Generated files
+*_templ.go
+static/output.css
+
+# Media uploads (opcional)
+media/*
+!media/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db

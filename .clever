@@ -1,0 +1,6 @@
+{
+	"type": "go",
+	"build": {
+		"type": "go"
+	}
+}

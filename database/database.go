@@ -6,14 +6,49 @@ import (
 	"os"
 	"time"
 
+	"gocms/common"
+
 	"github.com/joho/godotenv"
-	"github.com/rbc33/common"
 	"github.com/rs/zerolog/log"
 )
 
 type Database struct {
 	MY_SQL_URL string
 	Connection *sql.DB
+}
+
+func GetDatabaseURL() (string, error) {
+	// En producción (Clever Cloud)
+	if os.Getenv("ENVIRONMENT") == "production" {
+		return buildCleverCloudMySQLURL(), nil
+	}
+
+	// En desarrollo (tu configuración local)
+	err := godotenv.Load()
+	if err != nil {
+		return "", err
+	}
+	return os.Getenv("MY_SQL_URL"), nil
+}
+
+func buildCleverCloudMySQLURL() string {
+	host := os.Getenv("MYSQL_ADDON_HOST")
+	port := os.Getenv("MYSQL_ADDON_PORT")
+	user := os.Getenv("MYSQL_ADDON_USER")
+	password := os.Getenv("MYSQL_ADDON_PASSWORD")
+	database := os.Getenv("MYSQL_ADDON_DB")
+
+	if host == "" || user == "" || password == "" || database == "" {
+		// Fallback a variable personalizada si existe
+		if customURL := os.Getenv("MY_SQL_URL"); customURL != "" {
+			return customURL
+		}
+		panic("Database configuration not found")
+	}
+
+	// Formato directo para Go MySQL driver: user:password@tcp(host:port)/database
+	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
+		user, password, host, port, database)
 }
 
 // / GetPosts gets all the posts from the current
@@ -162,11 +197,11 @@ func (db *Database) AddImage(uuid string, name string, alt string) error {
 
 func MakeSqlConnection() (Database, error) {
 	/// Checking the DB connection
-	err := godotenv.Load()
+
+	connection_str, err := GetDatabaseURL()
 	if err != nil {
-		return Database{}, err
+		log.Error().Msgf("%s", err)
 	}
-	connection_str := os.Getenv("MY_SQL_URL")
 	db, err := sql.Open("mysql", connection_str)
 	if err != nil {
 		return Database{}, err

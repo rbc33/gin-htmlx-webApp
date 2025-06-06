@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"strconv"
 
+	"gocms/database"
+	"gocms/views/tailwind"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
-	"github.com/rbc33/database"
-	"github.com/rbc33/views/tailwind"
 	"github.com/rs/zerolog/log"
 )
 

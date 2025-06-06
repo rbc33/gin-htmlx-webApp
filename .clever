@@ -1,13 +1,14 @@
 {
 	"type": "go",
 	"build": {
-		"type": "go",
-		"command": "./cmd/gocms",
-		"env": {
-			"GO111MODULE": "on"
-		}
+		"type": "go"
 	},
-	"deploy": {
-		"goal": "./cmd/gocms"
+	"hooks": {
+		"prebuild": [
+			"go install github.com/a-h/templ/cmd/templ@latest",
+			"npm install -g @tailwindcss/cli",
+			"templ generate",
+			"tailwindcss -i ./static/style.css -o ./static/output.css --minify"
+		]
 	}
 }

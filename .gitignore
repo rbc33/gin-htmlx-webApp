@@ -12,8 +12,6 @@ envfile
 build-errors.log
 
 # Generated files
-*_templ.go
-static/output.css
 
 # Media uploads (opcional)
 media/*

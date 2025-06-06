@@ -7,15 +7,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rbc33/database"
-	"github.com/rbc33/views/tailwind"
+	"github.com/rbc33/views"
 	"github.com/rs/zerolog/log"
 )
 
 const CACHE_TIMEOUT = 20 * time.Second
 
-type Generator = func(*gin.Context, *database.Database) ([]byte, error)
+type Generator = func(*gin.Context, database.Database) ([]byte, error)
 
-func Run(database *database.Database) error {
+func SetupRoutes(database database.Database) *gin.Engine {
 
 	cache := makeCache(4, time.Minute*10)
 
@@ -33,20 +33,15 @@ func Run(database *database.Database) error {
 	addCacheHandler(r, "GET", "/post/:id", postHandler, &cache, database)
 
 	r.Static("/static", "./static")
-	err := r.Run()
-	if err != nil {
-		log.Error().Msgf("could not run app: %v", err)
-		return err
-	}
 
-	return nil
+	return r
 }
 
-func addCacheHandler(e *gin.Engine, method string, endpoint string, generator Generator, cache *Cache, db *database.Database) {
+func addCacheHandler(e *gin.Engine, method string, endpoint string, generator Generator, cache *Cache, db database.Database) {
 
 	handler := func(c *gin.Context) {
 		// if the endpoint is cached
-		cached_endpoint, err := cache.Get(c.Request.RequestURI)
+		cached_endpoint, err := (*cache).Get(c.Request.RequestURI)
 		if err == nil {
 			c.Data(http.StatusOK, "text/html; charset=utf-8", cached_endpoint.contents)
 			return
@@ -58,7 +53,7 @@ func addCacheHandler(e *gin.Engine, method string, endpoint string, generator Ge
 			log.Error().Msgf("could not generate html: %v", err)
 		}
 		// After handler  (add to cache)
-		err = cache.Store(c.Request.RequestURI, html_buffer)
+		err = (*cache).Store(c.Request.RequestURI, html_buffer)
 		if err != nil {
 			log.Warn().Msgf("could not add page to cache: %v", err)
 		}
@@ -81,7 +76,7 @@ func addCacheHandler(e *gin.Engine, method string, endpoint string, generator Ge
 
 // This function will act as the handler for
 // the home page
-func homeHandler(c *gin.Context, db *database.Database) ([]byte, error) {
+func homeHandler(c *gin.Context, db database.Database) ([]byte, error) {
 	posts, err := db.GetPosts()
 	if err != nil {
 		return nil, err
@@ -89,7 +84,7 @@ func homeHandler(c *gin.Context, db *database.Database) ([]byte, error) {
 
 	// if not cached, create the cache
 	// index_view := views.MakeIndex(posts)
-	index_view := tailwind.MakeIndex(posts)
+	index_view := views.MakeIndex(posts)
 	html_buffer := bytes.NewBuffer(nil)
 	err = index_view.Render(c, html_buffer)
 	if err != nil {

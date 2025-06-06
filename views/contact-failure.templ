@@ -1,0 +1,6 @@
+package views
+
+templ MakeContactFailure(email string, err string) {
+	<h2 class="text-2xl text-gray-400 font-bold mb-2">Failed to send message from { email }!</h2>
+	<p class="text-white mb-4">>Your message could not be sent. Error: { err }</p>
+}

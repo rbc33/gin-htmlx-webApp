@@ -1,0 +1,28 @@
+package views
+
+templ MakePostPage(title string, content string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<title>{ title }</title>
+			<!-- Minified version -->
+			<link rel="stylesheet" href="/static/output.css"/>
+			<script src="/static/htmx.min.js"></script>
+			<script src="/static/client-side-templates.js"></script>
+		</head>
+		<body class="font-roboto bg-gray-800">
+			@MakeNavBar([]Link{{Name: "Home", Href: "/"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/services"}, {Name: "Contact", Href: "/contact"}})
+			<br/>
+			<main class="flex flex-col h-screen">
+				<article class="container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md p-6 max-w-xxl w-fit overflow-x-auto overflow-y-auto">
+					<h2 class="text-2xl text-gray-400 font-bold mb-2">{ title }</h2>
+					<div class="text-gray-300">
+						@templ.Raw(content)
+					</div>
+				</article>
+			</main>
+		</body>
+		@MakeFooter()
+	</html>
+}

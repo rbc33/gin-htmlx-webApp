@@ -1,7 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 	admin_app "github.com/rbc33/admin-app"
 	"github.com/rbc33/common"
 	"github.com/rbc33/database"
@@ -14,14 +18,24 @@ func main() {
 	// in this APP
 	common.SetupLogger()
 
+	err := godotenv.Load()
+	if err != nil {
+		log.Error().Msgf("%s", err)
+		os.Exit(-1)
+	}
+
 	database, err := database.MakeSqlConnection()
 	if err != nil {
 		log.Error().Msgf("could not create database connection: %v", err)
-		return
+		os.Exit(-1)
+
 	}
 
-	err = admin_app.Run(database)
+	r := admin_app.SetupRoutes(&database)
+	err = r.Run(fmt.Sprintf(":%s", os.Getenv("PORT_ADMIN")))
 	if err != nil {
-		log.Fatal().Msgf("could not run app: %v", err)
+		log.Error().Msgf("could not run app: %v", err)
+		os.Exit(-1)
+
 	}
 }

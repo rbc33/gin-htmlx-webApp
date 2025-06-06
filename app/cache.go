@@ -22,13 +22,31 @@ func emptyEndpointCache() EndpointCache {
 	return EndpointCache{"", []byte{}, time.Now()}
 }
 
-type Cache struct {
+type Cache interface {
+	Get(name string) (EndpointCache, error)
+	Store(name string, buffer []byte) error
+	Size() uint64
+}
+
+type CacheValidator interface {
+	IsValid(cache *EndpointCache) bool
+}
+
+type TimeValidator struct{}
+
+func (validator *TimeValidator) IsValid(cache *EndpointCache) bool {
+	// We only return the cache if it's still valid
+	return cache.validUntil.After(time.Now())
+}
+
+type TimedCache struct {
 	cacheMap      shardedmap.ShardMap
 	cacheTimeout  time.Duration
 	estimatedSize atomic.Uint64 // in bytes
+	validator     CacheValidator
 }
 
-func (cache *Cache) Store(name string, buffer []byte) error {
+func (cache *TimedCache) Store(name string, buffer []byte) error {
 	// Only store to the cache if we have enough space left
 	afterSizeMB := float64(cache.estimatedSize.Load()+uint64(len(buffer))) / 1000000
 	if afterSizeMB > MAX_CACHE_SIZE_MB {
@@ -45,7 +63,7 @@ func (cache *Cache) Store(name string, buffer []byte) error {
 	return nil
 }
 
-func (cache *Cache) Get(name string) (EndpointCache, error) {
+func (cache *TimedCache) Get(name string) (EndpointCache, error) {
 	// if the endpoint is cached
 	cached_entry := cache.cacheMap.Get(name)
 	if cached_entry != nil {
@@ -63,12 +81,12 @@ func (cache *Cache) Get(name string) (EndpointCache, error) {
 	return emptyEndpointCache(), fmt.Errorf("cache does not contain key")
 }
 
-func (cache *Cache) Size() uint64 {
+func (cache *TimedCache) Size() uint64 {
 	return cache.estimatedSize.Load()
 }
 
 func makeCache(n_shards int, expiry_duration time.Duration) Cache {
-	return Cache{
+	return &TimedCache{
 		cacheMap:      shardedmap.NewShardMap(n_shards),
 		cacheTimeout:  expiry_duration,
 		estimatedSize: atomic.Uint64{},

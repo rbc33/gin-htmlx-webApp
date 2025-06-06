@@ -1,0 +1,38 @@
+package views
+
+import (
+	"fmt"
+	. "github.com/rbc33/common"
+)
+
+templ MakeIndex(posts []Post) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<title>Home Page</title>
+			<!-- Minified version -->
+			<link rel="stylesheet" href="/static/output.css"/>
+			// <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+			<script src="/static/htmx.min.js"></script>
+			// <script src="/static/client-side-templates.js"></script>
+		</head>
+		<body class="font-roboto bg-gray-800">
+			@MakeNavBar([]Link{{Name: "Home", Href: "/"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/services"}, {Name: "Contact", Href: "/contact"}})
+			<br/>
+			<main class="flex flex-col h-screen">
+				for _, post := range posts {
+					// <article class="rounded-lg border-4 border-solid border-slate-700 place-self-center shadow-md p-6 m-4 max-w-xl w-full">
+					<article class="container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md p-6 m-4 max-w-xxl w-4/6">
+						<h2 class="text-2xl text-gray-400 font-bold mb-2">{ post.Title }</h2>
+						<p class="text-white mb-4">
+							{ post.Excerpt }
+							<a class="text-blue-400 font-bold underline" href={ templ.URL(fmt.Sprintf("/post/%d", post.Id)) }>read more... </a>
+						</p>
+					</article>
+				}
+			</main>
+		</body>
+		@MakeFooter()
+	</html>
+}

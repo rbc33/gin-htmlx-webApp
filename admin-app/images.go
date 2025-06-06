@@ -32,7 +32,7 @@ type ImageBinding struct {
 // 	}
 // }
 
-func postImageHandler(database *database.Database) func(*gin.Context) {
+func postImageHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 
 		// Get the metadata from the request body

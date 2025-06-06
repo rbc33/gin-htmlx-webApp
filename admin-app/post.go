@@ -31,7 +31,7 @@ type DeletePostRequest struct {
 	Id int `json:"id"`
 }
 
-func getPostHandler(database *database.Database) func(*gin.Context) {
+func getPostHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		// localhost:8080/post/{id}
 		var post_binding PostBinding
@@ -71,7 +71,7 @@ func getPostHandler(database *database.Database) func(*gin.Context) {
 	}
 }
 
-func postPostHandler(database *database.Database) func(*gin.Context) {
+func postPostHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var add_post_request AddPostRequest
 		decoder := json.NewDecoder(c.Request.Body)
@@ -106,7 +106,7 @@ func postPostHandler(database *database.Database) func(*gin.Context) {
 	}
 }
 
-func putPostHandler(database *database.Database) func(*gin.Context) {
+func putPostHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var change_post_request ChangePostRequest
 		decoder := json.NewDecoder(c.Request.Body)
@@ -143,7 +143,7 @@ func putPostHandler(database *database.Database) func(*gin.Context) {
 	}
 }
 
-func deletePostHandler(database *database.Database) func(*gin.Context) {
+func deletePostHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var delete_post_request DeletePostRequest
 		decoder := json.NewDecoder(c.Request.Body)

@@ -5,8 +5,7 @@ BINARY_NAME=gocms
 ADMIN_BINARY_NAME=gocms-admin
 GOOSE=goose
 
-GOCMS_PATH=./cmd/$(BINARY_NAME)
-GOCMS_ADMIN_PATH=./cmd/$(ADMIN_BINARY_NAME)
+GOCMS_PATH=./$(BINARY_NAME)
 
 DB_DRIVER=mysql
 MIGRATIONS_DIR=./migrations
@@ -21,7 +20,6 @@ build:
 	$(TEMPL) generate
 	tailwindcss -i ./static/style.css -o ./static/output.css -m 
 	$(GOCMD) build -v -o $(BUILD_DIR)/$(BINARY_NAME) $(GOCMS_PATH)
-	$(GOCMD) build -v -o $(BUILD_DIR)/$(ADMIN_BINARY_NAME) $(GOCMS_ADMIN_PATH)
 
 # Production build (sin tailwind, CSS ya debe existir)
 build-prod:

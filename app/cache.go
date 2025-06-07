@@ -70,7 +70,7 @@ func (cache *TimedCache) Get(name string) (EndpointCache, error) {
 		cache_contents := (*cached_entry).(EndpointCache)
 
 		// We only return the cache if it's still valid
-		if cache_contents.validUntil.After(time.Now()) {
+		if cache.validator.IsValid(&cache_contents) {
 			return cache_contents, nil
 		} else {
 			cache.cacheMap.Delete(name)
@@ -90,5 +90,6 @@ func makeCache(n_shards int, expiry_duration time.Duration) Cache {
 		cacheMap:      shardedmap.NewShardMap(n_shards),
 		cacheTimeout:  expiry_duration,
 		estimatedSize: atomic.Uint64{},
+		validator:     &TimeValidator{},
 	}
 }

@@ -2,13 +2,19 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
+
+	// "os"
 	"time"
 
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 	"github.com/rbc33/gocms/common"
 	"github.com/rs/zerolog/log"
+	"github.com/xeipuuv/gojsonschema"
 )
 
 type Database interface {
@@ -18,6 +24,10 @@ type Database interface {
 	ChangePost(id int, title string, excerpt string, content string) error
 	DeletePost(id int) error
 	AddImage(uuid string, name string, alt string) error
+	AddCard(uuid string, image_location string, json_data string, schema_name string) error
+	GetCard(uuid string) (common.Card, error)
+	ChangeCard(uuid string, image_location string, json_data string, schema_name string) error
+	DeleteCard(uuid string) error
 }
 
 type SqlDatabase struct {
@@ -27,7 +37,7 @@ type SqlDatabase struct {
 
 // / GetPosts gets all the posts from the current
 // / database connection.
-func (db SqlDatabase) GetPosts() ([]common.Post, error) {
+func (db SqlDatabase) GetPosts() (p []common.Post, err error) {
 	rows, err := db.Connection.Query("SELECT title, excerpt, id FROM posts")
 	if err != nil {
 		return make([]common.Post, 0), err
@@ -47,7 +57,7 @@ func (db SqlDatabase) GetPosts() ([]common.Post, error) {
 }
 
 // return post by id
-func (db *SqlDatabase) GetPost(post_id int) (common.Post, error) {
+func (db *SqlDatabase) GetPost(post_id int) (p common.Post, err error) {
 	rows, err := db.Connection.Query("SELECT title, content FROM posts WHERE id=?;", post_id)
 	if err != nil {
 		return common.Post{}, err
@@ -64,7 +74,7 @@ func (db *SqlDatabase) GetPost(post_id int) (common.Post, error) {
 }
 
 // AddPost adds a post to the database
-func (db *SqlDatabase) AddPost(title string, excerpt string, content string) (int, error) {
+func (db *SqlDatabase) AddPost(title string, excerpt string, content string) (n int, err error) {
 	res, err := db.Connection.Exec("INSERT INTO posts(content, title, excerpt) VALUES(?, ?, ?)", content, title, excerpt)
 	if err != nil {
 		return -1, err
@@ -85,14 +95,14 @@ func (db *SqlDatabase) AddPost(title string, excerpt string, content string) (in
 // ChangePost changes a post based on the values
 // provided. Note that empty strings will mean that
 // the value will not be updated.
-func (db *SqlDatabase) ChangePost(id int, title string, excerpt string, content string) error {
+func (db *SqlDatabase) ChangePost(id int, title string, excerpt string, content string) (err error) {
 	tx, err := db.Connection.Begin()
 	if err != nil {
 		return err
 	}
 	defer func() {
-		if rbErr := tx.Rollback(); rbErr != nil && err == nil {
-			err = fmt.Errorf("tx rollback error: %v", rbErr)
+		if comit_err := tx.Commit(); comit_err != nil {
+			err = errors.Join(err, tx.Rollback(), comit_err)
 		}
 	}()
 
@@ -139,23 +149,23 @@ func (db *SqlDatabase) DeletePost(id int) error {
 // name - file name saved to disk
 // alt - alternative text
 // return(uuid, nil) if succeeded, ("", err) otherwise
-func (db *SqlDatabase) AddImage(uuid string, name string, alt string) error {
-	tx, err := db.Connection.Begin()
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if rbErr := tx.Rollback(); rbErr != nil && err == nil {
-			err = fmt.Errorf("tx rollback error: %v", rbErr)
-		}
-	}()
-
+func (db *SqlDatabase) AddImage(uuid string, name string, alt string) (err error) {
 	if name == "" {
 		return fmt.Errorf("cannot have empty names")
 	}
 	if alt == "" {
 		return fmt.Errorf("cannot have empty alt text")
 	}
+
+	tx, err := db.Connection.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if comit_err := tx.Commit(); comit_err != nil {
+			err = errors.Join(err, tx.Rollback(), comit_err)
+		}
+	}()
 
 	query := "INSERT INTO images(uuid, name, alt) VALUES (?, ?, ?);"
 	_, err = tx.Exec(query, uuid, name, alt)
@@ -169,13 +179,168 @@ func (db *SqlDatabase) AddImage(uuid string, name string, alt string) error {
 	return nil
 }
 
+func (db *SqlDatabase) GetCard(uuid string) (p common.Card, err error) {
+	rows, err := db.Connection.Query("SELECT image_location, json_data, json_schema FROM cards WHERE uuid=?;", uuid)
+	if err != nil {
+		return common.Card{}, err
+	}
+	defer rows.Close()
+	rows.Next()
+	var card common.Card
+
+	if err = rows.Scan(&card.ImageLocation, &card.JsonData, &card.SchemaName); err != nil {
+		return common.Card{}, err
+	}
+
+	// Validate Card
+	err = validateJson(card.JsonData, card.SchemaName)
+	if err != nil {
+		return common.Card{}, err
+	}
+
+	return card, nil
+}
+
+func (db *SqlDatabase) AddCard(uuid string, image_location string, json_data string, schema_name string) error {
+
+	log.Info().Msgf("adding card to the DB")
+
+	// Check the file exist and is a file
+	// not a directory
+	if image_location == "" {
+		return fmt.Errorf("cannot have empty image")
+	}
+	image_stat, err := os.Stat(image_location)
+	if errors.Is(err, os.ErrNotExist) {
+		return fmt.Errorf("file does not exist: %s", image_location)
+	}
+	if err != nil {
+		return err
+	}
+	if image_stat.IsDir() {
+		return fmt.Errorf("given path is a directory: %s", image_stat)
+	}
+
+	if json_data == "" {
+		return fmt.Errorf("cannot have empty data")
+	}
+
+	// Load schema
+	if schema_name == "" {
+		return fmt.Errorf("cannot have empty data")
+	}
+
+	err = validateJson(json_data, schema_name)
+	if err != nil {
+		return err
+	}
+
+	tx, err := db.Connection.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		err = errors.Join(tx.Rollback())
+	}()
+
+	query := "INSERT INTO cards(uuid, image_location, json_data, json_schema) VALUES (?, ?, ?, ?);"
+	_, err = tx.Exec(query, uuid, image_location, json_data, schema_name)
+	if err != nil {
+		return err
+	}
+
+	if err = tx.Commit(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (db *SqlDatabase) ChangeCard(uuid string, image_location string, json_data string, schema_name string) error {
+
+	log.Info().Msgf("changing card")
+
+	tx, err := db.Connection.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if rbErr := tx.Rollback(); rbErr != nil && err == nil {
+			err = fmt.Errorf("tx rollback error: %v", rbErr)
+		}
+	}()
+
+	if image_location != "" {
+		image_stat, err := os.Stat(image_location)
+		if errors.Is(err, os.ErrNotExist) {
+			return fmt.Errorf("file does not exist: %s", image_location)
+		}
+		if err != nil {
+			return err
+		}
+		if image_stat.IsDir() {
+			return fmt.Errorf("given path is a directory: %s", image_stat)
+		}
+		_, err = tx.Exec("UPDATE cards SET image_location = ? WHERE uuid = ?;", image_location, uuid)
+		if err != nil {
+			return err
+		}
+	}
+
+	if json_data != "" && schema_name != "" {
+
+		err = validateJson(json_data, schema_name)
+		if err != nil {
+			return err
+		}
+		_, err = tx.Exec("UPDATE cards SET json_data = ?, json_schema = ? WHERE uuid = ?;", json_data, schema_name, uuid)
+		if err != nil {
+			return err
+		}
+	}
+
+	if err = tx.Commit(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (db *SqlDatabase) DeleteCard(uuid string) error {
+	if _, err := db.Connection.Exec("DELETE FROM cards WHERE uuid=?;", uuid); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func validateJson(json_data string, schema_name string) error {
+	schema_data, err := os.ReadFile(filepath.Join("schemas", schema_name+".json"))
+	if err != nil {
+		return fmt.Errorf("%v, %v", schema_name, err)
+	}
+
+	schemaLoader := gojsonschema.NewBytesLoader([]byte(schema_data))
+	documentLoader := gojsonschema.NewStringLoader(json_data) // Changed from NewReferenceLoader to NewStringLoader
+	result, err := gojsonschema.Validate(schemaLoader, documentLoader)
+	if err != nil {
+		return fmt.Errorf("could not validate json_data: %v", err)
+	}
+	if !result.Valid() {
+		var errors []string
+		for _, err := range result.Errors() {
+			errors = append(errors, err.String())
+		}
+		return fmt.Errorf("invalid card json: %s", strings.Join(errors, "; "))
+	}
+	return nil
+}
+
 func MakeSqlConnection() (SqlDatabase, error) {
 	/// Checking the DB connection
-	err := godotenv.Load()
-	if err != nil {
-		return SqlDatabase{}, err
-	}
-	connection_str := os.Getenv("MY_SQL_URL")
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	return SqlDatabase{}, err
+	// }
+	connection_str := common.Settings.DatabaseUri
 	db, err := sql.Open("mysql", connection_str)
 	if err != nil {
 		return SqlDatabase{}, err

@@ -62,6 +62,7 @@ func postPostHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var add_post_request AddPostRequest
 		decoder := json.NewDecoder(c.Request.Body)
+		decoder.DisallowUnknownFields()
 		err := decoder.Decode(&add_post_request)
 
 		if err != nil {

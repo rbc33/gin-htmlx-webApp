@@ -8,7 +8,7 @@ import (
 
 	"github.com/fossoreslp/go-uuid-v4"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
+	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/database"
 	"github.com/rs/zerolog/log"
 )
@@ -48,11 +48,12 @@ func postImageHandler(database database.Database) func(*gin.Context) {
 		}
 
 		// Check if MEDIA_DIR is defined
-		err := godotenv.Load()
-		if err != nil {
-			log.Error().Msgf("MEDIA_DIR not defined: %v", err)
-		}
-		MEDIA_DIR := os.Getenv("MEDIA_DIR")
+		// err := godotenv.Load()
+		// if err != nil {
+		// 	log.Error().Msgf("MEDIA_DIR not defined: %v", err)
+		// }
+		// MEDIA_DIR := os.Getenv("MEDIA_DIR")
+		MEDIA_DIR := common.Settings.MediaDir
 
 		// Begging save the file to MEDIA_DIR
 		file, err := c.FormFile("file")
@@ -67,6 +68,9 @@ func postImageHandler(database database.Database) func(*gin.Context) {
 
 		ext := filepath.Ext(file.Filename)
 		// Check if ext is supported
+		if valid_extensions[ext] {
+			log.Error().Msgf("Extension %s not supported", ext)
+		}
 
 		if ext == "" {
 			log.Error().Msgf("could not get file extension from %s", file.Filename)

@@ -8,7 +8,7 @@ import (
 
 	"github.com/rbc33/gocms/app"
 	"github.com/rbc33/gocms/common"
-	"github.com/stretchr/testify/assert"
+	"github.com/test-go/testify/assert"
 )
 
 type DatabaseMock struct{}
@@ -37,6 +37,18 @@ func (db DatabaseMock) DeletePost(id int) error {
 }
 
 func (db DatabaseMock) AddImage(postID string, imageData string, imageType string) error {
+	return fmt.Errorf("not implemented")
+}
+func (db DatabaseMock) GetCard(uuid string) (common.Card, error) {
+	return common.Card{}, fmt.Errorf("not implemented")
+}
+func (db DatabaseMock) AddCard(uuid string, image_location string, json_data string, schema_data string) error {
+	return fmt.Errorf("not implemented")
+}
+func (db DatabaseMock) ChangeCard(uuid string, image_location string, json_data string, schema_data string) error {
+	return fmt.Errorf("not implemented")
+}
+func (db DatabaseMock) DeleteCard(uuid string) error {
 	return fmt.Errorf("not implemented")
 }
 

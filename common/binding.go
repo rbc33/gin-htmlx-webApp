@@ -11,6 +11,9 @@ type StringIdBinding struct {
 type PostIdBinding struct {
 	IntIdBinding
 }
+type CardIdBinding struct {
+	StringIdBinding
+}
 
 type PageLinkBinding struct {
 	Link string `uri:"link" binding:"required"`

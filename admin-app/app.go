@@ -21,5 +21,11 @@ func SetupRoutes(database database.Database) *gin.Engine {
 	r.POST("/images", postImageHandler(database))
 	// r.DELETE("/images", deleteImageHandler(&database))
 
+	// Card related stuff
+	r.GET("/card/:id", getCardHandler(database))
+	r.POST("/card", postCardHandler(database))
+	r.PUT("/card", putCardHandler(database))
+	r.DELETE("/card", deleteCardHandler(database))
+
 	return r
 }

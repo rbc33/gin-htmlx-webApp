@@ -31,6 +31,7 @@ func SetupRoutes(database database.Database) *gin.Engine {
 	addCacheHandler(r, "GET", "/", homeHandler, &cache, database)
 	addCacheHandler(r, "GET", "/contact", contactHandler, &cache, database)
 	addCacheHandler(r, "GET", "/post/:id", postHandler, &cache, database)
+	addCacheHandler(r, "GET", "/post/:id", postHandler, &cache, database)
 
 	r.Static("/static", "./static")
 

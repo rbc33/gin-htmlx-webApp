@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	"github.com/rbc33/common"
+	"github.com/rbc33/gocms/common"
 	"github.com/rs/zerolog/log"
 )
 

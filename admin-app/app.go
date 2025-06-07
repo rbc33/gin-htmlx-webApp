@@ -2,7 +2,7 @@ package admin_app
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/rbc33/database"
+	"github.com/rbc33/gocms/database"
 )
 
 func SetupRoutes(database database.Database) *gin.Engine {

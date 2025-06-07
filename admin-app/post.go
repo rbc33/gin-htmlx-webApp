@@ -3,16 +3,12 @@ package admin_app
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rbc33/database"
+	"github.com/rbc33/gocms/common"
+	"github.com/rbc33/gocms/database"
 	"github.com/rs/zerolog/log"
 )
-
-type PostBinding struct {
-	Id string `uri:"id" binding:"required"`
-}
 
 type AddPostRequest struct {
 	Title   string `json:"title"`
@@ -34,7 +30,7 @@ type DeletePostRequest struct {
 func getPostHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		// localhost:8080/post/{id}
-		var post_binding PostBinding
+		var post_binding common.PostIdBinding
 		if err := c.ShouldBindUri(&post_binding); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "could not get post id",
@@ -43,16 +39,7 @@ func getPostHandler(database database.Database) func(*gin.Context) {
 			return
 		}
 
-		post_id, err := strconv.Atoi(post_binding.Id)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "invalid post id type",
-				"msg":   err.Error(),
-			})
-			return
-		}
-
-		post, err := database.GetPost(post_id)
+		post, err := database.GetPost(post_binding.Id)
 		if err != nil {
 			log.Warn().Msgf("could not get post from DB: %v", err)
 			c.JSON(http.StatusNotFound, gin.H{

@@ -8,3 +8,4 @@ starters.md
 /tmp/*
 tmp/gocms-admin
 tmp/gocms
+gocms_config.toml

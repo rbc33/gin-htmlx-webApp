@@ -6,8 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/rbc33/app"
-	"github.com/rbc33/common"
+	"github.com/rbc33/gocms/app"
+	"github.com/rbc33/gocms/common"
 	"github.com/stretchr/testify/assert"
 )
 

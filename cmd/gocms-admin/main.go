@@ -6,9 +6,9 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
-	admin_app "github.com/rbc33/admin-app"
-	"github.com/rbc33/common"
-	"github.com/rbc33/database"
+	admin_app "github.com/rbc33/gocms/admin-app"
+	"github.com/rbc33/gocms/common"
+	"github.com/rbc33/gocms/database"
 	"github.com/rs/zerolog/log"
 )
 

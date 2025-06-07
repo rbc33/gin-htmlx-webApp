@@ -9,9 +9,18 @@ import (
 	"github.com/fossoreslp/go-uuid-v4"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/rbc33/database"
+	"github.com/rbc33/gocms/database"
 	"github.com/rs/zerolog/log"
 )
+
+// Since there are no builtin sets in go, we are using a map to improve the performance when checking for valid extensions
+// by creating a map with the valid extensions as keys and using an existence check.
+var valid_extensions = map[string]bool{
+	".jpg":  true,
+	".jpeg": true,
+	".png":  true,
+	".gif":  true,
+}
 
 // CRUD Images
 // r.GET("/images/:id", getImageHandler(&database))
@@ -19,10 +28,6 @@ import (
 // r.DELETE("/images", deleteImageHandler(&database))
 type AddImageRequest struct {
 	Alt string `json:"alt"`
-}
-
-type ImageBinding struct {
-	Id string `uri:"id" binding:"required"`
 }
 
 // func getImageHandler(database *database.Database) func(*gin.Context) {

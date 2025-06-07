@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rbc33/views"
+	"github.com/rbc33/gocms/views"
 	"github.com/rs/zerolog/log"
 )
 

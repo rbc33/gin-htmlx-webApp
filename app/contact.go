@@ -6,8 +6,8 @@ import (
 	"net/mail"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rbc33/database"
-	"github.com/rbc33/views"
+	"github.com/rbc33/gocms/database"
+	"github.com/rbc33/gocms/views"
 	"github.com/rs/zerolog/log"
 )
 

@@ -2,26 +2,42 @@ package views
 
 import . "github.com/rbc33/gocms/common"
 
-templ MakeCardPage(title string, content string) {
+templ MakeCardPage(json_data string) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
 			<meta charset="UTF-8"/>
-			<title>{ title }</title>
+			<title>Card</title>
 			<!-- Minified version -->
 			<link rel="stylesheet" href="/static/output.css"/>
 			<script src="/static/htmx.min.js"></script>
 			<script src="/static/client-side-templates.js"></script>
+			<script>
+    // Parse the JSON string into a JavaScript object
+    const data = JSON.parse({{ json_data }});
+    
+    // Wait for DOM to be ready
+    document.addEventListener('DOMContentLoaded', () => {
+        Object.keys(data).forEach(key => {
+            if (key === "name") {
+                document.getElementById("name").textContent = `${key}: ${data[key]}`;
+            } else {
+                const info = document.getElementById("info");
+                const p = document.createElement("p");
+                p.textContent = `${key}: ${data[key]}`;
+                info.appendChild(p);
+            }
+        });
+    });
+</script>
 		</head>
 		<body class="font-roboto bg-gray-800">
 			@MakeNavBar([]Link{{Name: "Home", Href: "/"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/services"}, {Name: "Contact", Href: "/contact"}})
 			<br/>
 			<main class="flex flex-col h-screen">
 				<article class="container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md p-6 max-w-xxl w-fit overflow-x-auto overflow-y-auto">
-					<h2 class="text-2xl text-gray-400 font-bold mb-2">{ title }</h2>
-					<div class="text-gray-300">
-						@templ.Raw(content)
-					</div>
+					<h2 id="name" class="text-2xl text-gray-400 font-bold mb-2"></h2>
+					<div id="info" class="text-gray-300"></div>
 				</article>
 			</main>
 		</body>

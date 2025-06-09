@@ -28,9 +28,11 @@ func SetupRoutes(database database.Database) *gin.Engine {
 
 	// Service
 	r.GET("/services", makeServiceHandler())
+	// r.GET("/card/:id", makeCardHandler(database))
 	addCacheHandler(r, "GET", "/", homeHandler, &cache, database)
 	addCacheHandler(r, "GET", "/contact", contactHandler, &cache, database)
 	addCacheHandler(r, "GET", "/post/:id", postHandler, &cache, database)
+	addCacheHandler(r, "GET", "/card/:id", cardHandler, &cache, database)
 
 	r.Static("/static", "./static")
 

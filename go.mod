@@ -1,12 +1,39 @@
 module github.com/rbc33/gocms
 
-go 1.23.0
-
-toolchain go1.23.2
+go 1.24
 
 require (
 	github.com/a-h/templ v0.3.865
 	github.com/gin-gonic/gin v1.9.1
+)
+
+require gopkg.in/src-d/go-errors.v1 v1.0.0 // indirect
+
+require (
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/dolthub/flatbuffers/v23 v23.3.3-dh.2 // indirect
+	github.com/dolthub/go-icu-regex v0.0.0-20250327004329-6799764f2dad // indirect
+	github.com/dolthub/jsonpath v0.0.2-0.20240227200619-19675ab05c71 // indirect
+	github.com/dolthub/vitess v0.0.0-20250512224608-8fb9c6ea092c // indirect
+	github.com/go-kit/kit v0.10.0 // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/google/uuid v1.6.0 // indirect
+	github.com/hashicorp/golang-lru v0.5.4 // indirect
+	github.com/lestrrat-go/strftime v1.0.4 // indirect
+	github.com/mfridman/interpolate v0.0.2 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+	github.com/sethvargo/go-retry v0.3.0 // indirect
+	github.com/shopspring/decimal v1.4.0 // indirect
+	github.com/sirupsen/logrus v1.8.1 // indirect
+	github.com/tetratelabs/wazero v1.8.2 // indirect
+	go.opentelemetry.io/otel v1.35.0 // indirect
+	go.opentelemetry.io/otel/trace v1.35.0 // indirect
+	go.uber.org/multierr v1.11.0 // indirect
+	golang.org/x/mod v0.25.0 // indirect
+	golang.org/x/sync v0.15.0 // indirect
+	golang.org/x/tools v0.33.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250603155806-513f23925822 // indirect
+	google.golang.org/grpc v1.59.0 // indirect
 )
 
 require (
@@ -27,12 +54,13 @@ require (
 	github.com/BurntSushi/toml v1.5.0
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
+	github.com/dolthub/go-mysql-server v0.20.0
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.14.0 // indirect
-	github.com/go-sql-driver/mysql v1.9.1
+	github.com/go-sql-driver/mysql v1.9.2
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gomarkdown/markdown v0.0.0-20250311123330-531bef5e742b
 	// github.com/joho/godotenv v1.5.1
@@ -43,17 +71,20 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
+	github.com/pelletier/go-toml/v2 v2.0.8
+	github.com/pressly/goose/v3 v3.21.1
 	github.com/rs/zerolog v1.31.0
 	github.com/test-go/testify v1.1.4
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	github.com/zutto/shardedmap v0.0.0-20180201164343-415202d0910e
 	golang.org/x/arch v0.3.0 // indirect
-	golang.org/x/crypto v0.37.0 // indirect
-	golang.org/x/net v0.39.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
-	golang.org/x/text v0.24.0 // indirect
+	golang.org/x/crypto v0.39.0 // indirect
+	golang.org/x/net v0.41.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.26.0 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace google.golang.org/genproto => google.golang.org/genproto v0.0.0-20230913181813-007df8e322eb

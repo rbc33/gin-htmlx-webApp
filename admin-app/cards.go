@@ -18,14 +18,14 @@ type AddCardRequest struct {
 }
 
 type ChangeCardRequest struct {
-	Id            string `json:"uuid"`
+	Uuid          string `json:"uuid"`
 	ImageLocation string `json:"image_location"`
 	JsonData      string `json:"json_data"`
 	SchemaName    string `json:"json_schema"`
 }
 
 type DeleteCardRequest struct {
-	Id string `json:"uuid"`
+	Uuid string `json:"uuid"`
 }
 
 func getCardHandler(database database.Database) func(*gin.Context) {
@@ -118,7 +118,7 @@ func putCardHandler(database database.Database) func(*gin.Context) {
 		}
 
 		err = database.ChangeCard(
-			change_card_request.Id,
+			change_card_request.Uuid,
 			change_card_request.ImageLocation,
 			change_card_request.JsonData,
 			change_card_request.SchemaName,
@@ -133,7 +133,7 @@ func putCardHandler(database database.Database) func(*gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"id": change_card_request.Id,
+			"id": change_card_request.Uuid,
 		})
 	}
 }
@@ -154,7 +154,7 @@ func deleteCardHandler(database database.Database) func(*gin.Context) {
 			return
 		}
 
-		err = database.DeleteCard(delete_card_request.Id)
+		err = database.DeleteCard(delete_card_request.Uuid)
 		if err != nil {
 			log.Error().Msgf("failed to delete card: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -165,7 +165,7 @@ func deleteCardHandler(database database.Database) func(*gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"id": delete_card_request.Id,
+			"id": delete_card_request.Uuid,
 		})
 	}
 }

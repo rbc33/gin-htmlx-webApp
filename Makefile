@@ -10,11 +10,15 @@ GOCMS_ADMIN_PATH=./cmd/$(ADMIN_BINARY_NAME)
 
 all: build test
 
-build:
+prepare_env:
+	cp -r migrations tests/system_tests/helpers/
+
+build: prepare_env
 	$(TEMPL) generate
 	$(TAILWIND) -i ./static/style.css -o ./static/output.css -m 
 	$(GOCMD) build -v -o $(BUILD_DIR)/$(BINARY_NAME) $(GOCMS_PATH)
 	$(GOCMD) build -v -o $(BUILD_DIR)/$(ADMIN_BINARY_NAME) $(GOCMS_ADMIN_PATH)
+	
 test:
 	$(GOCMD) test -v ./...
 

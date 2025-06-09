@@ -36,7 +36,7 @@ func main() {
 	// 	os.Exit(-1)
 	// }
 
-	db_connection, err := database.MakeSqlConnection()
+	db_connection, err := database.MakeSqlConnection(common.Settings)
 	if err != nil {
 		log.Error().Msgf("could not create database connection: %v", err)
 		return

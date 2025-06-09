@@ -17,7 +17,7 @@ type Generator = func(*gin.Context, database.Database) ([]byte, error)
 
 func SetupRoutes(database database.Database) *gin.Engine {
 
-	cache := makeCache(4, time.Minute*10)
+	cache := MakeCache(4, time.Minute*10, &TimeValidator{})
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
@@ -45,7 +45,7 @@ func addCacheHandler(e *gin.Engine, method string, endpoint string, generator Ge
 		// if the endpoint is cached
 		cached_endpoint, err := (*cache).Get(c.Request.RequestURI)
 		if err == nil {
-			c.Data(http.StatusOK, "text/html; charset=utf-8", cached_endpoint.contents)
+			c.Data(http.StatusOK, "text/html; charset=utf-8", cached_endpoint.Contents)
 			return
 		}
 

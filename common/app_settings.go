@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
-	"github.com/rs/zerolog/log"
 )
 
 type CardSchema struct {
@@ -31,15 +30,30 @@ func GetSettings(settings AppSettings) {
 }
 func ReadConfigToml(filepath string) (AppSettings, error) {
 	var config AppSettings
+	// Initialize CardSchema as empty slice instead of nil
+	config.CardSchema = []CardSchema{}
+
 	meta, err := toml.DecodeFile(filepath, &config)
 	if err != nil {
 		return AppSettings{}, err
 	}
-	if undecoded_keys := meta.Undecoded(); len(undecoded_keys) > 0 {
-		err := fmt.Errorf("cound not decode keys: ")
-		for _, key := range undecoded_keys {
-			log.Error().Msgf("%v, %v", err, strings.Join(key, ", "))
+
+	// Improve error handling for undecoded keys
+	if undecoded := meta.Undecoded(); len(undecoded) > 0 {
+		var keys []string
+		for _, key := range undecoded {
+			keys = append(keys, strings.Join(key, "."))
 		}
+		return config, fmt.Errorf("undecoded keys found: %s", strings.Join(keys, ", "))
 	}
+
+	// Validate required fields
+	if config.DatabaseUri == "" {
+		return config, fmt.Errorf("MY_SQL_URL is required")
+	}
+	if config.WebserverPort == "" {
+		return config, fmt.Errorf("PORT is required")
+	}
+
 	return config, nil
 }

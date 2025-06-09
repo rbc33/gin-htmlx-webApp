@@ -37,8 +37,8 @@ type SqlDatabase struct {
 
 // / GetPosts gets all the posts from the current
 // / database connection.
-func (db SqlDatabase) GetPosts() (p []common.Post, err error) {
-	rows, err := db.Connection.Query("SELECT title, excerpt, id FROM posts")
+func (db SqlDatabase) GetPosts() (all_post []common.Post, err error) {
+	rows, err := db.Connection.Query("SELECT id, title, excerpt FROM posts")
 	if err != nil {
 		return make([]common.Post, 0), err
 	}
@@ -47,7 +47,7 @@ func (db SqlDatabase) GetPosts() (p []common.Post, err error) {
 	all_posts := make([]common.Post, 0)
 	for rows.Next() {
 		var post common.Post
-		if err = rows.Scan(&post.Title, &post.Excerpt, &post.Id); err != nil {
+		if err = rows.Scan(&post.Id, &post.Title, &post.Excerpt); err != nil {
 			return make([]common.Post, 0), err
 		}
 		all_posts = append(all_posts, post)
@@ -57,16 +57,15 @@ func (db SqlDatabase) GetPosts() (p []common.Post, err error) {
 }
 
 // return post by id
-func (db *SqlDatabase) GetPost(post_id int) (p common.Post, err error) {
-	rows, err := db.Connection.Query("SELECT title, content FROM posts WHERE id=?;", post_id)
+func (db *SqlDatabase) GetPost(post_id int) (post common.Post, err error) {
+	rows, err := db.Connection.Query("SELECT id, title, content FROM posts WHERE id=?;", post_id)
 	if err != nil {
 		return common.Post{}, err
 	}
 	defer rows.Close()
 	rows.Next()
-	var post common.Post
 
-	if err = rows.Scan(&post.Title, &post.Content); err != nil {
+	if err = rows.Scan(&post.Id, &post.Title, &post.Excerpt); err != nil {
 		return common.Post{}, err
 	}
 
@@ -74,7 +73,7 @@ func (db *SqlDatabase) GetPost(post_id int) (p common.Post, err error) {
 }
 
 // AddPost adds a post to the database
-func (db *SqlDatabase) AddPost(title string, excerpt string, content string) (n int, err error) {
+func (db *SqlDatabase) AddPost(title string, excerpt string, content string) (Id int, err error) {
 	res, err := db.Connection.Exec("INSERT INTO posts(content, title, excerpt) VALUES(?, ?, ?)", content, title, excerpt)
 	if err != nil {
 		return -1, err
@@ -179,16 +178,15 @@ func (db *SqlDatabase) AddImage(uuid string, name string, alt string) (err error
 	return nil
 }
 
-func (db *SqlDatabase) GetCard(uuid string) (p common.Card, err error) {
-	rows, err := db.Connection.Query("SELECT image_location, json_data, json_schema FROM cards WHERE uuid=?;", uuid)
+func (db *SqlDatabase) GetCard(uuid string) (card common.Card, err error) {
+	rows, err := db.Connection.Query("SELECT uuid, image_location, json_data, json_schema FROM cards WHERE uuid=?;", uuid)
 	if err != nil {
 		return common.Card{}, err
 	}
 	defer rows.Close()
 	rows.Next()
-	var card common.Card
 
-	if err = rows.Scan(&card.ImageLocation, &card.JsonData, &card.SchemaName); err != nil {
+	if err = rows.Scan(&card.Uuid, &card.ImageLocation, &card.JsonData, &card.SchemaName); err != nil {
 		return common.Card{}, err
 	}
 
@@ -240,7 +238,9 @@ func (db *SqlDatabase) AddCard(uuid string, image_location string, json_data str
 		return err
 	}
 	defer func() {
-		err = errors.Join(tx.Rollback())
+		if commit_err := tx.Commit(); commit_err != nil {
+			err = errors.Join(err, tx.Rollback(), commit_err)
+		}
 	}()
 
 	query := "INSERT INTO cards(uuid, image_location, json_data, json_schema) VALUES (?, ?, ?, ?);"
@@ -264,8 +264,8 @@ func (db *SqlDatabase) ChangeCard(uuid string, image_location string, json_data 
 		return err
 	}
 	defer func() {
-		if rbErr := tx.Rollback(); rbErr != nil && err == nil {
-			err = fmt.Errorf("tx rollback error: %v", rbErr)
+		if commit_err := tx.Commit(); commit_err != nil {
+			err = errors.Join(err, tx.Rollback(), commit_err)
 		}
 	}()
 
@@ -334,13 +334,13 @@ func validateJson(json_data string, schema_name string) error {
 	return nil
 }
 
-func MakeSqlConnection() (SqlDatabase, error) {
+func MakeSqlConnection(appSettings common.AppSettings) (database SqlDatabase, err error) {
 	/// Checking the DB connection
 	// err := godotenv.Load()
 	// if err != nil {
 	// 	return SqlDatabase{}, err
 	// }
-	connection_str := common.Settings.DatabaseUri
+	connection_str := appSettings.DatabaseUri
 	db, err := sql.Open("mysql", connection_str)
 	if err != nil {
 		return SqlDatabase{}, err

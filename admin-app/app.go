@@ -2,10 +2,11 @@ package admin_app
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/database"
 )
 
-func SetupRoutes(database database.Database) *gin.Engine {
+func SetupRoutes(settings common.AppSettings, database database.Database) *gin.Engine {
 
 	r := gin.Default()
 	r.MaxMultipartMemory = 1

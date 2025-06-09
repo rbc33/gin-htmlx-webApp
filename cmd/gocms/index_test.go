@@ -13,7 +13,7 @@ import (
 
 type DatabaseMock struct{}
 
-func (db DatabaseMock) GetPosts() ([]common.Post, error) {
+func (db DatabaseMock) GetPosts(offset int, limit int) ([]common.Post, error) {
 	return []common.Post{
 		{
 			Title:   "TestPost",
@@ -54,7 +54,7 @@ func (db DatabaseMock) DeleteCard(uuid string) error {
 
 func TestIndexPing(t *testing.T) {
 	database_mock := DatabaseMock{}
-	r := app.SetupRoutes(database_mock)
+	r := app.SetupRoutes(common.Settings, &database_mock)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	r.ServeHTTP(w, req)

@@ -3,10 +3,24 @@ name: Tests
 on: [workflow_call]
 
 jobs:
-  linters:
+  tests:
     name: Tests 🧪
-
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: gocms
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     container:
       image: rbenthem/gocms:0.1
       options: --user 1001
@@ -19,6 +33,14 @@ jobs:
           templ generate
         shell: bash
 
+      - name: Run migrations
+        run: |
+          cd migrations
+          GOOSE_DRIVER=mysql GOOSE_DBSTRING="root:root@tcp(mysql:3306)/gocms" goose up
+        shell: bash
+
       - name: Running Go Tests 🧪
         run: |
           go test ./... -v
+        env:
+          GITHUB_ACTIONS: "true"

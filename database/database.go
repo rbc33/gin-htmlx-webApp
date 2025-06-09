@@ -18,7 +18,7 @@ import (
 )
 
 type Database interface {
-	GetPosts() ([]common.Post, error)
+	GetPosts(offset int, limit int) ([]common.Post, error)
 	GetPost(post_id int) (common.Post, error)
 	AddPost(title string, excerpt string, content string) (int, error)
 	ChangePost(id int, title string, excerpt string, content string) error
@@ -37,17 +37,19 @@ type SqlDatabase struct {
 
 // / GetPosts gets all the posts from the current
 // / database connection.
-func (db SqlDatabase) GetPosts() (all_post []common.Post, err error) {
-	rows, err := db.Connection.Query("SELECT id, title, excerpt FROM posts")
+func (db SqlDatabase) GetPosts(limit int, offset int) (all_posts []common.Post, err error) {
+	query := "SELECT title, excerpt, id FROM posts LIMIT ? OFFSET ?;"
+	rows, err := db.Connection.Query(query, limit, offset)
 	if err != nil {
 		return make([]common.Post, 0), err
 	}
-	defer rows.Close()
+	defer func() {
+		err = errors.Join(rows.Close())
+	}()
 
-	all_posts := make([]common.Post, 0)
 	for rows.Next() {
 		var post common.Post
-		if err = rows.Scan(&post.Id, &post.Title, &post.Excerpt); err != nil {
+		if err = rows.Scan(&post.Title, &post.Excerpt, &post.Id); err != nil {
 			return make([]common.Post, 0), err
 		}
 		all_posts = append(all_posts, post)

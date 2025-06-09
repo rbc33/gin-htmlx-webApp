@@ -3,9 +3,11 @@ package app
 import (
 	"bytes"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/database"
 	"github.com/rbc33/gocms/views"
 	"github.com/rs/zerolog/log"
@@ -15,7 +17,7 @@ const CACHE_TIMEOUT = 20 * time.Second
 
 type Generator = func(*gin.Context, database.Database) ([]byte, error)
 
-func SetupRoutes(database database.Database) *gin.Engine {
+func SetupRoutes(settings common.AppSettings, database database.Database) *gin.Engine {
 
 	cache := MakeCache(4, time.Minute*10, &TimeValidator{})
 
@@ -33,6 +35,8 @@ func SetupRoutes(database database.Database) *gin.Engine {
 	addCacheHandler(r, "GET", "/contact", contactHandler, &cache, database)
 	addCacheHandler(r, "GET", "/post/:id", postHandler, &cache, database)
 	addCacheHandler(r, "GET", "/card/:id", cardHandler, &cache, database)
+	// Add the pagination route as a cacheable endpoint
+	addCacheHandler(r, "GET", "/page/:num", homeHandler, &cache, database)
 
 	r.Static("/static", "./static")
 
@@ -79,18 +83,32 @@ func addCacheHandler(e *gin.Engine, method string, endpoint string, generator Ge
 // This function will act as the handler for
 // the home page
 func homeHandler(c *gin.Context, db database.Database) ([]byte, error) {
-	posts, err := db.GetPosts()
+	pageNum := 0 // Default to page 0
+	if pageNumQuery := c.Param("num"); pageNumQuery != "" {
+		num, err := strconv.Atoi(pageNumQuery)
+		if err == nil && num > 0 {
+			pageNum = num
+		} else {
+			log.Error().Msgf("Invalid page number: %s", pageNumQuery)
+		}
+	}
+	limit := 10 // or whatever limit you want
+	offset := max((pageNum-1)*limit, 0)
+
+	posts, err := db.GetPosts(limit, offset)
 	if err != nil {
 		return nil, err
 	}
 
 	// if not cached, create the cache
-	// index_view := views.MakeIndex(posts)
 	index_view := views.MakeIndex(posts)
 	html_buffer := bytes.NewBuffer(nil)
+
 	err = index_view.Render(c, html_buffer)
 	if err != nil {
-		return nil, err
+		log.Error().Msgf("Could not render index: %v", err)
+		return []byte{}, err
 	}
+
 	return html_buffer.Bytes(), nil
 }

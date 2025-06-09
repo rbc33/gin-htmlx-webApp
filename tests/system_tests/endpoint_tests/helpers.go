@@ -5,6 +5,7 @@ import (
 	_ "database/sql"
 	"embed"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
@@ -44,11 +45,13 @@ func runDatabaseServer(app_settings common.AppSettings) {
 		Protocol: "tcp",
 		Address:  fmt.Sprintf("%s:%s", dsn.Addr, dsn.Params["port"]),
 	}
-
-	sessionBuilder := memory.NewSessionBuilder(pro)
-	var eventListener server.ServerEventListener = nil
-
-	s, err := server.NewServer(config, engine, nil, sessionBuilder, eventListener)
+	s, err := server.NewServer(
+		config,
+		engine,
+		nil, // use default ContextFactory
+		memory.NewSessionBuilder(pro),
+		nil, // no ServerEventListener
+	)
 	if err != nil {
 		panic(err)
 	}
@@ -69,6 +72,7 @@ func waitForDb(app_settings common.AppSettings) (database.SqlDatabase, error) {
 
 	for range 400 {
 		database, err := database.MakeSqlConnection(app_settings)
+
 		if err == nil {
 			return database, nil
 		}
@@ -80,11 +84,14 @@ func waitForDb(app_settings common.AppSettings) (database.SqlDatabase, error) {
 }
 
 func getAppSettings() common.AppSettings {
-	app_settings := common.AppSettings{
+	if os.Getenv("GITHUB_ACTIONS") != "" {
+		return common.AppSettings{
+			DatabaseUri:   "root:root@tcp(mysql:3306)/gocms",
+			WebserverPort: "8080",
+		}
+	}
+	return common.AppSettings{
 		DatabaseUri:   "root:secret@tcp(192.168.0.100:33060)/gocms",
 		WebserverPort: "8080",
 	}
-	current_port++
-
-	return app_settings
 }

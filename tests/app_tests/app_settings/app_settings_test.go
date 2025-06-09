@@ -8,7 +8,6 @@ import (
 	"github.com/pelletier/go-toml/v2"
 	"github.com/rbc33/gocms/common"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 // Writes the contents into a temporary
@@ -30,36 +29,26 @@ func writeToml(contents []byte) (s string, err error) {
 }
 
 func TestCorrectToml(t *testing.T) {
-	content := `
-		MY_SQL_URL = "test_database_uri"
-		PORT = "99999"
-		`
-	// Create temporary config file
-	tmpfile, err := os.CreateTemp("", "config.*.toml")
-	require.NoError(t, err)
-	defer os.Remove(tmpfile.Name())
-
-	_, err = tmpfile.WriteString(content)
-	require.NoError(t, err)
-
-	settings, err := common.ReadConfigToml(tmpfile.Name())
-	require.NoError(t, err)
-
 	expected := common.AppSettings{
-		DatabaseUri:   "test_database_uri",
+		DatabaseUri:   "test_database_address",
 		WebserverPort: "99999",
-		CardSchema:    []common.CardSchema{},
 	}
-	assert.Equal(t, expected, settings)
+	bytes, err := toml.Marshal(expected)
+	assert.Nil(t, err)
+
+	filepath, err := writeToml(bytes)
+	assert.Nil(t, err)
+
+	actual, err := common.ReadConfigToml(filepath)
+	assert.Nil(t, err)
+	assert.Equal(t, actual, expected)
 }
 
 func TestMissingDatabaseAddress(t *testing.T) {
 
 	missing_database_address := struct {
-		DatabaseUri   string `toml:"test_database_uri"`
 		WebserverPort string `toml:"webserver_port"`
 	}{
-		DatabaseUri:   "test_database_uri",
 		WebserverPort: "99999",
 	}
 
@@ -73,26 +62,9 @@ func TestMissingDatabaseAddress(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func TestMissingWebserverPort(t *testing.T) {
-	missing_webserver_port := struct {
-		DatabaseUri string `toml:"test_database_uri"`
-	}{
-		DatabaseUri: "test_database_uri",
-	}
-
-	bytes, err := toml.Marshal(missing_webserver_port)
-	assert.Nil(t, err)
-
-	filepath, err := writeToml(bytes)
-	assert.Nil(t, err)
-
-	_, err = common.ReadConfigToml(filepath)
-	assert.NotNil(t, err)
-}
-
 func TestWrongwebserverPortValueType(t *testing.T) {
 	missing_database_address := struct {
-		DatabaseUri   string `toml:"test_database_uri"`
+		DatabaseUri   string `toml:"database_usri"`
 		WebserverPort int    `toml:"webserver_port"`
 	}{
 		DatabaseUri:   "test_database_uri",

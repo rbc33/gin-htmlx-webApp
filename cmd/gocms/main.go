@@ -45,7 +45,7 @@ func main() {
 	if Port == "" {
 		Port = common.Settings.WebserverPort
 	}
-	r := app.SetupRoutes(&db_connection)
+	r := app.SetupRoutes(common.Settings, &db_connection)
 	err = r.Run(fmt.Sprintf(":%s", Port))
 
 	if err != nil {

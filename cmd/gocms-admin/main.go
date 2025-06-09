@@ -45,7 +45,7 @@ func main() {
 	if Port == "" {
 		Port = common.Settings.WebserverPortAdmin
 	}
-	r := admin_app.SetupRoutes(&db_connection)
+	r := admin_app.SetupRoutes(common.Settings, &db_connection)
 	err = r.Run(fmt.Sprintf(":%s", Port))
 	if err != nil {
 		log.Error().Msgf("could not run app: %v", err)

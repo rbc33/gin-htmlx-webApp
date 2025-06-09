@@ -30,7 +30,7 @@ func TestPostExists(t *testing.T) {
 		require.Nil(t, err)
 	}
 
-	r := app.SetupRoutes(&database)
+	r := app.SetupRoutes(app_settings, &database)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/post/1", nil)
 	r.ServeHTTP(w, req)

@@ -1,11 +1,12 @@
 package endpoint_tests
 
 import (
+	"testing"
+
 	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"testing"
 
 	admin_app "github.com/rbc33/gocms/admin-app"
 	"github.com/rbc33/gocms/common"
@@ -24,14 +25,14 @@ type postResponse struct {
 }
 
 var app_settings = common.AppSettings{
-	DatabaseUri:   "root:secret@tcp(192.168.0.100:33060)/gocms",
+	DatabaseUri:   "root:root@tcp(mysql:3306)/gocms",
 	WebserverPort: "8080",
 }
 
 func TestIndexPing(t *testing.T) {
 
 	database_mock := mocks.DatabaseMock{}
-	r := admin_app.SetupRoutes(&database_mock)
+	r := admin_app.SetupRoutes(app_settings, database_mock)
 	w := httptest.NewRecorder()
 
 	request := postRequest{
@@ -54,11 +55,3 @@ func TestIndexPing(t *testing.T) {
 
 	assert.Equal(t, response.Id, 0)
 }
-
-// TODO : Test request without excerpt
-
-// TODO : Test request without content
-
-// TODO : Test request without title
-
-// TODO : Test request that fails to be added to database

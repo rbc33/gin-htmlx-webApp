@@ -9,7 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/require"
 
-	goose "github.com/pressly/goose/v3"
+	"github.com/pressly/goose/v3"
 	"github.com/rbc33/gocms/app"
 )
 
@@ -30,7 +30,7 @@ func TestIndexPagePing(t *testing.T) {
 		require.Nil(t, err)
 	}
 
-	r := app.SetupRoutes(&database)
+	r := app.SetupRoutes(app_settings, &database)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	r.ServeHTTP(w, req)
@@ -54,7 +54,7 @@ func TestIndexPagePostExists(t *testing.T) {
 		require.Nil(t, err)
 	}
 
-	r := app.SetupRoutes(&database)
+	r := app.SetupRoutes(app_settings, &database)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
 	r.ServeHTTP(w, req)

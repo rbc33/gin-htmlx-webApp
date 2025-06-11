@@ -97,13 +97,13 @@ func homeHandler(c *gin.Context, db database.Database) ([]byte, error) {
 
 	posts, err := db.GetPosts(limit, offset)
 	if err != nil {
-		return nil, err
+		log.Error().Msgf("Failed to load posts: %v", err)
+		return []byte("error: Failed to load posts"), err
 	}
 
 	// if not cached, create the cache
 	index_view := views.MakeIndex(posts)
 	html_buffer := bytes.NewBuffer(nil)
-
 	err = index_view.Render(c, html_buffer)
 	if err != nil {
 		log.Error().Msgf("Could not render index: %v", err)
@@ -111,4 +111,5 @@ func homeHandler(c *gin.Context, db database.Database) ([]byte, error) {
 	}
 
 	return html_buffer.Bytes(), nil
+
 }

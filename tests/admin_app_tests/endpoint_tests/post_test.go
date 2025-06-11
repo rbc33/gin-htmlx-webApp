@@ -9,8 +9,8 @@ import (
 	"net/http/httptest"
 
 	admin_app "github.com/rbc33/gocms/admin-app"
-	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/tests/mocks"
+	test "github.com/rbc33/gocms/tests/system_tests/helpers"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -24,21 +24,18 @@ type postResponse struct {
 	Id int `json:"id"`
 }
 
-var app_settings = common.AppSettings{
-	DatabaseUri:   "root:root@tcp(mysql:3306)/gocms",
-	WebserverPort: "8080",
-}
+var app_settings = test.GetAppSettings()
 
-func TestIndexPing(t *testing.T) {
+func TestCreatePost_Success(t *testing.T) {
 
 	database_mock := mocks.DatabaseMock{}
 	r := admin_app.SetupRoutes(app_settings, database_mock)
 	w := httptest.NewRecorder()
 
 	request := postRequest{
-		Title:   "",
-		Excerpt: "",
-		Content: "",
+		Title:   "New Test Post",
+		Excerpt: "A brief summary of the post.",
+		Content: "This is the full content of the new test post.",
 	}
 	request_body, err := json.Marshal(request)
 	assert.Nil(t, err)
@@ -47,11 +44,11 @@ func TestIndexPing(t *testing.T) {
 	req.Header.Add("content-type", "application/json")
 	r.ServeHTTP(w, req)
 
-	assert.Equal(t, 200, w.Code)
+	assert.Equal(t, http.StatusCreated, w.Code) // Expect 201 Created for successful creation
 
 	var response postResponse
 	err = json.Unmarshal(w.Body.Bytes(), &response)
 	assert.Nil(t, err)
 
-	assert.Equal(t, response.Id, 0)
+	assert.Equal(t, response.Id, 0) // Expect a positive ID for the new post
 }

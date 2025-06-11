@@ -2,6 +2,7 @@ package common
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/BurntSushi/toml"
@@ -30,12 +31,12 @@ func GetSettings(settings AppSettings) {
 }
 func ReadConfigToml(filepath string) (AppSettings, error) {
 	var config AppSettings
-	// Initialize CardSchema as empty slice instead of nil
+	// Initialize CardSchema as empty slice before decoding
 	config.CardSchema = []CardSchema{}
 
 	meta, err := toml.DecodeFile(filepath, &config)
 	if err != nil {
-		return AppSettings{}, err
+		return AppSettings{}, fmt.Errorf("failed to decode config file: %w", err)
 	}
 
 	// Improve error handling for undecoded keys
@@ -56,4 +57,24 @@ func ReadConfigToml(filepath string) (AppSettings, error) {
 	}
 
 	return config, nil
+}
+
+func IsGithubActions() bool {
+	return os.Getenv("GITHUB_ACTIONS") != ""
+}
+
+func GetTestDatabaseUri() string {
+	if IsGithubActions() {
+		return "root:root@tcp(mysql:3306)/gocms"
+	}
+	// Local Docker MySQL instance
+	return "root:secret@tcp(192.168.0.100:33060)/gocms"
+}
+
+func GetTestServerAddress() string {
+	if IsGithubActions() {
+		return "mysql:3306"
+	}
+	// For local testing, bind to localhost but connect to Docker
+	return "localhost:8080"
 }

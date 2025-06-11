@@ -95,7 +95,7 @@ func postCardHandler(database database.Database) func(*gin.Context) {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(http.StatusCreated, gin.H{
 			"id": uuid.String(),
 		})
 	}

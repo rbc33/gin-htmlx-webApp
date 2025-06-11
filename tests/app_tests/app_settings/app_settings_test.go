@@ -8,6 +8,7 @@ import (
 	"github.com/pelletier/go-toml/v2"
 	"github.com/rbc33/gocms/common"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // Writes the contents into a temporary
@@ -29,19 +30,26 @@ func writeToml(contents []byte) (s string, err error) {
 }
 
 func TestCorrectToml(t *testing.T) {
+	content := `
+MY_SQL_URL = "root:root@tcp(mysql:3306)/gocms"
+PORT = "99999"
+`
+	tmpfile, err := os.CreateTemp("", "config.*.toml")
+	require.NoError(t, err)
+	defer os.Remove(tmpfile.Name())
+
+	_, err = tmpfile.WriteString(content)
+	require.NoError(t, err)
+
+	settings, err := common.ReadConfigToml(tmpfile.Name())
+	require.NoError(t, err)
+
 	expected := common.AppSettings{
-		DatabaseUri:   "test_database_address",
+		DatabaseUri:   "root:root@tcp(mysql:3306)/gocms",
 		WebserverPort: "99999",
+		CardSchema:    []common.CardSchema{}, // Initialize as empty slice
 	}
-	bytes, err := toml.Marshal(expected)
-	assert.Nil(t, err)
-
-	filepath, err := writeToml(bytes)
-	assert.Nil(t, err)
-
-	actual, err := common.ReadConfigToml(filepath)
-	assert.Nil(t, err)
-	assert.Equal(t, actual, expected)
+	assert.Equal(t, expected, settings)
 }
 
 func TestMissingDatabaseAddress(t *testing.T) {

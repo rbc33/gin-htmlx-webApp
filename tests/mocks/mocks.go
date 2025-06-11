@@ -12,20 +12,21 @@ type DatabaseMock struct {
 }
 
 func (db DatabaseMock) GetPosts(offset int, limit int) ([]common.Post, error) {
-	return []common.Post{
-		{
-			Title:   "TestPost",
-			Content: "TestContent",
-			Excerpt: "TestExcerpt",
-			Id:      0,
-		},
-	}, nil
+	if db.GetPostsHandler != nil {
+		return db.GetPostsHandler(offset, limit)
+	}
+	return nil, fmt.Errorf("GetPostsHandler not set")
 }
 func (db DatabaseMock) GetPost(post_id int) (common.Post, error) {
+	if db.GetPostHandler != nil {
+		return db.GetPostHandler(post_id)
+	}
 	return common.Post{}, fmt.Errorf("not implemented")
 }
 func (db DatabaseMock) AddPost(title string, excerpt string, content string) (int, error) {
-	return 0, fmt.Errorf("not implemented")
+	// Simulate successful post addition with a positive ID.
+	// This helps TestCreatePost_Success satisfy the ID check.
+	return 0, nil
 }
 func (db DatabaseMock) ChangePost(id int, title string, excerpt string, content string) error {
 	return nil

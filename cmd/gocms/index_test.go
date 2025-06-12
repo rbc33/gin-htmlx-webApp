@@ -51,8 +51,18 @@ func (db DatabaseMock) ChangeCard(uuid string, image_location string, json_data 
 func (db DatabaseMock) DeleteCard(uuid string) error {
 	return fmt.Errorf("not implemented")
 }
+func (db DatabaseMock) DeleteImage(uuid string) error {
+	return fmt.Errorf("not implemented")
+}
+func (db DatabaseMock) AddPage(title string, content string, link string) (int, error) {
+	return 0, fmt.Errorf("not implemented")
+}
+func (db DatabaseMock) GetPage(link string) (common.Page, error) {
+	return common.Page{}, fmt.Errorf("not implemented")
+}
 
 func TestIndexPing(t *testing.T) {
+
 	database_mock := DatabaseMock{}
 	r := app.SetupRoutes(common.Settings, &database_mock)
 	w := httptest.NewRecorder()

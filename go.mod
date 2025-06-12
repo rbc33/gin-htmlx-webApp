@@ -48,11 +48,13 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/pelletier/go-toml/v2 v2.0.8
 	github.com/rs/zerolog v1.31.0
 	github.com/test-go/testify v1.1.4
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
+	github.com/yuin/gopher-lua v1.1.1
 	github.com/zutto/shardedmap v0.0.0-20180201164343-415202d0910e
 	golang.org/x/arch v0.3.0 // indirect
 	golang.org/x/crypto v0.39.0 // indirect

@@ -11,6 +11,12 @@ import (
 type CardSchema struct {
 	Name string `toml:"schema_name"`
 }
+type Shortcode struct {
+	// name for the shortcode {{name:...:...}}
+	Name string `toml:"name"`
+	// the lua plugin path
+	Plugin string `toml:"plugin"`
+}
 
 type AppSettings struct {
 	DatabaseUri        string       `toml:"MY_SQL_URL"`
@@ -18,6 +24,7 @@ type AppSettings struct {
 	WebserverPort      string       `toml:"PORT"`
 	WebserverPortAdmin string       `toml:"PORT_ADMIN"`
 	CardSchema         []CardSchema `toml:"card_schema"`
+	Shortcodes         []Shortcode  `toml:"shortcodes"`
 }
 
 type Navbar struct {

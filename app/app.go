@@ -39,6 +39,7 @@ func SetupRoutes(settings common.AppSettings, database database.Database) *gin.E
 	addCacheHandler(r, "GET", "/page/:num", homeHandler, &cache, database)
 
 	r.Static("/static", "./static")
+	r.StaticFS("/media", http.Dir(settings.MediaDir))
 
 	return r
 }

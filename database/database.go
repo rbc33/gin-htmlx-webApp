@@ -24,10 +24,13 @@ type Database interface {
 	ChangePost(id int, title string, excerpt string, content string) error
 	DeletePost(id int) error
 	AddImage(uuid string, name string, alt string) error
+	DeleteImage(uuid string) error
 	AddCard(uuid string, image_location string, json_data string, schema_name string) error
 	GetCard(uuid string) (common.Card, error)
 	ChangeCard(uuid string, image_location string, json_data string, schema_name string) error
 	DeleteCard(uuid string) error
+	AddPage(title string, content string, link string) (int, error)
+	GetPage(link string) (common.Page, error)
 }
 
 type SqlDatabase struct {
@@ -67,7 +70,7 @@ func (db *SqlDatabase) GetPost(post_id int) (post common.Post, err error) {
 	defer rows.Close()
 	rows.Next()
 
-	if err = rows.Scan(&post.Id, &post.Title, &post.Excerpt); err != nil {
+	if err = rows.Scan(&post.Id, &post.Title, &post.Content); err != nil {
 		return common.Post{}, err
 	}
 
@@ -150,23 +153,19 @@ func (db *SqlDatabase) DeletePost(id int) error {
 // name - file name saved to disk
 // alt - alternative text
 // return(uuid, nil) if succeeded, ("", err) otherwise
-func (db *SqlDatabase) AddImage(uuid string, name string, alt string) (err error) {
+func (db *SqlDatabase) AddImage(uuid string, name string, alt string) error {
+	tx, err := db.Connection.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
 	if name == "" {
 		return fmt.Errorf("cannot have empty names")
 	}
 	if alt == "" {
 		return fmt.Errorf("cannot have empty alt text")
 	}
-
-	tx, err := db.Connection.Begin()
-	if err != nil {
-		return err
-	}
-	defer func() {
-		if comit_err := tx.Commit(); comit_err != nil {
-			err = errors.Join(err, tx.Rollback(), comit_err)
-		}
-	}()
 
 	query := "INSERT INTO images(uuid, name, alt) VALUES (?, ?, ?);"
 	_, err = tx.Exec(query, uuid, name, alt)
@@ -199,6 +198,17 @@ func (db *SqlDatabase) GetCard(uuid string) (card common.Card, err error) {
 	}
 
 	return card, nil
+}
+
+// DeletePost changes a post based on the values
+// provided. Note that empty strings will mean that
+// the value will not be updated.
+func (db *SqlDatabase) DeleteImage(uuid string) error {
+	if _, err := db.Connection.Exec("DELETE FROM image WHERE uuid=?;", uuid); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (db *SqlDatabase) AddCard(uuid string, image_location string, json_data string, schema_name string) error {
@@ -312,6 +322,42 @@ func (db *SqlDatabase) DeleteCard(uuid string) error {
 	}
 
 	return nil
+}
+
+func (db SqlDatabase) AddPage(title string, content string, link string) (int, error) {
+	res, err := db.Connection.Exec("INSERT INTO pages(content, title, link) VALUES(?, ?, ?)", content, title, link)
+	if err != nil {
+		return -1, err
+	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		log.Warn().Msgf("could not get last ID: %v", err)
+		return -1, nil
+	}
+
+	// TODO : possibly unsafe int conv,
+	// make sure all IDs are i64 in the
+	// future
+	return int(id), nil
+}
+
+func (db SqlDatabase) GetPage(link string) (common.Page, error) {
+	rows, err := db.Connection.Query("SELECT id, title, content, link FROM pages WHERE link=?;", link)
+	if err != nil {
+		return common.Page{}, err
+	}
+	defer func() {
+		err = errors.Join(err, rows.Close())
+	}()
+
+	page := common.Page{}
+	rows.Next()
+	if err = rows.Scan(&page.Id, &page.Title, &page.Content, &page.Link); err != nil {
+		return common.Page{}, err
+	}
+
+	return page, nil
 }
 
 func validateJson(json_data string, schema_name string) error {

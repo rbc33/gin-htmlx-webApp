@@ -1,6 +1,7 @@
 package endpoint_tests
 
 import (
+	"os"
 	"testing"
 
 	"bytes"
@@ -9,8 +10,10 @@ import (
 	"net/http/httptest"
 
 	admin_app "github.com/rbc33/gocms/admin-app"
+	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/tests/mocks"
 	test "github.com/rbc33/gocms/tests/system_tests/helpers"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -28,8 +31,14 @@ var app_settings = test.GetAppSettings()
 
 func TestCreatePost_Success(t *testing.T) {
 
+	shortcode_handlers, err := admin_app.LoadShortcodesHandlers(common.Settings.Shortcodes)
+	if err != nil {
+		log.Error().Msgf("%s", err)
+		os.Exit(-1)
+	}
+
 	database_mock := mocks.DatabaseMock{}
-	r := admin_app.SetupRoutes(app_settings, database_mock)
+	r := admin_app.SetupRoutes(app_settings, shortcode_handlers, database_mock)
 	w := httptest.NewRecorder()
 
 	request := postRequest{

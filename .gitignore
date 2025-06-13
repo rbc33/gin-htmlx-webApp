@@ -9,3 +9,4 @@ starters.md
 tmp/gocms-admin
 tmp/gocms
 gocms_config.toml
+media/*

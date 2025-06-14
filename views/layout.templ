@@ -2,11 +2,7 @@ package views
 
 import "github.com/rbc33/gocms/common"
 
-import . "github.com/rbc33/gocms/common"
-
-var links []Link = common.Settings.AppNavbar.Links
-
-templ MakeLayout(title string, content templ.Component) {
+templ MakeLayout(title string, links []common.Link, content templ.Component) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -19,8 +15,9 @@ templ MakeLayout(title string, content templ.Component) {
 			// <script src="/static/client-side-templates.js"></script>
 		</head>
 		<body class="font-roboto bg-gray-800">
-			@MakeNavBar([]Link{{Name: "Home", Href: "/"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/services"}, {Name: "Contact", Href: "/contact"}})
-			<br/>
+			// @MakeNavBar([]Link{{Name: "Home", Href: "/"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/services"}, {Name: "Contact", Href: "/contact"}})
+			// @MakeNavBar(links)
+			@MakeNavBar(links)
 			<main class="flex flex-col h-screen">
 				@content
 			</main>

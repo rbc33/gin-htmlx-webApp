@@ -1,5 +1,7 @@
 package views 
 
+import "github.com/rbc33/gocms/common"
+
 templ MakeCard(image string, json_data string) {
 	<article
 		class="container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md p-6 max-w-xxl w-fit overflow-x-auto overflow-y-auto"
@@ -14,6 +16,6 @@ templ MakeCard(image string, json_data string) {
 	</article>
 }
 
-templ MakeCardPage(image string, json_data string) {
-	@MakeLayout("Card Page", MakeCard(image, json_data))
+templ MakeCardPage(image string, links []common.Link, json_data string) {
+	@MakeLayout("Card Page", links, MakeCard(image, json_data))
 }

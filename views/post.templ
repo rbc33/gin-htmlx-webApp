@@ -1,14 +1,17 @@
 package views
 
+import "github.com/rbc33/gocms/common"
+
 templ MakePost(title string, content string) {
-	<article class="container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md p-6 m-4 max-w-xxl w-4/6 overflow-x-auto overflow-y-auto">
+	// <article class="container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md p-6 m-4 max-w-xxl w-4/6 overflow-x-auto overflow-y-auto">
+	<article class="prose lg:prose-xl prose-invert max-w-none mx-6 p-6">
 		<h2 class="text-2xl text-gray-400 font-bold mb-2">{ title }</h2>
-		<div class="text-gray-300">
+		<div class="text-gray-300 prose-pre:bg-gray-300 prose-pre:p-4 prose-pre:rounded-lg">
 			@templ.Raw(content)
 		</div>
 	</article>
 }
 
-templ MakePostPage(title string, content string) {
-	@MakeLayout(title, MakePost(title, content))
+templ MakePostPage(title string, links []common.Link, content string) {
+	@MakeLayout(title, links, MakePost(title, content))
 }

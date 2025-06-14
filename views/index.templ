@@ -2,11 +2,12 @@ package views
 
 import (
 	"fmt"
+	"github.com/rbc33/gocms/common"
 	. "github.com/rbc33/gocms/common"
 )
 
 templ MakePosts(posts []Post) {
-	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols3 gap-2 m-4 p-4 my-2">
+	<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols3 gap-1 m-2 mt-4">
 		for _, post := range posts {
 			// <article class="rounded-lg border-4 border-solid border-slate-700 place-self-center shadow-md p-6 m-4 max-w-xl w-full">
 			<article class="container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md my-4 p-6 max-w-xxl w-5/6">
@@ -20,6 +21,6 @@ templ MakePosts(posts []Post) {
 	</div>
 }
 
-templ MakeIndex(posts []Post) {
-	@MakeLayout("Home Page", MakePosts(posts))
+templ MakeIndex(posts []Post, links []common.Link) {
+	@MakeLayout("Home Page", links, MakePosts(posts))
 }

@@ -38,6 +38,9 @@ func SetupRoutes(settings common.AppSettings, database database.Database) *gin.E
 	// Add the pagination route as a cacheable endpoint
 	addCacheHandler(r, "GET", "/page/:num", homeHandler, &cache, database)
 
+	r.Static("/static", "./static")
+	r.StaticFS("/images", http.Dir(settings.ImageDirectory))
+
 	return r
 }
 
@@ -45,13 +48,10 @@ func addCacheHandler(e *gin.Engine, method string, endpoint string, generator Ge
 
 	handler := func(c *gin.Context) {
 		// if the endpoint is cached
-		if common.Settings.CacheEnabled {
-			cached_endpoint, err := (*cache).Get(c.Request.RequestURI)
-			if err == nil {
-				log.Info().Msgf("cache hit for page: %s", c.Request.RequestURI)
-				c.Data(http.StatusOK, "text/html; charset=utf-8", cached_endpoint.Contents)
-				return
-			}
+		cached_endpoint, err := (*cache).Get(c.Request.RequestURI)
+		if err == nil {
+			c.Data(http.StatusOK, "text/html; charset=utf-8", cached_endpoint.Contents)
+			return
 		}
 
 		// Before handler call (retrieve from cache)
@@ -103,7 +103,7 @@ func homeHandler(c *gin.Context, db database.Database) ([]byte, error) {
 	}
 
 	// if not cached, create the cache
-	index_view := views.MakeIndex(posts)
+	index_view := views.MakeIndex(posts, common.Settings.AppNavbar.Links)
 	html_buffer := bytes.NewBuffer(nil)
 	err = index_view.Render(c, html_buffer)
 	if err != nil {

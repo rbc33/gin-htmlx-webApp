@@ -1,5 +1,7 @@
 package views
 
+import "github.com/rbc33/gocms/common"
+
 templ MakeContact() {
 	<div id="contact-form" class="max-w-xl mx-auto bg-gray-900/95 backdrop-blur-sm shadow-2xl p-8 relative overflow-hidden rounded-xl border border-gray-700/50">
 		<!-- Gradient overlay mejorado -->
@@ -90,6 +92,6 @@ templ MakeContact() {
 	</div>
 }
 
-templ MakeContactPage() {
-	@MakeLayout("Contact Us", MakeContact())
+templ MakeContactPage(links []common.Link) {
+	@MakeLayout("Contact Us", links, MakeContact())
 }

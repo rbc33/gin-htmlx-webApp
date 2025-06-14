@@ -6,6 +6,7 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	admin_app "github.com/rbc33/gocms/admin-app"
 	"github.com/rbc33/gocms/app"
 	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/database"
@@ -46,11 +47,30 @@ func main() {
 		Port = common.Settings.WebserverPort
 	}
 	r := app.SetupRoutes(common.Settings, &db_connection)
-	err = r.Run(fmt.Sprintf(":%s", Port))
+	go func() {
+		if err := r.Run(fmt.Sprintf(":%s", Port)); err != nil {
+			log.Error().Msgf("could not run app: %v", err)
+			os.Exit(-1)
+		}
+	}()
 
+	shortcode_handlers, err := admin_app.LoadShortcodesHandlers(common.Settings.Shortcodes)
 	if err != nil {
-		log.Error().Msgf("could not run app: %v", err)
+		log.Error().Msgf("%s", err)
 		os.Exit(-1)
-
 	}
+
+	adminPort := os.Getenv("ADMIN_PORT")
+	if adminPort == "" {
+		adminPort = common.Settings.WebserverPortAdmin
+	}
+	ra := admin_app.SetupRoutes(common.Settings, shortcode_handlers, &db_connection)
+	go func() {
+		if err := ra.Run(fmt.Sprintf(":%s", adminPort)); err != nil {
+			log.Error().Msgf("could not run admin app: %v", err)
+			os.Exit(-1)
+		}
+	}()
+	select {}
+
 }

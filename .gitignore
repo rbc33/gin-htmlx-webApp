@@ -1,6 +1,6 @@
 .env
 __debug_*
-*_templ.go
+# *_templ.go
 /tmp/
 tmp/
 /.vscode/

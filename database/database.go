@@ -179,23 +179,24 @@ func (db *SqlDatabase) AddImage(uuid string, name string, alt string) error {
 	return nil
 }
 
-func (db *SqlDatabase) GetCard(uuid string) (card common.Card, err error) {
-	rows, err := db.Connection.Query("SELECT uuid, image_location, json_data, json_schema FROM cards WHERE uuid=?;", uuid)
+// / This function gets a post from the database
+// / with the given ID.
+func (db SqlDatabase) GetCard(uuid string) (card common.Card, err error) {
+	rows, err := db.Connection.Query("SELECT image_location, json_data, json_schema FROM cards WHERE uuid=?;", uuid)
 	if err != nil {
 		return common.Card{}, err
 	}
-	defer rows.Close()
+	defer func() {
+		err = errors.Join(rows.Close())
+	}()
+
 	rows.Next()
-
-	if err = rows.Scan(&card.Uuid, &card.ImageLocation, &card.JsonData, &card.SchemaName); err != nil {
+	if err = rows.Scan(&card.ImageLocation, &card.JsonData, &card.SchemaName); err != nil {
 		return common.Card{}, err
 	}
 
-	// Validate Card
-	err = validateJson(card.JsonData, card.SchemaName)
-	if err != nil {
-		return common.Card{}, err
-	}
+	// Validate the json
+	validateJson(card.JsonData, card.SchemaName)
 
 	return card, nil
 }
@@ -224,6 +225,7 @@ func (db *SqlDatabase) AddCard(uuid string, image_location string, json_data str
 	if errors.Is(err, os.ErrNotExist) {
 		return fmt.Errorf("file does not exist: %s", image_location)
 	}
+	image_location = "/" + image_location
 	if err != nil {
 		return err
 	}
@@ -397,6 +399,8 @@ func MakeSqlConnection(appSettings common.AppSettings) (database SqlDatabase, er
 	db.SetConnMaxLifetime(time.Second * 5)
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
+
+	log.Info().Msg(connection_str)
 
 	return SqlDatabase{
 		MY_SQL_URL: connection_str,

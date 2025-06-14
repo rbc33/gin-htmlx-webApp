@@ -11,6 +11,7 @@ type StringIdBinding struct {
 type PostIdBinding struct {
 	IntIdBinding
 }
+
 type CardIdBinding struct {
 	StringIdBinding
 }

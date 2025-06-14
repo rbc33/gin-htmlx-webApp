@@ -2,10 +2,10 @@ FROM alpine:latest AS builder
 
 ENV TZ=Europe/London
 ARG TARGETARCH
-ARG GO_VERSION="1.23.2"      
-ARG GOOSE_VERSION="3.18.0"
-ARG TEMPL_VERSION="0.2.543"
-ARG GOLANGCI_LINT_VERSION="v1.58.0" 
+ARG GO_VERSION="1.24.4"      
+ARG GOOSE_VERSION="3.24.2"
+ARG TEMPL_VERSION="0.3.865"
+ARG GOLANGCI_LINT_VERSION="v1.64.8" 
 
 # Install build dependencies
 RUN apk update && apk add --no-cache \

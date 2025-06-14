@@ -49,6 +49,7 @@ func getCardHandler(database database.Database) func(*gin.Context) {
 			})
 			return
 		}
+		// card.ImageLocation = fmt.Sprintf("/%s/%s", common.Settings.MediaDir, card.ImageLocation)
 
 		c.JSON(http.StatusOK, gin.H{
 			"uuid":           card.Uuid,
@@ -67,7 +68,7 @@ func postCardHandler(database database.Database) func(*gin.Context) {
 		err := decoder.Decode(&add_card_request)
 
 		if err != nil {
-			log.Warn().Msgf("could not get post from DB: %v", err)
+			log.Warn().Msgf("could not get card from DB: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "invalid request body",
 				"msg":   err.Error(),

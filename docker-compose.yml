@@ -1,14 +1,32 @@
-
 networks:
-  common-net:
+  gocms-network:
+    driver: bridge
 
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: gocms-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: gocms
+    networks:
+      - gocms-network
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   gocms:
     image: rbenthem/gocms:latest
     restart: always
     ports:
       - "8080:8080"
-      - "8081:8081"
+    environment:
+      - DOCKER_DB_URI=root:root@tcp(mysql:3306)/gocms
+    # - DOCKER_DB_URI=root:secret@tcp(192.168.0.100:33060)/gocms
     volumes:
       - type: bind
         source: .
@@ -21,25 +39,26 @@ services:
       mysql:
         condition: service_healthy
     networks:
-      - common-net
-
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: gocms
+      - gocms-network
+  gocms-admin:
+    image: rbenthem/gocms:latest
+    restart: always
     ports:
-      - "33060:3306"
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
-      interval: 10s
-      timeout: 10s
-      retries: 10
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - common-net
+      - "8081:8081"
+    environment:
+      - DOCKER_DB_URI=root:root@tcp(mysql:3306)/gocms
+    # - DOCKER_DB_URI=root:secret@tcp(192.168.0.100:33060)/gocms
 
-volumes:
-  mysql_data:
+    volumes:
+      - type: bind
+        source: .
+        target: /gocms
+      - type: bind
+        source: ./.env.compose
+        target: /gocms/.env
+    command: ["sh", "/gocms/compose-run-admin.sh"]
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - gocms-network

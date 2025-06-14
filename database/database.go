@@ -104,11 +104,7 @@ func (db *SqlDatabase) ChangePost(id int, title string, excerpt string, content 
 	if err != nil {
 		return err
 	}
-	defer func() {
-		if comit_err := tx.Commit(); comit_err != nil {
-			err = errors.Join(err, tx.Rollback(), comit_err)
-		}
-	}()
+	defer tx.Rollback()
 
 	if len(title) > 0 {
 		_, err := tx.Exec("UPDATE posts SET title = ? WHERE id = ?;", title, id)

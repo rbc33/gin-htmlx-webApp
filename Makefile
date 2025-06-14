@@ -1,7 +1,6 @@
 GOCMD=go
 TEMPL=templ
 TAILWIND=tailwindcss
-NPM=npm
 BUILD_DIR=./tmp
 BINARY_NAME=gocms
 ADMIN_BINARY_NAME=gocms-admin

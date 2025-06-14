@@ -70,8 +70,7 @@ func (cache *TimedCache) Get(name string) (EndpointCache, error) {
 		cache_contents := (*cached_entry).(EndpointCache)
 
 		// We only return the cache if it's still valid
-		// if cache.validator.IsValid(&cache_contents) {
-		if false {
+		if cache.validator.IsValid(&cache_contents) {
 			return cache_contents, nil
 		} else {
 			cache.cacheMap.Delete(name)

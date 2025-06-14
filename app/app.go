@@ -61,14 +61,21 @@ func addCacheHandler(e *gin.Engine, method string, endpoint string, generator Ge
 		html_buffer, err := generator(c, db)
 		if err != nil {
 			log.Error().Msgf("could not generate html: %v", err)
+			// TODO : Need a proper error page
+			c.JSON(http.StatusInternalServerError, common.ErrorRes("could not render HTML", err))
+			return
 		}
+
 		// After handler  (add to cache)
-		err = (*cache).Store(c.Request.RequestURI, html_buffer)
-		if err != nil {
-			log.Warn().Msgf("could not add page to cache: %v", err)
+		if common.Settings.CacheEnabled {
+			err = (*cache).Store(c.Request.RequestURI, html_buffer)
+			if err != nil {
+				log.Warn().Msgf("could not add page to cache: %v", err)
+			}
 		}
 		c.Data(http.StatusOK, "text/html; charset=utf-8", html_buffer)
 	}
+
 	// Hacky
 	if method == "GET" {
 		e.GET(endpoint, handler)

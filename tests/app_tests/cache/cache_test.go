@@ -32,18 +32,20 @@ func TestCacheAddition(t *testing.T) {
 		{"nPe9Rkff6ER6EzAxPUIpxc8UBBLm71hhq2MO9hkQWisrfihUqv", []byte("oA7Hv1A7vOuZSKrPT4ZN5DGKNSHZqpLEvUA5hu54CMyIt8c78u")},
 	}
 
-	cache := app.MakeCache(1, 10*time.Second, &TrueTimeMockValidator{})
+	cache := app.MakeCache(1, 120*time.Second, &TrueTimeMockValidator{})
 
 	rolling_size := uint64(0)
 	for _, test_case := range test_data {
 
 		rolling_size += uint64(len(test_case.contents))
 		err := cache.Store(test_case.name, test_case.contents)
-		assert.Nil(t, err)
+		assert.Nil(t, err, "Expected no error when retrieving a recently added cache item")
+
 		assert.Equal(t, cache.Size(), rolling_size)
 
 		endpoint_cache, err := cache.Get(test_case.name)
-		assert.Nil(t, err)
+		assert.Nil(t, err, "Expected no error when retrieving a recently added cache item")
+
 		assert.Equal(t, endpoint_cache.Contents, test_case.contents)
 	}
 }

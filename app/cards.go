@@ -21,9 +21,10 @@ func cardHandler(c *gin.Context, database database.Database) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	// log.Info().Msg(card.ImageLocation)
 	// Generate HTML page
-	post_view := views.MakeCardPage(card.JsonData)
+	log.Info().Msgf("%v", card.JsonData)
+	post_view := views.MakeCardPage(card.ImageLocation, common.Settings.AppNavbar.Links, card.JsonData)
 	html_buffer := bytes.NewBuffer(nil)
 	err = post_view.Render(c, html_buffer)
 	if err != nil {

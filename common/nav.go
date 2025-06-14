@@ -1,6 +1,7 @@
 package common
 
 type Link struct {
-	Href string
-	Name string
+	Name  string
+	Href  string
+	Title string
 }

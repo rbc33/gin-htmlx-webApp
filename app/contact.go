@@ -6,6 +6,7 @@ import (
 	"net/mail"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/database"
 	"github.com/rbc33/gocms/views"
 	"github.com/rs/zerolog/log"
@@ -66,7 +67,7 @@ func makeContactFormHandler() func(*gin.Context) {
 
 func contactHandler(c *gin.Context, db database.Database) ([]byte, error) {
 	// index_view := views.MakeContactPage()
-	index_view := views.MakeContactPage()
+	index_view := views.MakeContactPage(common.Settings.AppNavbar.Links)
 	html_buffer := bytes.NewBuffer(nil)
 	err := index_view.Render(c, html_buffer)
 	if err != nil {

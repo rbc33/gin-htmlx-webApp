@@ -1,8 +1,8 @@
 package views
 
-import . "github.com/rbc33/gocms/common"
+import "github.com/rbc33/gocms/common"
 
-templ MakeNavBar(links []Link) {
+templ MakeNavBar(links []common.Link) {
 	<header>
 		<nav class="bg-gray-800">
 			<div class="max-w-7xl x-auto px-4 mx-auto sm:px-6 lg:px-8">
@@ -14,7 +14,10 @@ templ MakeNavBar(links []Link) {
 						<div>
 							<div class="ml-10 flex items-baseline space-x-4">
 								for _, link := range links {
-									<a class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-nd text-l font-medium" href={ templ.URL(link.Href) }>{ link.Name }</a>
+									<a
+										class="text-gray-100 dark:text-gray-100 hover:text-gray-400 w-auto h-fit inline-block p-3 text-center leading-4 font-bold transition duration-300 ease-in"
+										href={ templ.URL(link.Href) }
+									>{ link.Name }</a>
 								}
 							</div>
 						</div>

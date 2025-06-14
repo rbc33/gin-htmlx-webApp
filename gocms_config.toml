@@ -1,0 +1,35 @@
+MY_SQL_URL="root:root@tcp(localhost:33060)/gocms"
+# MY_SQL_URL="root:secret@tcp(192.168.0.100:33060)/gocms"
+image_dir = "./images"
+PORT="8080"
+PORT_ADMIN="8081"
+
+# Enable/disable endpoint cache
+cache_enabled = true
+
+[[card_schema]]
+schema_name = "schema_name1"
+
+[[card_schema]]
+schema_name = "schema_name1"
+
+[[shortcodes]]
+name = "img"
+# must have function "HandleShortcode(arguments []string) string"
+plugin = "plugins/image_shortcode.lua"
+
+[[shortcodes]]
+name = "table"
+# must have function "HandleShortcode(arguments []string) string"
+plugin = "plugins/table_shortcode.lua"
+
+
+
+[navbar]
+links = [
+    { name = "Home", href = "/", title = "Homepage" },
+    { name = "About", href = "/about", title = "About page" },
+    { name = "Services", href = "/services", title = "Services page" },
+    { name = "Images", href = "/images", title = "Images page" },
+    { name = "Contact", href = "/contact", title = "Contacts page" },
+]

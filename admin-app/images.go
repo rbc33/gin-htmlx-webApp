@@ -103,7 +103,7 @@ func postImageHandler(database database.Database) func(*gin.Context) {
 
 		// Check if MEDIA_DIR is defined
 
-		MEDIA_DIR := common.Settings.MediaDir
+		MEDIA_DIR := common.Settings.ImageDirectory
 
 		// Begging save the file to MEDIA_DIR
 		file, err := c.FormFile("file")

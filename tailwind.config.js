@@ -1,15 +1,37 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-	content: [
-		"./views/**/*.templ", // Incluye todos los archivos .templ
-		"./views/**/*.go", // Si usas clases en archivos Go
-	],
-	theme: {
-		extend: {},
-		fontFamily: {
-			roboto: ["Roboto", "sans-serif"],
-			// bangers: ["Bangers", "sans-serif"],
+export const content = ["./views/*.templ"];
+
+export const theme = {
+	container: {
+		center: true,
+		padding: {
+			DEFAULT: "1rem",
+			mobile: "1rem",
+			tablet: "1rem",
+			desktop: "1rem",
 		},
 	},
-	plugins: [],
+	extend: {
+		colors: {
+			pastel: {
+				blue: "#AEC6CF",
+				purple: "#CBAACB",
+				pink: "#FFB6C1",
+				orange: "#FFDAB9",
+				green: "#C4E17F",
+				yellow: "#FFDD94",
+				gray: "#E5E5E5",
+			},
+		},
+		fontFamily: {
+			roboto: ["Roboto", "sans-serif"],
+		},
+	},
 };
+
+export const darkMode = "selector";
+
+export const plugins = [
+	require("@tailwindcss/forms"),
+	require("@tailwindcss/typography"),
+];

@@ -42,7 +42,7 @@ func postHandler(c *gin.Context, database database.Database) ([]byte, error) {
 	// Generate HTML page
 	post.Content = string(mdToHTML([]byte(post.Content)))
 	// post_view := views.MakePostPage(post.Title, post.Content)
-	post_view := views.MakePostPage(post.Title, post.Content)
+	post_view := views.MakePostPage(post.Title, common.Settings.AppNavbar.Links, post.Content)
 	html_buffer := bytes.NewBuffer(nil)
 	err = post_view.Render(c, html_buffer)
 	if err != nil {

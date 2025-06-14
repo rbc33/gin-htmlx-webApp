@@ -20,11 +20,13 @@ type Shortcode struct {
 
 type AppSettings struct {
 	DatabaseUri        string       `toml:"MY_SQL_URL"`
-	MediaDir           string       `toml:"MEDIA_DIR"`
 	WebserverPort      string       `toml:"PORT"`
 	WebserverPortAdmin string       `toml:"PORT_ADMIN"`
 	CardSchema         []CardSchema `toml:"card_schema"`
 	Shortcodes         []Shortcode  `toml:"shortcodes"`
+	ImageDirectory     string       `toml:"image_dir"`
+	CacheEnabled       bool         `toml:"cache_enabled"`
+	AppNavbar          Navbar       `toml:"navbar"`
 }
 
 type Navbar struct {
@@ -54,7 +56,9 @@ func ReadConfigToml(filepath string) (AppSettings, error) {
 		}
 		return config, fmt.Errorf("undecoded keys found: %s", strings.Join(keys, ", "))
 	}
-
+	if db_uri := GetTestDatabaseUri(); db_uri != "" {
+		config.DatabaseUri = db_uri
+	}
 	// Validate required fields
 	if config.DatabaseUri == "" {
 		return config, fmt.Errorf("MY_SQL_URL is required")
@@ -69,12 +73,17 @@ func ReadConfigToml(filepath string) (AppSettings, error) {
 func IsGithubActions() bool {
 	return os.Getenv("GITHUB_ACTIONS") != ""
 }
+func IsDocker() string {
+	return os.Getenv("DOCKER_DB_URI")
+}
 
 func GetTestDatabaseUri() string {
 	if IsGithubActions() {
 		return "root:root@tcp(mysql:3306)/gocms"
+	} else if docker_uri := IsDocker(); docker_uri != "" {
+		return docker_uri
 	}
-	// Local Docker MySQL instance
+
 	return "root:secret@tcp(192.168.0.100:33060)/gocms"
 }
 

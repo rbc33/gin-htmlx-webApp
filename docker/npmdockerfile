@@ -1,3 +1,18 @@
+FROM node:18-alpine AS css-builder
+
+WORKDIR /gocms
+
+# Copia solo los archivos necesarios para instalar dependencias de Node
+COPY ../package.json package-lock.json* ./
+
+# Instala Tailwind CSS y el plugin de Typography
+RUN npm install
+
+
+# =========================================================================
+# ETAPA 2: "go-builder" - Tu etapa original para construir las herramientas de Go
+# =========================================================================
+# NOTA: La nombramos 'go-builder' para diferenciarla
 FROM alpine:latest AS builder
 
 ENV TZ=Europe/London
@@ -62,6 +77,9 @@ RUN apk update && apk add --no-cache \
     bash \
     tzdata \
     && rm -rf /var/cache/apk/*
+
+RUN apk add --update nodejs-current npm
+
 
 # Copy Go from builder
 COPY --from=builder /usr/local/go /usr/local/go

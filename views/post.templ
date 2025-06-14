@@ -1,30 +1,30 @@
 package views
 
-import . "github.com/rbc33/gocms/common"
+import "github.com/rbc33/gocms/common"
 
-templ MakePostPage(title string, content string) {
-	<!DOCTYPE html>
-	<html lang="en">
-		<head>
-			<meta charset="UTF-8"/>
-			<title>{ title }</title>
-			<!-- Minified version -->
-			<link rel="stylesheet" href="/static/output.css"/>
-			<script src="/static/htmx.min.js"></script>
-			<script src="/static/client-side-templates.js"></script>
-		</head>
-		<body class="font-roboto bg-gray-800">
-			@MakeNavBar([]Link{{Name: "Home", Href: "/"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/services"}, {Name: "Contact", Href: "/contact"}})
-			<br/>
-			<main class="flex flex-col h-screen">
-				<article class="container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md p-6 max-w-xxl w-fit overflow-x-auto overflow-y-auto">
-					<h2 class="text-2xl text-gray-400 font-bold mb-2">{ title }</h2>
-					<div class="text-gray-300">
-						@templ.Raw(content)
-					</div>
-				</article>
-			</main>
-		</body>
-		@MakeFooter()
-	</html>
+templ MakePost(title string, content string) {
+	// <article class="container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md p-6 m-4 max-w-xxl w-4/6 overflow-x-auto overflow-y-auto">
+	<article
+		class="
+		prose prose-invert lg:prose-l
+		w-fit items-center mx-6 mt-2 p-8
+		/* --- ESTILOS PARA EL BLOQUE DE CÓDIGO (<pre>) --- */
+		prose-pre:bg-[#011627]          /* Fondo personalizado (valor arbitrario) */
+		prose-pre:p-6                     /* Padding (valor arbitrario para 24px) */
+		prose-pre:border                  /* Añade un borde */
+		prose-pre:border-gray-700         /* Color del borde */
+		prose-pre:rounded-lg              /* Bordes redondeados */
+		/* --- ESTILOS PARA EL TEXTO DEL CÓDIGO (<code>) --- */
+		/* Nota: Esto afecta a TODO el código, dentro y fuera de los bloques <pre> */
+		prose-code:text-gray-300         /* Color del texto del código  */
+	"
+	>
+		// <article class="prose lg:prose-xl dark:prose-invert items-center w-full dark:prose-pre:bg-gray-300 dark:prose-pre:text-gray-900">
+		<h1 class="my-4 text-gray-400">{ title }</h1>
+		@templ.Raw(content)
+	</article>
+}
+
+templ MakePostPage(title string, links []common.Link, content string) {
+	@MakeLayout(title, links, MakePost(title, content))
 }

@@ -118,6 +118,10 @@ func postImageHandler(database database.Database) func(*gin.Context) {
 
 		ext := filepath.Ext(file.Filename)
 		// Check if ext is supported
+		_, ok := valid_extensions[ext]
+		if !ok {
+			log.Error().Msgf("file extension is not supported %s", ext)
+		}
 
 		if ext == "" {
 			log.Error().Msgf("could not get file extension from %s", file.Filename)

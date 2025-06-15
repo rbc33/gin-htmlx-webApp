@@ -10,15 +10,13 @@ GOCMS_ADMIN_PATH=./cmd/$(ADMIN_BINARY_NAME)
 
 all: build test
 
-prepare_env:
-	cp -r migrations tests/system_tests/helpers/
 
-build: prepare_env
+build: 
 	$(TEMPL) generate
 	$(GOCMD) build -v -o $(BUILD_DIR)/$(BINARY_NAME) $(GOCMS_PATH)
 	$(GOCMD) build -v -o $(BUILD_DIR)/$(ADMIN_BINARY_NAME) $(GOCMS_ADMIN_PATH)
 
-test: prepare_env
+test: 
 	$(GOCMD) test -v ./...
 
 clean:

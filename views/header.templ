@@ -5,22 +5,20 @@ import "github.com/rbc33/gocms/common"
 templ MakeNavBar(links []common.Link) {
 	<header>
 		<nav class="bg-gray-800">
-			<div class="max-w-7xl x-auto px-4 mx-auto sm:px-6 lg:px-8">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div class="flex items-center justify-between h-16">
-					<div class="flex items-center">
-						<div class="flex-shrink-0">
-							<a href="#" class="text-white text-2xl font-bold">Logo</a>
-						</div>
-						<div>
-							<div class="ml-10 flex items-baseline space-x-4">
-								for _, link := range links {
-									<a
-										class="text-gray-100 dark:text-gray-100 hover:text-gray-400 w-auto h-fit inline-block p-3 text-center leading-4 font-bold transition duration-300 ease-in"
-										href={ templ.URL(link.Href) }
-									>{ link.Name }</a>
-								}
-							</div>
-						</div>
+					<!-- Logo a la izquierda -->
+					<div class="flex-shrink-0">
+						<a href="#" class="text-white text-2xl font-bold">Logo</a>
+					</div>
+					<!-- Links a la derecha -->
+					<div class="flex items-center space-x-4">
+						for _, link := range links {
+							<a
+								class="text-gray-100 hover:text-gray-400 px-3 py-2 text-xl font-medium transition duration-300 ease-in-out"
+								href={ templ.URL(link.Href) }
+							>{ link.Name }</a>
+						}
 					</div>
 				</div>
 			</div>

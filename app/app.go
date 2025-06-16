@@ -19,8 +19,6 @@ type Generator = func(*gin.Context, database.Database) ([]byte, error)
 
 func SetupRoutes(settings common.AppSettings, database database.Database) *gin.Engine {
 
-	cache := MakeCache(4, time.Minute*10, &TimeValidator{})
-
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.MaxMultipartMemory = 1
@@ -30,16 +28,21 @@ func SetupRoutes(settings common.AppSettings, database database.Database) *gin.E
 
 	// Service
 	r.GET("/services", makeServiceHandler())
-	// r.GET("/card/:id", makeCardHandler(database))
+
+	// All cache endpoints
+	cache := MakeCache(4, time.Minute*10, &TimeValidator{})
 	addCacheHandler(r, "GET", "/", homeHandler, &cache, database)
 	addCacheHandler(r, "GET", "/contact", contactHandler, &cache, database)
 	addCacheHandler(r, "GET", "/post/:id", postHandler, &cache, database)
 	addCacheHandler(r, "GET", "/card/:id", cardHandler, &cache, database)
+	addCacheHandler(r, "GET", "/images/:name", imageHandler, &cache, database)
+	addCacheHandler(r, "GET", "/images", imagesHandler, &cache, database)
 	// Add the pagination route as a cacheable endpoint
 	addCacheHandler(r, "GET", "/page/:num", homeHandler, &cache, database)
 
+	r.Static("/images/data", settings.ImageDirectory)
 	r.Static("/static", "./static")
-	r.StaticFS("/images", http.Dir(settings.ImageDirectory))
+	r.StaticFS("/media", http.Dir(settings.ImageDirectory))
 
 	return r
 }

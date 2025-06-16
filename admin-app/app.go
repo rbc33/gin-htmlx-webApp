@@ -48,8 +48,8 @@ func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua
 
 	// CRUD Images
 	// r.GET("/images/:id", getImageHandler(&database))
-	r.POST("/images", postImageHandler(database))
-	r.DELETE("/images/:name", deleteImageHandler(database))
+	r.POST("/images", postImageHandler())
+	r.DELETE("/images/:name", deleteImageHandler())
 
 	r.POST("/pages", postPageHandler(database))
 

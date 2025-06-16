@@ -1,0 +1,35 @@
+package views
+
+import (
+	"fmt"
+	. "github.com/rbc33/gocms/common"
+)
+
+templ makeImages(images []Image) {
+	if len(images) == 0 {
+		<div class="block">
+			<h3 class="text-3xl font-bold text-white">No images uploaded</h3>
+		</div>
+	} else {
+		<div class="grid grid-cols-2 gap-4 sm:grid-cols-3  p-4">
+			for _, image := range images {
+				<div class=" w-fit justify-center">
+					<a href={ templ.URL("/images/" + image.Name) }>
+						<img
+							class="w-fit h-fit max-h-[20rem] overflow-hidden object-contain place-self-center rounded-lg border border-gray-300"
+							src={ fmt.Sprintf("/images/data/%s", image.Name) }
+							alt={ image.Name }
+						/>
+						<div class="p-2">
+							<h2 class="text-lg font-bold text-gray-300 m-2">{ image.Name }</h2>
+						</div>
+					</a>
+				</div>
+			}
+		</div>
+	}
+}
+
+templ MakeImagesPage(images []Image, links []Link) {
+	@MakeLayout("Images", links, makeImages(images))
+}

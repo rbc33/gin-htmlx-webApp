@@ -1,35 +1,30 @@
 package admin_app
 
 import (
-	"encoding/json"
 	"fmt"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"image"
 	_ "image/gif"
 	"image/jpeg"
-	_ "image/jpeg"
 	"image/png"
-	_ "image/png"
 
 	"github.com/fossoreslp/go-uuid-v4"
 	"github.com/gin-gonic/gin"
 	"github.com/nfnt/resize"
 	"github.com/rbc33/gocms/common"
-	"github.com/rbc33/gocms/database"
 	"github.com/rs/zerolog/log"
 )
 
-// Since there are no builtin sets in go, we are using a map to improve the performance when checking for valid extensions
-// by creating a map with the valid extensions as keys and using an existence check.
-var valid_extensions = map[string]bool{
-	".jpg":  true,
-	".jpeg": true,
-	".png":  true,
-	".gif":  true,
+var allowed_extensions = map[string]bool{
+	".jpeg": true, ".jpg": true, ".png": true,
+}
+
+var allowed_content_types = map[string]bool{
+	"image/jpeg": true, "image/png": true, "image/gif": true,
 }
 
 // CRUD Images
@@ -91,48 +86,67 @@ func resizeImage(srcPath string, width uint) error {
 	return nil
 }
 
-func postImageHandler(database database.Database) func(*gin.Context) {
+// TODO : need these endpoints
+// r.POST("/images", postImageHandler(&database))
+// r.DELETE("/images", deleteImageHandler(&database))
+func postImageHandler() func(*gin.Context) {
 	return func(c *gin.Context) {
-
-		// Get the metadata from the request body
-		alt_text := c.Request.FormValue("alt")
-		if alt_text == "" {
-			log.Error().Msgf("alt text is required")
+		c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, 10*1000000)
+		form, err := c.MultipartForm()
+		if err != nil {
+			log.Error().Msgf("could not create multipart form: %v", err)
+			c.JSON(http.StatusBadRequest, common.ErrorRes("request type must be `multipart-form`", err))
 			return
 		}
 
-		// Check if MEDIA_DIR is defined
+		// Begin saving the file to the filesystem
+		file_array := form.File["file"]
+		if len(file_array) == 0 || file_array[0] == nil {
+			log.Error().Msgf("could not get the file array: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "no file provided for image upload",
+			})
+			return
+		}
 
-		MEDIA_DIR := common.Settings.ImageDirectory
+		file := file_array[0]
+		file_content_type := file.Header.Get("content-type")
+		_, ok := allowed_content_types[file_content_type]
+		if !ok {
+			log.Error().Msgf("file type not supported")
+			c.JSON(http.StatusBadRequest, common.MsgErrorRes("file type not supported"))
+			return
+		}
 
-		// Begging save the file to MEDIA_DIR
-		file, err := c.FormFile("file")
-		if err != nil {
-			log.Error().Msgf("could not upload file: %v", err)
+		detected_content_type, err := getContentType(file)
+		if err != nil || detected_content_type != file_content_type {
+			log.Error().Msgf("the provided file does not match the provided content type")
+			c.JSON(http.StatusBadRequest, common.MsgErrorRes("provided file content is not allowed"))
+			return
 		}
 
 		uuid, err := uuid.New()
 		if err != nil {
-			log.Error().Msgf("error generating UUID: %v", err)
+			log.Error().Msgf("could not create the UUID: %v", err)
+			c.JSON(http.StatusInternalServerError, common.ErrorRes("cannot create unique identifier", err))
+			return
 		}
 
 		ext := filepath.Ext(file.Filename)
-		// Check if ext is supported
-		_, ok := valid_extensions[ext]
-		if !ok {
-			log.Error().Msgf("file extension is not supported %s", ext)
-		}
-
-		if ext == "" {
-			log.Error().Msgf("could not get file extension from %s", file.Filename)
+		// check ext is supported
+		_, ok = allowed_extensions[ext]
+		if ext == "" || !ok {
+			log.Error().Msgf("file extension is not supported %v", err)
+			c.JSON(http.StatusBadRequest, common.ErrorRes("file extension is not supported", err))
 			return
 		}
 
 		filename := fmt.Sprintf("%s%s", uuid.String(), ext)
-		image_path := filepath.Join(MEDIA_DIR, filename)
+		image_path := filepath.Join(common.Settings.ImageDirectory, filename)
 		err = c.SaveUploadedFile(file, image_path)
 		if err != nil {
-			log.Error().Msgf("could not save the file: %v", err)
+			log.Error().Msgf("could not save file: %v", err)
+			c.JSON(http.StatusInternalServerError, common.ErrorRes("failed to upload image", err))
 			return
 		}
 
@@ -144,53 +158,53 @@ func postImageHandler(database database.Database) func(*gin.Context) {
 			return
 		}
 
-		// {name, alt b64}
-		// Add image to db
-
-		err = database.AddImage(uuid.String(), filename, alt_text)
-		if err != nil {
-			log.Error().Msgf("could not add image to db: %v", err)
-			err = os.Remove(image_path)
-			if err != nil {
-				log.Error().Msgf("could not remove file %s: %v", image_path, err)
-			}
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{
-			"id": uuid.String(),
+		// End saving to filesystem
+		c.JSON(http.StatusOK, ImageIdResponse{
+			Id: uuid.String(),
 		})
 	}
-
 }
 
-func deleteImageHandler(database database.Database) func(*gin.Context) {
+func deleteImageHandler() func(*gin.Context) {
 	return func(c *gin.Context) {
-		var delete_image_request DeleteImageBinding
-		decoder := json.NewDecoder(c.Request.Body)
-		decoder.DisallowUnknownFields()
-
-		err := decoder.Decode(&delete_image_request)
+		var delete_image_binding DeleteImageBinding
+		err := c.ShouldBindUri(&delete_image_binding)
 		if err != nil {
-			log.Warn().Msgf("could not delete post: %v", err)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "invalid request body",
-				"msg":   err.Error(),
-			})
-			return
-		}
-		delete_image_split := strings.Split(delete_image_request.Name, ".")
-		err = database.DeleteImage(delete_image_split[0])
-		if err != nil {
-			log.Error().Msgf("failed to delete post: %v", err)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "could not delete post",
-				"msg":   err.Error(),
-			})
+			c.JSON(http.StatusBadRequest, common.ErrorRes("no id provided to delete image", err))
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"id": delete_image_request.Name,
+		image_path := filepath.Join(common.Settings.ImageDirectory, delete_image_binding.Name)
+		err = os.Remove(image_path)
+		if err != nil {
+			log.Warn().Msgf("could not delete stored image file: %v", err)
+			// No return because we have to remove the database entry nonetheless.
+		}
+
+		c.JSON(http.StatusOK, ImageIdResponse{
+			delete_image_binding.Name,
 		})
 	}
+}
+
+func getContentType(file_header *multipart.FileHeader) (string, error) {
+	// Check if the content matches the provided type.
+	image_file, err := file_header.Open()
+	if err != nil {
+		log.Error().Msgf("could not open file for check.")
+		return "", err
+	}
+
+	// According to the documentation only the first `512` bytes are required for verifying the content type
+	tmp_buffer := make([]byte, 512)
+	_, read_err := image_file.Read(tmp_buffer)
+	if read_err != nil {
+		log.Error().Msgf("could not read into temp buffer")
+		return "", read_err
+	}
+	return getContentTypeFromData(tmp_buffer), nil
+}
+
+func getContentTypeFromData(data []byte) string {
+	return http.DetectContentType(data[:512])
 }

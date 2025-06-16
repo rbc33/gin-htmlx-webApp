@@ -1,0 +1,17 @@
+package views
+
+import (
+	"fmt"
+	. "github.com/rbc33/gocms/common"
+)
+
+templ makeImage(image Image) {
+	<div class="">
+		<img src={ fmt.Sprintf("/images/data/%s", image.Name) }/>
+		<h2 class="text-lg font-bold text-gray-300 m-2">{ image.Name }</h2>
+	</div>
+}
+
+templ MakeImagePage(image Image, links []Link) {
+	@MakeLayout(image.Name, links, makeImage(image))
+}

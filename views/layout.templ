@@ -18,7 +18,7 @@ templ MakeLayout(title string, links []common.Link, content templ.Component) {
 			// @MakeNavBar([]Link{{Name: "Home", Href: "/"}, {Name: "About", Href: "/about"}, {Name: "Services", Href: "/services"}, {Name: "Contact", Href: "/contact"}})
 			// @MakeNavBar(links)
 			@MakeNavBar(links)
-			<main class="flex flex-col h-screen">
+			<main class="container flex flex-col h-screen mx-auto p-10">
 				@content
 			</main>
 		</body>

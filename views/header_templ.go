@@ -31,12 +31,12 @@ func MakeNavBar(links []common.Link) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<header><nav class=\"bg-gray-800\"><div class=\"max-w-7xl x-auto px-4 mx-auto sm:px-6 lg:px-8\"><div class=\"flex items-center justify-between h-16\"><div class=\"flex items-center\"><div class=\"flex-shrink-0\"><a href=\"#\" class=\"text-white text-2xl font-bold\">Logo</a></div><div><div class=\"ml-10 flex items-baseline space-x-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<header><nav class=\"bg-gray-800\"><div class=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\"><div class=\"flex items-center justify-between h-16\"><!-- Logo a la izquierda --><div class=\"flex-shrink-0\"><a href=\"#\" class=\"text-white text-2xl font-bold\">Logo</a></div><!-- Links a la derecha --><div class=\"flex items-center space-x-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, link := range links {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<a class=\"text-gray-100 dark:text-gray-100 hover:text-gray-400 w-auto h-fit inline-block p-3 text-center leading-4 font-bold transition duration-300 ease-in\" href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<a class=\"text-gray-100 hover:text-gray-400 px-3 py-2 text-xl font-medium transition duration-300 ease-in-out\" href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -52,7 +52,7 @@ func MakeNavBar(links []common.Link) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(link.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/header.templ`, Line: 20, Col: 21}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/header.templ`, Line: 20, Col: 19}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -63,7 +63,7 @@ func MakeNavBar(links []common.Link) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div></div></div></div></div></nav></header><hr class=\"border-t-2 border-gray-300\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div></div></div></nav></header><hr class=\"border-t-2 border-gray-300\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

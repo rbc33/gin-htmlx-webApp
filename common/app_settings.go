@@ -29,6 +29,7 @@ type AppSettings struct {
 	AppNavbar          Navbar       `toml:"navbar"`
 	RecaptchaSiteKey   string       `toml:"recaptcha_sitekey, omitempty"`
 	RecaptchaSecret    string       `toml:"recaptcha_secret, omitempty"`
+	AppDomain          string       `toml:"app_domain, omitempty"`
 }
 
 type Navbar struct {

@@ -7,8 +7,9 @@ PORT_ADMIN="8081"
 # Enable/disable endpoint cache
 cache_enabled = false
 
-recaptcha_sitekey = "6LeNWGQrAAAAAFBtdsj36fCHGKM4p-VMjyP9dmSq"
-recaptcha_secret = "6LeNWGQrAAAAAI2tbNWqaV-zx1_Zx7YJTgZpln54"
+recaptcha_sitekey = "6LcEamQrAAAAAF3lLged7faFfQW-dU0AQO8MwNgO"
+recaptcha_secret = "6LcEamQrAAAAAHH4Nthgshj10uUmxxmXasW-pcfV"
+app_domain = "localhost"
 
 
 [[card_schema]]

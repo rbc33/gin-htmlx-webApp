@@ -49,11 +49,10 @@ templ MakeContactFormRecaptcha(recaptcha_sitekey string) {
 				placeholder="Your message here..."
 			></textarea>
 		</div>
-		<div id="recaptcha-invisible-container"></div> <!-- Contenedor para el reCAPTCHA invisible renderizado explícitamente -->
+		<!-- El div de reCAPTCHA v2 se elimina para usar v3 -->
 		<div class="text-center pt-6">
 			<button
-				id="submit-contact-button" // ID para que JavaScript lo encuentre
-				type="button" // Importante: debe ser 'button' para que JS controle el envío
+				type="button"
 				class="group relative inline-flex items-center justify-center px-8 py-3 font-bold text-white 
             bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg overflow-hidden 
             transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-xl 
@@ -181,60 +180,48 @@ templ MakeContact(recaptcha_sitekey string) {
 		</div>
 	</div>
 	if len(recaptcha_sitekey)>0 {
-		// Carga la API de reCAPTCHA con callbacks para carga y renderizado explícito
-		<script src={ "https://www.google.com/recaptcha/api.js?onload=onRecaptchaApiLoad&render=explicit" } async defer></script>
+		// Carga la API de reCAPTCHA v3. La clave del sitio se usa en el parámetro 'render'.
+		<script src={ "https://www.google.com/recaptcha/api.js?render=" + recaptcha_sitekey } async defer></script>
+		// Script para manejar reCAPTCHA v3 y disparar el evento para HTMX
 		<script>
-			var recaptchaWidgetId; // Almacenará el ID del widget de reCAPTCHA invisible renderizado
+			function handleRecaptchaV3AndSubmit() {
+				const form = document.getElementById('demo-form');
+				if (!form) {
+					console.error('Form "demo-form" not found for reCAPTCHA v3.');
+					return;
+				}
 
-			// Esta función se llama cuando la API de reCAPTCHA se ha cargado
-			function onRecaptchaApiLoad() {
-			  console.log('reCAPTCHA API cargada.');
-			  const recaptchaContainer = document.getElementById('recaptcha-invisible-container');
-			  // Corregido: Asignar correctamente la sitekey de Go a la variable JavaScript
-			  const siteKey = '{ recaptcha_sitekey }'; 
+				grecaptcha.ready(function() {
+					// La clave del sitio se pasa aquí directamente.
+					// 'action' es opcional pero recomendado para v3, para distinguir diferentes acciones en tu sitio.
+					grecaptcha.execute('{{ recaptcha_sitekey }}', {action: 'contact_submit'}).then(function(token) {
+						let recaptchaInput = form.querySelector('input[name="g-recaptcha-response"]');
+						if (!recaptchaInput) {
+							recaptchaInput = document.createElement('input');
+							recaptchaInput.setAttribute('type', 'hidden');
+							recaptchaInput.setAttribute('name', 'g-recaptcha-response');
+							form.appendChild(recaptchaInput);
+						}
+						recaptchaInput.value = token;
+						console.log('reCAPTCHA v3 token obtained and set.');
 
-			  if (recaptchaContainer && siteKey) {
-			    recaptchaWidgetId = grecaptcha.render(recaptchaContainer, {
-			      'sitekey': siteKey,
-			      'size': 'invisible', // Especifica que es un reCAPTCHA invisible
-			      'callback': onRecaptchaSuccessForHtmx // Función a llamar tras verificación exitosa
-			    });
-			    console.log('reCAPTCHA Invisible renderizado. Widget ID:', recaptchaWidgetId);
-			  } else {
-			    if (!recaptchaContainer) console.error('Contenedor de reCAPTCHA "recaptcha-invisible-container" no encontrado.');
-			    if (!siteKey) console.error('Site Key de reCAPTCHA no encontrada.');
-			  }
-
-			  // Adjuntar listener al botón de envío
-			  const submitButton = document.getElementById('submit-contact-button');
-			  if (submitButton) {
-			    submitButton.addEventListener('click', function() {
-			      console.log('Botón de envío clickeado, ejecutando reCAPTCHA.');
-			      if (typeof grecaptcha !== 'undefined' && recaptchaWidgetId !== undefined) {
-			        grecaptcha.execute(recaptchaWidgetId);
-			      } else {
-			        console.error('grecaptcha no está listo o recaptchaWidgetId no está definido. El formulario no se enviará mediante reCAPTCHA.');
-			        // Aquí podrías manejar un fallback, como enviar el formulario directamente (sin HTMX) o mostrar un error.
-			      }
-			    });
-			  } else {
-			    console.error('Botón de envío "submit-contact-button" no encontrado.');
-			  }
+						// Disparamos el evento 'verified' que el formulario HTMX está esperando.
+						htmx.trigger(form, 'verified');
+						console.log('HTMX "verified" event triggered.');
+					});
+				});
 			}
 
-			// Esta función es llamada por reCAPTCHA después de una verificación exitosa
-			function onRecaptchaSuccessForHtmx(token) {
-			  console.log('onRecaptchaSuccessForHtmx llamado. Token:', token);
-			  const form = document.getElementById('demo-form');
-			  console.log('Elemento de formulario por ID "demo-form":', form);
-			  if (form) {
-			    console.log('Disparando evento "verified" en el formulario para HTMX.');
-			    htmx.trigger(form, 'verified');
-			    console.log('Evento "verified" disparado.');
-			  } else {
-			    console.error('Form with ID "demo-form" not found in onRecaptchaSuccessForHtmx.');
-			  }
-			}
+			// Adjuntar el manejador al botón de envío del formulario con ID 'demo-form'
+			document.addEventListener('DOMContentLoaded', function() {
+				const form = document.getElementById('demo-form');
+				if (form) {
+					const submitButton = form.querySelector('button[type="button"]'); // Asegúrate que el botón sigue siendo type="button"
+					if (submitButton) {
+						submitButton.addEventListener('click', handleRecaptchaV3AndSubmit);
+					}
+				}
+			});
 		</script>
 	}
 }

@@ -22,6 +22,7 @@ type RecaptchaResponse struct {
 	Score     float32 `json:"score"`
 	Timestamp string  `json:"challenge_ts"`
 	Hostname  string  `json:"hostname"`
+	Action    string  `json:"action,omitempty"` // Añadir Action para v3
 }
 
 func verifyRecaptcha(recaptcha_secret string, recaptcha_response string) error {
@@ -47,15 +48,27 @@ func verifyRecaptcha(recaptcha_secret string, recaptcha_response string) error {
 		return fmt.Errorf("could not parse recaptcha response: %s", err)
 	}
 
-	// Para reCAPTCHA v2 (que es lo que indica el widget "No soy un robot"),
-	// el campo `Success` es el indicador principal.
-	// El campo `Score` puede no estar presente o no ser significativo como en v3.
-	if !recaptcha_answer.Success {
-		log.Warn().Msgf("reCAPTCHA v2 validation failed. Success: %v, Score: %f, Timestamp: %s, Hostname: %s",
-			recaptcha_answer.Success, recaptcha_answer.Score, recaptcha_answer.Timestamp, recaptcha_answer.Hostname)
+	// Para reCAPTCHA v3, `Success` debe ser true y `Score` debe estar por encima de un umbral.
+	// También es recomendable verificar `Hostname` y `Action`.
+	expectedAction := "contact_submit" // Debe coincidir con la acción en el frontend
+	// Asegúrate de que common.Settings.AppDomain esté configurado si quieres validar el hostname.
+	isHostnameMismatch := common.Settings.AppDomain != "" && recaptcha_answer.Hostname != common.Settings.AppDomain
+
+	if !recaptcha_answer.Success ||
+		recaptcha_answer.Score < 0.5 || // Ajusta el umbral según sea necesario (ej. 0.5 o 0.7)
+		isHostnameMismatch ||
+		recaptcha_answer.Action != expectedAction {
+		log.Warn().Msgf("Validación de reCAPTCHA v3 fallida. Success: %v, Score: %.2f, Hostname: %s (esperado: %s), Action: %s (esperada: %s), Timestamp: %s",
+			recaptcha_answer.Success,
+			recaptcha_answer.Score,
+			recaptcha_answer.Hostname,
+			common.Settings.AppDomain, // Asegúrate que common.Settings.AppDomain está configurado
+			recaptcha_answer.Action,
+			expectedAction,
+			recaptcha_answer.Timestamp)
 		return fmt.Errorf("could not validate recaptcha") // Mensaje genérico para el usuario
 	}
-	log.Info().Msgf("reCAPTCHA v2 validation successful. Score: %f, Hostname: %s", recaptcha_answer.Score, recaptcha_answer.Hostname)
+	log.Info().Msgf("Validación de reCAPTCHA v3 exitosa. Score: %.2f, Hostname: %s, Action: %s", recaptcha_answer.Score, recaptcha_answer.Hostname, recaptcha_answer.Action)
 	return nil
 }
 

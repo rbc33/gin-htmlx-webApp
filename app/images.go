@@ -44,19 +44,21 @@ func imagesHandler(c *gin.Context, database database.Database) ([]byte, error) {
 		log.Error().Msgf("could not read files in image directory: %v", err)
 		return []byte{}, err
 	}
+	limit = min(offset+limit, len(files))
+	offset = min(offset, len(files))
 
 	// Filter all the non-images out of the list
 	valid_images := make([]common.Image, 0)
-	for n, file := range files {
+	for _, file := range files[offset:limit] {
 		// TODO : This is surely not the best way
 		//        to implement pagination in for loops
-		if n >= limit {
-			break
-		}
+		// if n >= limit {
+		// 	break
+		// }
 
-		if n < offset {
-			continue
-		}
+		// if n < offset {
+		// 	continue
+		// }
 
 		filename := file.Name()
 		ext := path.Ext(file.Name())

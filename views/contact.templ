@@ -2,7 +2,168 @@ package views
 
 import "github.com/rbc33/gocms/common"
 
-templ MakeContact() {
+templ MakeContactFormRecaptcha(recaptcha_sitekey string) {
+	<form id="demo-form" method="post" hx-post="/contact-send" hx-target="#contact-form" class="space-y-6" hx-trigger="verified">
+		<div class="group">
+			<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="name">
+				Name
+			</label>
+			<input
+				type="text"
+				id="name"
+				name="name"
+				required
+				class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+            transition-all duration-300 hover:bg-gray-50"
+				placeholder="Your name"
+			/>
+		</div>
+		<div class="group">
+			<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="email">
+				Email
+			</label>
+			<input
+				type="email"
+				id="email"
+				name="email"
+				required
+				class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+            transition-all duration-300 hover:bg-gray-50"
+				placeholder="your.email@example.com"
+			/>
+		</div>
+		<div class="group">
+			<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="message">
+				Message
+			</label>
+			<textarea
+				id="message"
+				name="message"
+				rows="4"
+				required
+				class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+            transition-all duration-300 hover:bg-gray-50 resize-none"
+				placeholder="Your message here..."
+			></textarea>
+		</div>
+		<!-- El div de reCAPTCHA v2 se elimina para usar v3 -->
+		<div class="text-center pt-6">
+			<button
+				type="button"
+				class="group relative inline-flex items-center justify-center px-8 py-3 font-bold text-white 
+            bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg overflow-hidden 
+            transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-xl 
+            active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+			>
+				<span class="relative z-10 flex items-center gap-2">
+					Send Message
+					<svg
+						class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M13 7l5 5m0 0l-5 5m5-5H6"
+						></path>
+					</svg>
+				</span>
+				<div
+					class="absolute inset-0 bg-gradient-to-r from-blue-500/50 via-blue-400/30 to-transparent 
+                opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+				></div>
+			</button>
+		</div>
+	</form>
+}
+
+templ MakeContactForm() {
+	<form action="#" method="post" hx-post="/contact-send" hx-target="#contact-form" class="space-y-6">
+		<div class="group">
+			<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="name">
+				Name
+			</label>
+			<input
+				type="text"
+				id="name"
+				name="name"
+				required
+				class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+            transition-all duration-300 hover:bg-gray-50"
+				placeholder="Your name"
+			/>
+		</div>
+		<div class="group">
+			<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="email">
+				Email
+			</label>
+			<input
+				type="email"
+				id="email"
+				name="email"
+				required
+				class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+            transition-all duration-300 hover:bg-gray-50"
+				placeholder="your.email@example.com"
+			/>
+		</div>
+		<div class="group">
+			<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="message">
+				Message
+			</label>
+			<textarea
+				id="message"
+				name="message"
+				rows="4"
+				required
+				class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+            transition-all duration-300 hover:bg-gray-50 resize-none"
+				placeholder="Your message here..."
+			></textarea>
+		</div>
+		<div class="text-center pt-6">
+			<button
+				type="submit"
+				class="group relative inline-flex items-center justify-center px-8 py-3 font-bold text-white 
+            bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg overflow-hidden 
+            transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-xl 
+            active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+			>
+				<span class="relative z-10 flex items-center gap-2">
+					Submit
+					<svg
+						class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M13 7l5 5m0 0l-5 5m5-5H6"
+						></path>
+					</svg>
+				</span>
+				<div
+					class="absolute inset-0 bg-gradient-to-r from-blue-500/50 via-blue-400/30 to-transparent 
+                opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+				></div>
+			</button>
+		</div>
+	</form>
+}
+
+templ MakeContact(recaptcha_sitekey string) {
 	<div id="contact-form" class="max-w-xl mx-auto bg-gray-900/95 backdrop-blur-sm shadow-2xl p-8 relative overflow-hidden rounded-xl border border-gray-700/50">
 		<!-- Gradient overlay mejorado -->
 		<div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-gray-800/50 to-purple-500/5 rounded-xl"></div>
@@ -11,87 +172,60 @@ templ MakeContact() {
 				<h2 class="text-3xl text-gray-300 font-bold mb-2 font-bangers tracking-wider">Get in Touch</h2>
 				<p class="text-gray-400">We'd love to hear from you. Send us a message!</p>
 			</div>
-			<form action="#" method="post" hx-post="/contact-send" hx-target="#contact-form" class="space-y-6">
-				<div class="group">
-					<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="name">
-						Name
-					</label>
-					<input
-						type="text"
-						id="name"
-						name="name"
-						required
-						class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
-            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-            transition-all duration-300 hover:bg-gray-50"
-						placeholder="Your name"
-					/>
-				</div>
-				<div class="group">
-					<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="email">
-						Email
-					</label>
-					<input
-						type="email"
-						id="email"
-						name="email"
-						required
-						class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
-            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-            transition-all duration-300 hover:bg-gray-50"
-						placeholder="your.email@example.com"
-					/>
-				</div>
-				<div class="group">
-					<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="message">
-						Message
-					</label>
-					<textarea
-						id="message"
-						name="message"
-						rows="4"
-						required
-						class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
-            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-            transition-all duration-300 hover:bg-gray-50 resize-none"
-						placeholder="Your message here..."
-					></textarea>
-				</div>
-				<div class="text-center pt-6">
-					<button
-						type="submit"
-						class="group relative inline-flex items-center justify-center px-8 py-3 font-bold text-white 
-            bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg overflow-hidden 
-            transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-xl 
-            active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-					>
-						<span class="relative z-10 flex items-center gap-2">
-							Send Message
-							<svg
-								class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M13 7l5 5m0 0l-5 5m5-5H6"
-								></path>
-							</svg>
-						</span>
-						<div
-							class="absolute inset-0 bg-gradient-to-r from-blue-500/50 via-blue-400/30 to-transparent 
-                opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-						></div>
-					</button>
-				</div>
-			</form>
+			if len(recaptcha_sitekey)>0 {
+				@MakeContactFormRecaptcha(recaptcha_sitekey)
+			} else {
+				@MakeContactForm()
+			}
 		</div>
 	</div>
+	if len(recaptcha_sitekey)>0 {
+		// Carga la API de reCAPTCHA v3. La clave del sitio se usa en el parámetro 'render'.
+		<script src={ "https://www.google.com/recaptcha/api.js?render=" + recaptcha_sitekey } async defer></script>
+		// Script para manejar reCAPTCHA v3 y disparar el evento para HTMX
+		<script>
+			function handleRecaptchaV3AndSubmit() {
+				const form = document.getElementById('demo-form');
+				if (!form) {
+					console.error('Form "demo-form" not found for reCAPTCHA v3.');
+					return;
+				}
+
+				grecaptcha.ready(function() {
+					// La clave del sitio se pasa aquí directamente.
+					// 'action' es opcional pero recomendado para v3, para distinguir diferentes acciones en tu sitio.
+					grecaptcha.execute('{{ recaptcha_sitekey }}', {action: 'contact_submit'}).then(function(token) {
+						let recaptchaInput = form.querySelector('input[name="g-recaptcha-response"]');
+						if (!recaptchaInput) {
+							recaptchaInput = document.createElement('input');
+							recaptchaInput.setAttribute('type', 'hidden');
+							recaptchaInput.setAttribute('name', 'g-recaptcha-response');
+							form.appendChild(recaptchaInput);
+						}
+						recaptchaInput.value = token;
+						console.log('reCAPTCHA v3 token obtained and set.');
+
+						// Disparamos el evento 'verified' que el formulario HTMX está esperando.
+						htmx.trigger(form, 'verified');
+						console.log('HTMX "verified" event triggered.');
+					});
+				});
+			}
+
+			// Adjuntar el manejador al botón de envío del formulario con ID 'demo-form'
+			document.addEventListener('DOMContentLoaded', function() {
+				const form = document.getElementById('demo-form');
+				if (form) {
+					const submitButton = form.querySelector('button[type="button"]'); // Asegúrate que el botón sigue siendo type="button"
+					if (submitButton) {
+						submitButton.addEventListener('click', handleRecaptchaV3AndSubmit);
+					}
+				}
+			});
+		</script>
+	}
 }
 
-templ MakeContactPage(links []common.Link) {
-	@MakeLayout("Contact Us", links, MakeContact())
+templ MakeContactPage(links []common.Link, recaptcha_sitekey string) {
+	@MakeLayout("Contact Us", links, MakeContact(recaptcha_sitekey))
 }

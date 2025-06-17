@@ -3,23 +3,22 @@ package views
 import "github.com/rbc33/gocms/common"
 
 templ MakePost(title string, content string) {
-	// <article class="container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md p-6 m-4 max-w-xxl w-4/6 overflow-x-auto overflow-y-auto">
 	<article
 		class="
-		prose prose-invert lg:prose-l
-		w-fit items-center mx-6 mt-2 p-8
+		prose prose-invert lg:prose-xl
+		w-fit max-w-4xl mx-auto px-6 mt-2 p-8
 		/* --- ESTILOS PARA EL BLOQUE DE CÓDIGO (<pre>) --- */
-		prose-pre:bg-[#011627]          /* Fondo personalizado (valor arbitrario) */
-		prose-pre:p-6                     /* Padding (valor arbitrario para 24px) */
-		prose-pre:border                  /* Añade un borde */
-		prose-pre:border-gray-700         /* Color del borde */
-		prose-pre:rounded-lg              /* Bordes redondeados */
-		/* --- ESTILOS PARA EL TEXTO DEL CÓDIGO (<code>) --- */
-		/* Nota: Esto afecta a TODO el código, dentro y fuera de los bloques <pre> */
-		prose-code:text-gray-300         /* Color del texto del código  */
+		prose-pre:bg-[#011627]
+		prose-pre:p-6
+		prose-pre:border
+		prose-pre:border-gray-700
+		prose-pre:rounded-lg
+		prose-pre:max-w-full
+		prose-pre:overflow-x-auto
+		/* --- ESTILOS PARA EL CÓDIGO (<code>) --- */
+		prose-code:text-gray-300
 	"
 	>
-		// <article class="prose lg:prose-xl dark:prose-invert items-center w-full dark:prose-pre:bg-gray-300 dark:prose-pre:text-gray-900">
 		<h1 class="my-4 text-gray-400">{ title }</h1>
 		@templ.Raw(content)
 	</article>

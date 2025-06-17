@@ -31,14 +31,14 @@ func MakePost(title string, content string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<article class=\"\n\t\tprose prose-invert lg:prose-l\n\t\tw-fit items-center mx-6 mt-2 p-8\n\t\t/* --- ESTILOS PARA EL BLOQUE DE CÓDIGO (&lt;pre&gt;) --- */\n\t\tprose-pre:bg-[#011627]          /* Fondo personalizado (valor arbitrario) */\n\t\tprose-pre:p-6                     /* Padding (valor arbitrario para 24px) */\n\t\tprose-pre:border                  /* Añade un borde */\n\t\tprose-pre:border-gray-700         /* Color del borde */\n\t\tprose-pre:rounded-lg              /* Bordes redondeados */\n\t\t/* --- ESTILOS PARA EL TEXTO DEL CÓDIGO (&lt;code&gt;) --- */\n\t\t/* Nota: Esto afecta a TODO el código, dentro y fuera de los bloques &lt;pre&gt; */\n\t\tprose-code:text-gray-300         /* Color del texto del código  */\n\t\"><h1 class=\"my-4 text-gray-400\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<article class=\"\n\t\tprose prose-invert lg:prose-xl\n\t\tw-fit max-w-4xl mx-auto px-6 mt-2 p-8\n\t\t/* --- ESTILOS PARA EL BLOQUE DE CÓDIGO (&lt;pre&gt;) --- */\n\t\tprose-pre:bg-[#011627]\n\t\tprose-pre:p-6\n\t\tprose-pre:border\n\t\tprose-pre:border-gray-700\n\t\tprose-pre:rounded-lg\n\t\tprose-pre:max-w-full\n\t\tprose-pre:overflow-x-auto\n\t\t/* --- ESTILOS PARA EL CÓDIGO (&lt;code&gt;) --- */\n\t\tprose-code:text-gray-300\n\t\"><h1 class=\"my-4 text-gray-400\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/post.templ`, Line: 23, Col: 40}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/post.templ`, Line: 22, Col: 40}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {

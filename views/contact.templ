@@ -2,7 +2,169 @@ package views
 
 import "github.com/rbc33/gocms/common"
 
-templ MakeContact() {
+templ MakeContactFormRecaptcha(recaptcha_sitekey string) {
+	<form id="demo-form" method="post" hx-post="/contact-send" hx-target="#contact-form" class="space-y-6" hx-trigger="verified">
+		<div class="group">
+			<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="name">
+				Name
+			</label>
+			<input
+				type="text"
+				id="name"
+				name="name"
+				required
+				class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+            transition-all duration-300 hover:bg-gray-50"
+				placeholder="Your name"
+			/>
+		</div>
+		<div class="group">
+			<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="email">
+				Email
+			</label>
+			<input
+				type="email"
+				id="email"
+				name="email"
+				required
+				class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+            transition-all duration-300 hover:bg-gray-50"
+				placeholder="your.email@example.com"
+			/>
+		</div>
+		<div class="group">
+			<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="message">
+				Message
+			</label>
+			<textarea
+				id="message"
+				name="message"
+				rows="4"
+				required
+				class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+            transition-all duration-300 hover:bg-gray-50 resize-none"
+				placeholder="Your message here..."
+			></textarea>
+		</div>
+		<div id="recaptcha-invisible-container"></div> <!-- Contenedor para el reCAPTCHA invisible renderizado explícitamente -->
+		<div class="text-center pt-6">
+			<button
+				id="submit-contact-button" // ID para que JavaScript lo encuentre
+				type="button" // Importante: debe ser 'button' para que JS controle el envío
+				class="group relative inline-flex items-center justify-center px-8 py-3 font-bold text-white 
+            bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg overflow-hidden 
+            transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-xl 
+            active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+			>
+				<span class="relative z-10 flex items-center gap-2">
+					Send Message
+					<svg
+						class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M13 7l5 5m0 0l-5 5m5-5H6"
+						></path>
+					</svg>
+				</span>
+				<div
+					class="absolute inset-0 bg-gradient-to-r from-blue-500/50 via-blue-400/30 to-transparent 
+                opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+				></div>
+			</button>
+		</div>
+	</form>
+}
+
+templ MakeContactForm() {
+	<form action="#" method="post" hx-post="/contact-send" hx-target="#contact-form" class="space-y-6">
+		<div class="group">
+			<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="name">
+				Name
+			</label>
+			<input
+				type="text"
+				id="name"
+				name="name"
+				required
+				class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+            transition-all duration-300 hover:bg-gray-50"
+				placeholder="Your name"
+			/>
+		</div>
+		<div class="group">
+			<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="email">
+				Email
+			</label>
+			<input
+				type="email"
+				id="email"
+				name="email"
+				required
+				class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+            transition-all duration-300 hover:bg-gray-50"
+				placeholder="your.email@example.com"
+			/>
+		</div>
+		<div class="group">
+			<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="message">
+				Message
+			</label>
+			<textarea
+				id="message"
+				name="message"
+				rows="4"
+				required
+				class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+            transition-all duration-300 hover:bg-gray-50 resize-none"
+				placeholder="Your message here..."
+			></textarea>
+		</div>
+		<div class="text-center pt-6">
+			<button
+				type="submit"
+				class="group relative inline-flex items-center justify-center px-8 py-3 font-bold text-white 
+            bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg overflow-hidden 
+            transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-xl 
+            active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+			>
+				<span class="relative z-10 flex items-center gap-2">
+					Submit
+					<svg
+						class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M13 7l5 5m0 0l-5 5m5-5H6"
+						></path>
+					</svg>
+				</span>
+				<div
+					class="absolute inset-0 bg-gradient-to-r from-blue-500/50 via-blue-400/30 to-transparent 
+                opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+				></div>
+			</button>
+		</div>
+	</form>
+}
+
+templ MakeContact(recaptcha_sitekey string) {
 	<div id="contact-form" class="max-w-xl mx-auto bg-gray-900/95 backdrop-blur-sm shadow-2xl p-8 relative overflow-hidden rounded-xl border border-gray-700/50">
 		<!-- Gradient overlay mejorado -->
 		<div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-gray-800/50 to-purple-500/5 rounded-xl"></div>
@@ -11,87 +173,72 @@ templ MakeContact() {
 				<h2 class="text-3xl text-gray-300 font-bold mb-2 font-bangers tracking-wider">Get in Touch</h2>
 				<p class="text-gray-400">We'd love to hear from you. Send us a message!</p>
 			</div>
-			<form action="#" method="post" hx-post="/contact-send" hx-target="#contact-form" class="space-y-6">
-				<div class="group">
-					<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="name">
-						Name
-					</label>
-					<input
-						type="text"
-						id="name"
-						name="name"
-						required
-						class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
-            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-            transition-all duration-300 hover:bg-gray-50"
-						placeholder="Your name"
-					/>
-				</div>
-				<div class="group">
-					<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="email">
-						Email
-					</label>
-					<input
-						type="email"
-						id="email"
-						name="email"
-						required
-						class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
-            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-            transition-all duration-300 hover:bg-gray-50"
-						placeholder="your.email@example.com"
-					/>
-				</div>
-				<div class="group">
-					<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="message">
-						Message
-					</label>
-					<textarea
-						id="message"
-						name="message"
-						rows="4"
-						required
-						class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
-            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-            transition-all duration-300 hover:bg-gray-50 resize-none"
-						placeholder="Your message here..."
-					></textarea>
-				</div>
-				<div class="text-center pt-6">
-					<button
-						type="submit"
-						class="group relative inline-flex items-center justify-center px-8 py-3 font-bold text-white 
-            bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg overflow-hidden 
-            transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-xl 
-            active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-					>
-						<span class="relative z-10 flex items-center gap-2">
-							Send Message
-							<svg
-								class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M13 7l5 5m0 0l-5 5m5-5H6"
-								></path>
-							</svg>
-						</span>
-						<div
-							class="absolute inset-0 bg-gradient-to-r from-blue-500/50 via-blue-400/30 to-transparent 
-                opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-						></div>
-					</button>
-				</div>
-			</form>
+			if len(recaptcha_sitekey)>0 {
+				@MakeContactFormRecaptcha(recaptcha_sitekey)
+			} else {
+				@MakeContactForm()
+			}
 		</div>
 	</div>
+	if len(recaptcha_sitekey)>0 {
+		// Carga la API de reCAPTCHA con callbacks para carga y renderizado explícito
+		<script src={ "https://www.google.com/recaptcha/api.js?onload=onRecaptchaApiLoad&render=explicit" } async defer></script>
+		<script>
+			var recaptchaWidgetId; // Almacenará el ID del widget de reCAPTCHA invisible renderizado
+
+			// Esta función se llama cuando la API de reCAPTCHA se ha cargado
+			function onRecaptchaApiLoad() {
+			  console.log('reCAPTCHA API cargada.');
+			  const recaptchaContainer = document.getElementById('recaptcha-invisible-container');
+			  // Corregido: Asignar correctamente la sitekey de Go a la variable JavaScript
+			  const siteKey = '{ recaptcha_sitekey }'; 
+
+			  if (recaptchaContainer && siteKey) {
+			    recaptchaWidgetId = grecaptcha.render(recaptchaContainer, {
+			      'sitekey': siteKey,
+			      'size': 'invisible', // Especifica que es un reCAPTCHA invisible
+			      'callback': onRecaptchaSuccessForHtmx // Función a llamar tras verificación exitosa
+			    });
+			    console.log('reCAPTCHA Invisible renderizado. Widget ID:', recaptchaWidgetId);
+			  } else {
+			    if (!recaptchaContainer) console.error('Contenedor de reCAPTCHA "recaptcha-invisible-container" no encontrado.');
+			    if (!siteKey) console.error('Site Key de reCAPTCHA no encontrada.');
+			  }
+
+			  // Adjuntar listener al botón de envío
+			  const submitButton = document.getElementById('submit-contact-button');
+			  if (submitButton) {
+			    submitButton.addEventListener('click', function() {
+			      console.log('Botón de envío clickeado, ejecutando reCAPTCHA.');
+			      if (typeof grecaptcha !== 'undefined' && recaptchaWidgetId !== undefined) {
+			        grecaptcha.execute(recaptchaWidgetId);
+			      } else {
+			        console.error('grecaptcha no está listo o recaptchaWidgetId no está definido. El formulario no se enviará mediante reCAPTCHA.');
+			        // Aquí podrías manejar un fallback, como enviar el formulario directamente (sin HTMX) o mostrar un error.
+			      }
+			    });
+			  } else {
+			    console.error('Botón de envío "submit-contact-button" no encontrado.');
+			  }
+			}
+
+			// Esta función es llamada por reCAPTCHA después de una verificación exitosa
+			function onRecaptchaSuccessForHtmx(token) {
+			  console.log('onRecaptchaSuccessForHtmx llamado. Token:', token);
+			  const form = document.getElementById('demo-form');
+			  console.log('Elemento de formulario por ID "demo-form":', form);
+			  if (form) {
+			    console.log('Disparando evento "verified" en el formulario para HTMX.');
+			    htmx.trigger(form, 'verified');
+			    console.log('Evento "verified" disparado.');
+			  } else {
+			    console.error('Form with ID "demo-form" not found in onRecaptchaSuccessForHtmx.');
+			  }
+			}
+		</script>
+	}
 }
 
-templ MakeContactPage(links []common.Link) {
-	@MakeLayout("Contact Us", links, MakeContact())
+templ MakeContactPage(links []common.Link, recaptcha_sitekey string) {
+	@MakeLayout("Contact Us", links, MakeContact(recaptcha_sitekey))
 }

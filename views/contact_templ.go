@@ -10,7 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import "github.com/rbc33/gocms/common"
 
-func MakeContact() templ.Component {
+func MakeContactFormRecaptcha(recaptcha_sitekey string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -31,7 +31,20 @@ func MakeContact() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"contact-form\" class=\"max-w-xl mx-auto bg-gray-900/95 backdrop-blur-sm shadow-2xl p-8 relative overflow-hidden rounded-xl border border-gray-700/50\"><!-- Gradient overlay mejorado --><div class=\"absolute inset-0 bg-gradient-to-br from-blue-500/5 via-gray-800/50 to-purple-500/5 rounded-xl\"></div><div class=\"relative z-10\"><div class=\"text-center mb-8\"><h2 class=\"text-3xl text-gray-300 font-bold mb-2 font-bangers tracking-wider\">Get in Touch</h2><p class=\"text-gray-400\">We'd love to hear from you. Send us a message!</p></div><form action=\"#\" method=\"post\" hx-post=\"/contact-send\" hx-target=\"#contact-form\" class=\"space-y-6\"><div class=\"group\"><label class=\"block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400\" for=\"name\">Name</label> <input type=\"text\" id=\"name\" name=\"name\" required class=\"w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 \n            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 \n            transition-all duration-300 hover:bg-gray-50\" placeholder=\"Your name\"></div><div class=\"group\"><label class=\"block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400\" for=\"email\">Email</label> <input type=\"email\" id=\"email\" name=\"email\" required class=\"w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 \n            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 \n            transition-all duration-300 hover:bg-gray-50\" placeholder=\"your.email@example.com\"></div><div class=\"group\"><label class=\"block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400\" for=\"message\">Message</label> <textarea id=\"message\" name=\"message\" rows=\"4\" required class=\"w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 \n            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 \n            transition-all duration-300 hover:bg-gray-50 resize-none\" placeholder=\"Your message here...\"></textarea></div><div class=\"text-center pt-6\"><button type=\"submit\" class=\"group relative inline-flex items-center justify-center px-8 py-3 font-bold text-white \n            bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg overflow-hidden \n            transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-xl \n            active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/50\"><span class=\"relative z-10 flex items-center gap-2\">Send Message <svg class=\"w-5 h-5 transition-transform duration-300 group-hover:translate-x-1\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13 7l5 5m0 0l-5 5m5-5H6\"></path></svg></span><div class=\"absolute inset-0 bg-gradient-to-r from-blue-500/50 via-blue-400/30 to-transparent \n                opacity-0 group-hover:opacity-100 transition-opacity duration-300\"></div></button></div></form></div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<form id=\"demo-form\" method=\"post\" hx-post=\"/contact-send\" hx-target=\"#contact-form\" class=\"space-y-6\" hx-trigger=\"verified\"><div class=\"group\"><label class=\"block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400\" for=\"name\">Name</label> <input type=\"text\" id=\"name\" name=\"name\" required class=\"w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 \n            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 \n            transition-all duration-300 hover:bg-gray-50\" placeholder=\"Your name\"></div><div class=\"group\"><label class=\"block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400\" for=\"email\">Email</label> <input type=\"email\" id=\"email\" name=\"email\" required class=\"w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 \n            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 \n            transition-all duration-300 hover:bg-gray-50\" placeholder=\"your.email@example.com\"></div><div class=\"group\"><label class=\"block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400\" for=\"message\">Message</label> <textarea id=\"message\" name=\"message\" rows=\"4\" required class=\"w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 \n            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 \n            transition-all duration-300 hover:bg-gray-50 resize-none\" placeholder=\"Your message here...\"></textarea></div><div class=\"flex justify-center py-4\"><div class=\"g-recaptcha\" data-sitekey=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var2 string
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(recaptcha_sitekey)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/contact.templ`, Line: 54, Col: 60}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" data-callback=\"onRecaptchaSuccessForHtmx\"></div></div><div class=\"text-center pt-6\"><button type=\"button\" class=\"group relative inline-flex items-center justify-center px-8 py-3 font-bold text-white \n            bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg overflow-hidden \n            transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-xl \n            active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/50\"><span class=\"relative z-10 flex items-center gap-2\">Send Message <svg class=\"w-5 h-5 transition-transform duration-300 group-hover:translate-x-1\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13 7l5 5m0 0l-5 5m5-5H6\"></path></svg></span><div class=\"absolute inset-0 bg-gradient-to-r from-blue-500/50 via-blue-400/30 to-transparent \n                opacity-0 group-hover:opacity-100 transition-opacity duration-300\"></div></button></div></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -39,7 +52,7 @@ func MakeContact() templ.Component {
 	})
 }
 
-func MakeContactPage(links []common.Link) templ.Component {
+func MakeContactForm() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -55,12 +68,91 @@ func MakeContactPage(links []common.Link) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var2 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var2 == nil {
-			templ_7745c5c3_Var2 = templ.NopComponent
+		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var3 == nil {
+			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = MakeLayout("Contact Us", links, MakeContact()).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<form action=\"#\" method=\"post\" hx-post=\"/contact-send\" hx-target=\"#contact-form\" class=\"space-y-6\"><div class=\"group\"><label class=\"block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400\" for=\"name\">Name</label> <input type=\"text\" id=\"name\" name=\"name\" required class=\"w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 \n            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 \n            transition-all duration-300 hover:bg-gray-50\" placeholder=\"Your name\"></div><div class=\"group\"><label class=\"block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400\" for=\"email\">Email</label> <input type=\"email\" id=\"email\" name=\"email\" required class=\"w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 \n            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 \n            transition-all duration-300 hover:bg-gray-50\" placeholder=\"your.email@example.com\"></div><div class=\"group\"><label class=\"block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400\" for=\"message\">Message</label> <textarea id=\"message\" name=\"message\" rows=\"4\" required class=\"w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 \n            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 \n            transition-all duration-300 hover:bg-gray-50 resize-none\" placeholder=\"Your message here...\"></textarea></div><div class=\"text-center pt-6\"><button type=\"submit\" class=\"group relative inline-flex items-center justify-center px-8 py-3 font-bold text-white \n            bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg overflow-hidden \n            transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-xl \n            active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/50\"><span class=\"relative z-10 flex items-center gap-2\">Submit <svg class=\"w-5 h-5 transition-transform duration-300 group-hover:translate-x-1\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13 7l5 5m0 0l-5 5m5-5H6\"></path></svg></span><div class=\"absolute inset-0 bg-gradient-to-r from-blue-500/50 via-blue-400/30 to-transparent \n                opacity-0 group-hover:opacity-100 transition-opacity duration-300\"></div></button></div></form>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func MakeContact(recaptcha_sitekey string) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var4 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var4 == nil {
+			templ_7745c5c3_Var4 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div id=\"contact-form\" class=\"max-w-xl mx-auto bg-gray-900/95 backdrop-blur-sm shadow-2xl p-8 relative overflow-hidden rounded-xl border border-gray-700/50\"><!-- Gradient overlay mejorado --><div class=\"absolute inset-0 bg-gradient-to-br from-blue-500/5 via-gray-800/50 to-purple-500/5 rounded-xl\"></div><div class=\"relative z-10\"><div class=\"text-center mb-8\"><h2 class=\"text-3xl text-gray-300 font-bold mb-2 font-bangers tracking-wider\">Get in Touch</h2><p class=\"text-gray-400\">We'd love to hear from you. Send us a message!</p></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if len(recaptcha_sitekey) > 0 {
+			templ_7745c5c3_Err = MakeContactFormRecaptcha(recaptcha_sitekey).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			templ_7745c5c3_Err = MakeContactForm().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if len(recaptcha_sitekey) > 0 {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, " <script src=\"https://www.google.com/recaptcha/api.js\" async defer></script>  <script>\n\t\t\tfunction onRecaptchaSuccessForHtmx(token) {\n\t\t\t  // 'token' es el g-recaptcha-response. Google reCAPTCHA ya lo añade a los datos del formulario.\n\t\t\t  // Buscamos el formulario por su ID. Debe coincidir con el ID en MakeContactFormRecaptcha.\n\t\t\t  const form = document.getElementById('demo-form');\n\t\t\t  if (form) {\n\t\t\t    // Disparamos el evento 'verified' que HTMX está esperando.\n\t\t\t    htmx.trigger(form, 'verified');\n\t\t\t  } else {\n\t\t\t    console.error('Form with ID \"demo-form\" not found in onRecaptchaSuccessForHtmx.');\n\t\t\t  }\n\t\t\t}\n\t\t</script>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		return nil
+	})
+}
+
+func MakeContactPage(links []common.Link, recaptcha_sitekey string) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var5 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var5 == nil {
+			templ_7745c5c3_Var5 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = MakeLayout("Contact Us", links, MakeContact(recaptcha_sitekey)).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

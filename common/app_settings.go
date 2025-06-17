@@ -27,6 +27,8 @@ type AppSettings struct {
 	ImageDirectory     string       `toml:"image_dir"`
 	CacheEnabled       bool         `toml:"cache_enabled"`
 	AppNavbar          Navbar       `toml:"navbar"`
+	RecaptchaSiteKey   string       `toml:"recaptcha_sitekey, omitempty"`
+	RecaptchaSecret    string       `toml:"recaptcha_secret, omitempty"`
 }
 
 type Navbar struct {

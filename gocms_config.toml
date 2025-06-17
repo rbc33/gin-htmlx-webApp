@@ -7,6 +7,10 @@ PORT_ADMIN="8081"
 # Enable/disable endpoint cache
 cache_enabled = false
 
+recaptcha_sitekey = "6LeNWGQrAAAAAFBtdsj36fCHGKM4p-VMjyP9dmSq"
+recaptcha_secret = "6LeNWGQrAAAAAI2tbNWqaV-zx1_Zx7YJTgZpln54"
+
+
 [[card_schema]]
 schema_name = "schema_name1"
 

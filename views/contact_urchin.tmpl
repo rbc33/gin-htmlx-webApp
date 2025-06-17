@@ -1,0 +1,157 @@
+package views
+
+import "github.com/rbc33/gocms/common"
+
+templ MakeContactFormRecaptcha1(recaptcha_sitekey string) {
+	<form id="demo-form" method="post" hx-post="/contact-send" hx-target="#contact-form" class="space-y-6" hx-trigger="verified">
+		<div class="group">
+			<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="name">
+				Name
+			</label>
+			<input
+				type="text"
+				id="name"
+				name="name"
+				required
+				class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+            transition-all duration-300 hover:bg-gray-50"
+				placeholder="Your name"
+			/>
+		</div>
+		<div class="group">
+			<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="email">
+				Email
+			</label>
+			<input
+				type="email"
+				id="email"
+				name="email"
+				required
+				class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+            transition-all duration-300 hover:bg-gray-50"
+				placeholder="your.email@example.com"
+			/>
+		</div>
+		<div class="group">
+			<label class="block text-gray-300 font-medium mb-2 transition-colors group-focus-within:text-blue-400" for="message">
+				Message
+			</label>
+			<textarea
+				id="message"
+				name="message"
+				rows="4"
+				required
+				class="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 
+            rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+            transition-all duration-300 hover:bg-gray-50 resize-none"
+				placeholder="Your message here..."
+			></textarea>
+		</div>
+		<div class="flex justify-center py-4">
+			// Contenedor para centrar el widget reCAPTCHA
+			<div class="g-recaptcha" data-sitekey={ recaptcha_sitekey } data-callback="onRecaptchaSuccessForHtmx"></div>
+		</div>
+		<div class="text-center pt-6">
+			<button
+				type="button"
+				class="group relative inline-flex items-center justify-center px-8 py-3 font-bold text-white 
+            bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg overflow-hidden 
+            transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-xl 
+            active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+			>
+				<span class="relative z-10 flex items-center gap-2">
+					Send Message
+					<svg
+						class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M13 7l5 5m0 0l-5 5m5-5H6"
+						></path>
+					</svg>
+				</span>
+				<div
+					class="absolute inset-0 bg-gradient-to-r from-blue-500/50 via-blue-400/30 to-transparent 
+                opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+				></div>
+			</button>
+		</div>
+	</form>
+}
+
+templ MakeContactFormWithRecaptcha1(recaptcha_sitekey string) {
+	<form id="demo-form" class="space-y-4 p-12" method="post" hx-post="/contact-send" hx-target="#contact-form" hx-trigger="verified">
+		<label for="name" class="block text-md font-medium">Name:</label>
+		<input id="name" class="mt-1 block w-full px-3 py-2 border border-pastel-blue-900 rounded-md shadow-md focus:outline-none focus:ring-pastel-blue-500 focus:border-pastel-blue-500" type="text" name="name" required/>
+		<label for="email" class="block text-md font-medium">Email:</label>
+		<input id="email" class="mt-1 block w-full px-3 py-2 border border-pastel-blue-900 rounded-md shadow-md focus:outline-none focus:ring-pastel-blue-500 focus:border-pastel-blue-500" type="email" name="email" required/>
+		<label for="message" class="block text-md font-medium">Message:</label>
+		<textarea id="message" class="mt-1 block w-full px-3 py-2 border border-pastel-blue-900 rounded-md shadow-md focus:outline-none focus:ring-pastel-blue-500 focus:border-pastel-blue-500" name="message" rows="4" cols="50" required></textarea>
+		<div class="text-center">
+			<button class="g-recaptcha text-gray-700 dark:text-gray-900 w-fit inline-flex justify-center py-2 px-4 border border-transparent shadow-md text-sm font-medium rounded-md bg-gray-200 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 fous:ring-pastel-blue-300" data-sitekey={ recaptcha_sitekey } data-callback="onSubmit" data-action="submit">
+				Submit
+			</button>
+		</div>
+	</form>
+}
+
+templ MakeContactForm1() {
+	<form id="demo-form" class="space-y-4 p-12" method="post" hx-post="/contact-send" hx-target="#contact-form">
+		<label for="name" class="block text-md font-medium">Name:</label>
+		<input id="name" class="mt-1 block w-full px-3 py-2 border border-pastel-blue-900 rounded-md shadow-md focus:outline-none focus:ring-pastel-blue-500 focus:border-pastel-blue-500" type="text" name="name" required/>
+		<label for="email" class="block text-md font-medium">Email:</label>
+		<input id="email" class="mt-1 block w-full px-3 py-2 border border-pastel-blue-900 rounded-md shadow-md focus:outline-none focus:ring-pastel-blue-500 focus:border-pastel-blue-500" type="email" name="email" required/>
+		<label for="message" class="block text-md font-medium">Message:</label>
+		<textarea id="message" class="mt-1 block w-full px-3 py-2 border border-pastel-blue-900 rounded-md shadow-md focus:outline-none focus:ring-pastel-blue-500 focus:border-pastel-blue-500" name="message" rows="4" cols="50" required></textarea>
+		<div class="text-center">
+			<button type="submit" class="text-gray-900 w-fit inline-flex justify-center py-2 px-4 border border-transparent shadow-md text-sm font-medium rounded-md  bg-gray-200 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 fous:ring-pastel-blue-300">
+				Send Message
+			</button>
+		</div>
+	</form>
+}
+
+templ makeContact1(recaptcha_sitekey string) {
+	<div id="contact-form" class="rounded-lg shadow-md w-full">
+		<h2 class="text-4xl font-bold mb-6 text-center">Contact Us</h2>
+		if len(recaptcha_sitekey) > 0 {
+			// Cambiado para usar el formulario con el div de recaptcha separado y botón type="button"
+			@MakeContactFormRecaptcha(recaptcha_sitekey)
+		} else {
+			@MakeContactForm()
+		}
+	</div>
+	if len(recaptcha_sitekey) > 0 {
+		// Carga la API de reCAPTCHA de forma asíncrona y diferida
+		<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+		// Script para manejar el callback de reCAPTCHA y disparar el evento para HTMX
+		<script>
+			function onRecaptchaSuccessForHtmx(token) {
+			  console.log('onRecaptchaSuccessForHtmx called. Token:', token);
+			  // 'token' es el g-recaptcha-response. Google reCAPTCHA ya lo añade a los datos del formulario.
+			  // Buscamos el formulario por su ID. Debe coincidir con el ID en MakeContactFormRecaptcha.
+			  const form = document.getElementById('demo-form');
+			  console.log('Form element by ID "demo-form":', form);
+			  if (form) {
+			    console.log('Triggering "verified" event on form for HTMX.');
+			    // Disparamos el evento 'verified' que HTMX está esperando.
+			    htmx.trigger(form, 'verified');
+			    console.log('"verified" event triggered.');
+			  } else {
+			    console.error('Form with ID "demo-form" not found in onRecaptchaSuccessForHtmx.');
+			  }
+			}
+		</script>
+	}
+}
+
+templ MakeContactPage1(links []common.Link, recaptcha_sitekey string) {
+	@MakeLayout("Menu and Contact Form", links, makeContact(recaptcha_sitekey))
+}

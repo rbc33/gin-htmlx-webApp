@@ -81,7 +81,7 @@ func IsDocker() string {
 }
 
 func GetTestDatabaseUri() string {
-	if MY_SQL_URL := os.Getenv("MY_SQL_URL"); MY_SQL_URL != "" {
+	if MY_SQL_URL := os.Getenv("MY_SQL_URL"); MY_SQL_URL != "" && os.Getenv("ANDROID_HOME") == "" {
 		return MY_SQL_URL
 	} else if IsGithubActions() {
 		return "root:root@tcp(mysql:3306)/gocms"

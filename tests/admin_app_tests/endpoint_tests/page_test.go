@@ -42,23 +42,24 @@ func TestCreatePage_Success(t *testing.T) {
 	r := admin_app.SetupRoutes(app_settings, shortcode_handlers, database_mock)
 	w := httptest.NewRecorder()
 
-	request := pageRequest{
+	page_data := pageRequest{
 		Title:   "Never gonna",
 		Content: "<p>give</p",
 		Link:    "you-app",
 	}
-	request_body, err := json.Marshal(request)
+	request_body, err := json.Marshal(page_data)
 	assert.Nil(t, err)
 
-	req, _ := http.NewRequest("POST", "/posts", bytes.NewReader(request_body))
-	req.Header.Add("content-type", "application/json")
-	r.ServeHTTP(w, req)
+	request, _ := http.NewRequest("POST", "/pages", bytes.NewReader(request_body))
+	request.Header.Add("content-type", "application/json")
+	r.ServeHTTP(w, request)
 
 	assert.Equal(t, http.StatusCreated, w.Code) // Expect 201 Created for successful creation
 
 	var response pageResponse
 	err = json.Unmarshal(w.Body.Bytes(), &response)
 	assert.Nil(t, err)
+	assert.NotEmpty(t, response.Link)
 
-	assert.Equal(t, response.Id, 0) // Expect a positive ID for the new post
+	assert.Equal(t, page_data.Link, response.Link) // Expect a positive ID for the new post
 }

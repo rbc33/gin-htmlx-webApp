@@ -1,0 +1,12 @@
+package views
+
+import "github.com/rbc33/gocms/common"
+
+templ MakePost(title string, content string) {
+	<h1 class="my-4 text-gray-400">{ title }</h1>
+	@templ.Raw(content)
+}
+
+templ MakePostPage(title string, links []common.Link, content string) {
+	@MakeLayout(title, links, MakePost(title, content))
+}

@@ -2,7 +2,6 @@ package app
 
 import (
 	"bytes"
-	"net/http"
 	"os"
 	"path"
 	"strconv"
@@ -24,7 +23,6 @@ var valid_extensions = map[string]bool{
 }
 
 func imagesHandler(c *gin.Context, database database.Database) ([]byte, error) {
-	// TODO: Implement rendering.
 	pageNum := 1 // Default to page 0
 	if pageNumQuery := c.Param("num"); pageNumQuery != "" {
 		num, err := strconv.Atoi(pageNumQuery)
@@ -35,46 +33,24 @@ func imagesHandler(c *gin.Context, database database.Database) ([]byte, error) {
 		}
 	}
 
-	limit := 10 // or whatever limit you want
-	offset := (pageNum - 1) * limit
-
 	// Get all the files inside the image directory
 	files, err := os.ReadDir(common.Settings.ImageDirectory)
 	if err != nil {
 		log.Error().Msgf("could not read files in image directory: %v", err)
 		return []byte{}, err
 	}
-	limit = min(offset+limit, len(files))
-	offset = min(offset, len(files))
 
-	// Filter all the non-images out of the list
-	valid_images := make([]common.Image, 0)
-	for _, file := range files[offset:limit] {
-		// TODO : This is surely not the best way
-		//        to implement pagination in for loops
-		// if n >= limit {
-		// 	break
-		// }
+	filepaths := common.Map(files, func(file os.DirEntry) string {
+		return file.Name()
+	})
+	filepaths = common.Filter(filepaths, func(filepath string) bool {
+		ext := path.Ext(filepath)
+		return ext == ".json"
+	})
 
-		// if n < offset {
-		// 	continue
-		// }
-
-		filename := file.Name()
-		ext := path.Ext(file.Name())
-		// Checking for the existence of a value in a map takes O(1) and therefore it's faster than
-		// iterating over a string slice
-		_, ok := valid_extensions[ext]
-		if !ok {
-			continue
-		}
-
-		image := common.Image{
-			Uuid: filename[:len(filename)-len(ext)],
-			Name: filename,
-			Ext:  ext,
-		}
-		valid_images = append(valid_images, image)
+	valid_images, err := common.GetImages(filepaths, 10, pageNum, common.Settings)
+	if err != nil {
+		return []byte{}, err
 	}
 
 	index_view := views.MakeImagesPage(valid_images, common.Settings.AppNavbar.Links)
@@ -107,8 +83,4 @@ func imageHandler(c *gin.Context, database database.Database) ([]byte, error) {
 	}
 
 	return renderHtml(c, views.MakeImagePage(image, common.Settings.AppNavbar.Links))
-}
-
-func getContentTypeFromData(data []byte) string {
-	return http.DetectContentType(data[:512])
 }

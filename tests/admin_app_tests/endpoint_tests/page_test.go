@@ -12,21 +12,25 @@ import (
 	admin_app "github.com/rbc33/gocms/admin-app"
 	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/tests/mocks"
+	test "github.com/rbc33/gocms/tests/system_tests/helpers"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 )
 
-type postRequest struct {
+type pageRequest struct {
 	Title   string `json:"title"`
-	Excerpt string `json:"excerpt"`
+	Link    string `json:"excerpt"`
 	Content string `json:"content"`
 }
 
-type postResponse struct {
-	Id int `json:"id"`
+type pageResponse struct {
+	Id   int `json:"id"`
+	Link int `json:"link"`
 }
 
-func TestCreatePost_Success(t *testing.T) {
+var app_settings = test.GetAppSettings()
+
+func TestCreatePage_Success(t *testing.T) {
 
 	shortcode_handlers, err := admin_app.LoadShortcodesHandlers(common.Settings.Shortcodes)
 	if err != nil {
@@ -38,10 +42,10 @@ func TestCreatePost_Success(t *testing.T) {
 	r := admin_app.SetupRoutes(app_settings, shortcode_handlers, database_mock)
 	w := httptest.NewRecorder()
 
-	request := postRequest{
-		Title:   "New Test Post",
-		Excerpt: "A brief summary of the post.",
-		Content: "This is the full content of the new test post.",
+	request := pageRequest{
+		Title:   "Never gonna",
+		Content: "<p>give</p",
+		Link:    "you-app",
 	}
 	request_body, err := json.Marshal(request)
 	assert.Nil(t, err)
@@ -52,7 +56,7 @@ func TestCreatePost_Success(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code) // Expect 201 Created for successful creation
 
-	var response postResponse
+	var response pageResponse
 	err = json.Unmarshal(w.Body.Bytes(), &response)
 	assert.Nil(t, err)
 

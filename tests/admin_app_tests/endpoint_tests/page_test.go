@@ -1,36 +1,32 @@
 package endpoint_tests
 
 import (
-	"os"
-	"testing"
-
 	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"testing"
 
 	admin_app "github.com/rbc33/gocms/admin-app"
 	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/tests/mocks"
-	test "github.com/rbc33/gocms/tests/system_tests/helpers"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 )
 
-type pageRequest struct {
-	Title   string `json:"title"`
-	Link    string `json:"excerpt"`
-	Content string `json:"content"`
-}
+func TestAddPageHappyPath(t *testing.T) {
+	databaseMock := mocks.DatabaseMock{
+		AddPageHandler: func(string, string, string) (int, error) {
+			return 0, nil
+		},
+	}
 
-type pageResponse struct {
-	Id   int `json:"id"`
-	Link int `json:"link"`
-}
-
-var app_settings = test.GetAppSettings()
-
-func TestCreatePage_Success(t *testing.T) {
+	page_data := admin_app.AddPageRequest{
+		Title:   "Title",
+		Content: "Content",
+		Link:    "Link",
+	}
 
 	shortcode_handlers, err := admin_app.LoadShortcodesHandlers(common.Settings.Shortcodes)
 	if err != nil {
@@ -38,28 +34,20 @@ func TestCreatePage_Success(t *testing.T) {
 		os.Exit(-1)
 	}
 
-	database_mock := mocks.DatabaseMock{}
-	r := admin_app.SetupRoutes(app_settings, shortcode_handlers, database_mock)
-	w := httptest.NewRecorder()
+	router := admin_app.SetupRoutes(app_settings, shortcode_handlers, databaseMock)
+	responseRecorder := httptest.NewRecorder()
 
-	page_data := pageRequest{
-		Title:   "Never gonna",
-		Content: "<p>give</p",
-		Link:    "you-app",
-	}
-	request_body, err := json.Marshal(page_data)
+	body, _ := json.Marshal(page_data)
+	request, _ := http.NewRequest(http.MethodPost, "/pages", bytes.NewBuffer(body))
+
+	router.ServeHTTP(responseRecorder, request)
+
+	assert.Equal(t, http.StatusCreated, responseRecorder.Code)
+	var response admin_app.PageResponse
+	err = json.Unmarshal(responseRecorder.Body.Bytes(), &response)
 	assert.Nil(t, err)
 
-	request, _ := http.NewRequest("POST", "/pages", bytes.NewReader(request_body))
-	request.Header.Add("content-type", "application/json")
-	r.ServeHTTP(w, request)
-
-	assert.Equal(t, http.StatusCreated, w.Code) // Expect 201 Created for successful creation
-
-	var response pageResponse
-	err = json.Unmarshal(w.Body.Bytes(), &response)
-	assert.Nil(t, err)
+	assert.NotNil(t, response.Id)
 	assert.NotEmpty(t, response.Link)
-
-	assert.Equal(t, page_data.Link, response.Link) // Expect a positive ID for the new post
+	assert.Equal(t, page_data.Link, response.Link)
 }

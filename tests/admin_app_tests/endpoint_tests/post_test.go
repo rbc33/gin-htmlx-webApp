@@ -12,6 +12,7 @@ import (
 	admin_app "github.com/rbc33/gocms/admin-app"
 	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/tests/mocks"
+	test "github.com/rbc33/gocms/tests/system_tests/helpers"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 )
@@ -25,6 +26,8 @@ type postRequest struct {
 type postResponse struct {
 	Id int `json:"id"`
 }
+
+var app_settings = test.GetAppSettings()
 
 func TestCreatePost_Success(t *testing.T) {
 

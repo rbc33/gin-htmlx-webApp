@@ -7,9 +7,9 @@ import (
 )
 
 type DatabaseMock struct {
-	GetPostHandler     func(int) (common.Post, error)
-	GetPostsHandler    func(int, int) ([]common.Post, error)
-	AddPagePostHandler func(string, string, string) (int, error)
+	GetPostHandler  func(int) (common.Post, error)
+	GetPostsHandler func(int, int) ([]common.Post, error)
+	AddPageHandler  func(string, string, string) (int, error)
 }
 
 func (db DatabaseMock) GetPosts(offset int, limit int) ([]common.Post, error) {
@@ -55,7 +55,7 @@ func (db DatabaseMock) DeleteImage(uuid string) error {
 	return fmt.Errorf("not implemented")
 }
 func (db DatabaseMock) AddPage(title string, content string, link string) (int, error) {
-	return db.AddPagePostHandler(title, content, link)
+	return db.AddPageHandler(title, content, link)
 }
 func (db DatabaseMock) GetPage(link string) (common.Page, error) {
 	return common.Page{}, fmt.Errorf("not implemented")

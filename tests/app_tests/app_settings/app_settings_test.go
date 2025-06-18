@@ -2,6 +2,7 @@ package app_settings_tests
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"testing"
 
@@ -28,12 +29,20 @@ func writeToml(contents []byte) (s string, err error) {
 	}
 	return file.Name(), nil
 }
+func gitAction() string {
+	if os.Getenv("GITHUB_ACTIONS") != "" {
+		return "root:root@tcp(mysql:3306)/gocms"
+	} else {
+		return "root:secret@tcp(192.168.0.100:33060)/gocms"
+	}
 
+}
 func TestCorrectToml(t *testing.T) {
-	content := `
-MY_SQL_URL = "root:root@tcp(mysql:3306)/gocms"
+	db := gitAction()
+	content := fmt.Sprintf(`
+MY_SQL_URL = "%v"
 PORT = "99999"
-`
+`, db)
 	tmpfile, err := os.CreateTemp("", "config.*.toml")
 	require.NoError(t, err)
 	defer os.Remove(tmpfile.Name())
@@ -45,7 +54,7 @@ PORT = "99999"
 	require.NoError(t, err)
 
 	expected := common.AppSettings{
-		DatabaseUri:   "root:root@tcp(mysql:3306)/gocms",
+		DatabaseUri:   db,
 		WebserverPort: "99999",
 		CardSchema:    []common.CardSchema{}, // Initialize as empty slice
 	}

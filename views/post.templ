@@ -2,6 +2,28 @@ package views
 
 import "github.com/rbc33/gocms/common"
 
-templ MakePage(title string, content string, links []common.Link) {
-	@MakeLayout(title, links, templ.Raw(content))
+templ MakePost(title string, content string) {
+	<article
+		class="
+		prose prose-invert lg:prose-xl
+		w-fit max-w-4xl mx-auto px-6 mt-2 p-8
+		/* --- ESTILOS PARA EL BLOQUE DE CÓDIGO (<pre>) --- */
+		prose-pre:bg-[#011627]
+		prose-pre:p-6
+		prose-pre:border
+		prose-pre:border-gray-700
+		prose-pre:rounded-lg
+		prose-pre:max-w-full
+		prose-pre:overflow-x-auto
+		/* --- ESTILOS PARA EL CÓDIGO (<code>) --- */
+		prose-code:text-gray-300
+	"
+	>
+		<h1 class="my-4 text-gray-400">{ title }</h1>
+		@templ.Raw(content)
+	</article>
+}
+
+templ MakePostPage(title string, links []common.Link, content string) {
+	@MakeLayout(title, links, MakePost(title, content))
 }

@@ -12,8 +12,6 @@ import (
 	"os"
 	"path"
 	"strings"
-
-	"github.com/rs/zerolog/log"
 )
 
 // This list contains the valid file
@@ -25,10 +23,10 @@ var ValidImageExtensions = map[string]bool{
 	".gif":  true,
 }
 
-func populateImageMetadata(metadata_path string, app_settings AppSettings) (Image, error) {
+func populateImageMetadata(metadata_path string) (Image, error) {
 
 	// Check if a json metadata file exists
-	metadata_contents, err := os.ReadFile(path.Join(app_settings.ImageDirectory, metadata_path))
+	metadata_contents, err := os.ReadFile(path.Join(Settings.ImageDirectory, metadata_path))
 	if err != nil {
 		return Image{}, fmt.Errorf("could not read metadata for image `%s`", metadata_path)
 	}
@@ -49,7 +47,7 @@ func populateImageMetadata(metadata_path string, app_settings AppSettings) (Imag
 		return Image{}, fmt.Errorf("image type provided in metadata `%s` is not supported: `%s`", metadata_path, image.Filename)
 	}
 
-	filepath := path.Join("/images/data", image.Filename)
+	filepath := path.Join("/images/data/", image.Filename)
 
 	metadata_uuid := strings.TrimSuffix(metadata_path, ext)
 	image.Ext = ext
@@ -65,27 +63,35 @@ func populateImageMetadata(metadata_path string, app_settings AppSettings) (Imag
 // paths must be a list of strings referencing the metadata file for an image.
 // page_size must be a non-negative number greater than zero.
 // page_num must be a non-negative number greater than 0.
-func GetImages(paths []string, page_size, page_num int, app_settings AppSettings) ([]Image, error) {
+func GetImages(files []os.DirEntry, page_size, page_num int) ([]Image, error) {
 
-	if page_num <= 0 {
-		return []Image{}, fmt.Errorf("invalid `page_num` (%d) given", page_num)
-	}
-
+	limit := page_size
 	offset := (page_num - 1) * page_size
 
-	num_paths := len(paths)
-	if offset >= num_paths {
-		return []Image{}, fmt.Errorf("invalid pagination settings: `page_size` (%d) and `page_num` (%d)", page_size, page_num)
-	}
+	// Get all the files inside the image directory
+	limit = min(offset+limit, len(files))
+	offset = min(offset, len(files))
 
+	// Filter all the non-images out of the list
 	valid_images := make([]Image, 0)
-	for _, metadata_path := range paths {
-		image, err := populateImageMetadata(metadata_path, app_settings)
-		if err != nil {
-			log.Warn().Msgf("skipping image defined in metadata path `%s`: %v", metadata_path, err)
+	for _, file := range files[offset:limit] {
+
+		filename := file.Name()
+		ext := path.Ext(file.Name())
+		// Checking for the existence of a value in a map takes O(1) and therefore it's faster than
+		// iterating over a string slice
+		_, ok := ValidImageExtensions[ext]
+		if !ok {
 			continue
+		}
+
+		image := Image{
+			Uuid: filename[:len(filename)-len(ext)],
+			Name: filename,
+			Ext:  ext,
 		}
 		valid_images = append(valid_images, image)
 	}
+
 	return valid_images, nil
 }

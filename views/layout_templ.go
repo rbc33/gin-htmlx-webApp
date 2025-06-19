@@ -31,7 +31,7 @@ func MakeLayout(title string, links []common.Link, content templ.Component) temp
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Home Page</title><!-- Minified version --><link rel=\"stylesheet\" href=\"/static/output.css\"><script src=\"/static/htmx.min.js\"></script></head><body class=\"font-roboto bg-gray-800\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Home Page</title><link rel=\"stylesheet\" href=\"/static/output.css\"><link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap\" rel=\"stylesheet\"><script src=\"/static/htmx.min.js\"></script></head><body class=\"font-roboto bg-gray-800\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

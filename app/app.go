@@ -37,8 +37,14 @@ func SetupRoutes(settings common.AppSettings, database database.Database) *gin.E
 	addCacheHandler(r, "GET", "/card/:id", cardHandler, &cache, database)
 	addCacheHandler(r, "GET", "/images/:name", imageHandler, &cache, database)
 	addCacheHandler(r, "GET", "/images", imagesHandler, &cache, database)
+	// Pages will be querying the page content from the unique
+	// link given at the creation of the page step
+	addCacheHandler(r, "GET", "/pages/:link", pageHandler, &cache, database)
+
 	// Add the pagination route as a cacheable endpoint
 	addCacheHandler(r, "GET", "/page/:num", homeHandler, &cache, database)
+
+	// Where all the static files (css, js, etc) are served from
 
 	r.Static("/images/data", settings.ImageDirectory)
 	r.Static("/static", "./static")

@@ -1,0 +1,7 @@
+package views
+
+import "github.com/rbc33/gocms/common"
+
+templ MakePage(title string, content string, links []common.Link) {
+	@MakeLayout(title, links, templ.Raw(content))
+}

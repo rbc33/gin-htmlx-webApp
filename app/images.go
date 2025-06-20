@@ -2,7 +2,6 @@ package app
 
 import (
 	"bytes"
-	"net/http"
 	"os"
 	"path"
 	"strconv"
@@ -107,8 +106,4 @@ func imageHandler(c *gin.Context, database database.Database) ([]byte, error) {
 	}
 
 	return renderHtml(c, views.MakeImagePage(image, common.Settings.AppNavbar.Links))
-}
-
-func getContentTypeFromData(data []byte) string {
-	return http.DetectContentType(data[:512])
 }

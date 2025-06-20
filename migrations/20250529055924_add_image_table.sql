@@ -9,5 +9,5 @@
 
 -- +goose Down
 -- +goose StatementBegin
--- + DROP TABLE images;
+--  DROP TABLE images;
 -- +goose StatementEnd

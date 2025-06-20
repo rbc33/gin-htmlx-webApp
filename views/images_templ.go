@@ -80,7 +80,10 @@ func makeImages(images []Image) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\"><div class=\"p-2\"><h2 class=\"text-lg text-center font-bold text-gray-300 m-2\">")
+
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\"><div class=\"p-2\"><h2 class=\"text-lg font-bold text-center text-gray-300 m-2\">")
+
+
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

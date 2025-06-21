@@ -1,5 +1,5 @@
-MY_SQL_URL="root:root@tcp(localhost:33060)/gocms"
-# MY_SQL_URL="root:secret@tcp(192.168.0.100:33060)/gocms"
+MY_SQL_URL="root:root@tcp(localhost:3306)/gocms"
+#MY_SQL_URL="root:secret@tcp(192.168.0.100:33060)/gocms"
 image_dir = "./images"
 PORT="8080"
 PORT_ADMIN="8081"

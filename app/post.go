@@ -2,6 +2,7 @@ package app
 
 import (
 	"bytes"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gomarkdown/markdown"
@@ -12,6 +13,14 @@ import (
 	"github.com/rbc33/gocms/views"
 	"github.com/rs/zerolog/log"
 )
+
+func serveErrorPage(c *gin.Context, err string) error {
+	error_view := views.MakeErrorPage(err, common.Settings.AppNavbar.Links)
+	if err := TemplRender(c, http.StatusBadRequest, error_view); err != nil {
+		log.Error().Msgf("Could not render: %v", err)
+	}
+	return nil
+}
 
 func mdToHTML(md []byte) []byte {
 	// create markdown parser with extensions
@@ -30,23 +39,35 @@ func postHandler(c *gin.Context, database database.Database) ([]byte, error) {
 
 	var post_binding common.PostIdBinding
 	if err := c.ShouldBindUri(&post_binding); err != nil {
+		err = serveErrorPage(c, "requested invalid post ID")
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid post ID"})
+		}
 		return nil, err
 	}
 
 	// Get the post with the ID
 	post, err := database.GetPost(post_binding.Id)
-	if err != nil {
+	if err != nil || post.Content == "" {
+		err = serveErrorPage(c, "post not found")
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "post not found"})
+		}
 		return nil, err
+
 	}
 
 	// Generate HTML page
 	post.Content = string(mdToHTML([]byte(post.Content)))
-	// post_view := views.MakePostPage(post.Title, post.Content)
 	post_view := views.MakePostPage(post.Title, common.Settings.AppNavbar.Links, post.Content)
 	html_buffer := bytes.NewBuffer(nil)
 	err = post_view.Render(c, html_buffer)
 	if err != nil {
-		log.Error().Msgf("%s", err)
+		err = serveErrorPage(c, "error generating the HTML")
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "error generating the HTML"})
+		}
+		return nil, err
 	}
 
 	return html_buffer.Bytes(), nil

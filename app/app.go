@@ -26,13 +26,12 @@ func SetupRoutes(settings common.AppSettings, database database.Database) *gin.E
 	// Contact form related endpoints
 	r.POST("/contact-send", makeContactFormHandler())
 
-	// Service
-	r.GET("/services", makeServiceHandler())
-
 	// All cache endpoints
 	cache := MakeCache(4, time.Minute*10, &TimeValidator{})
 	addCacheHandler(r, "GET", "/", homeHandler, &cache, database)
 	addCacheHandler(r, "GET", "/contact", contactHandler, &cache, database)
+	addCacheHandler(r, "GET", "/about", aboutHandler, &cache, database)
+	addCacheHandler(r, "GET", "/services", servicesHandler, &cache, database)
 	addCacheHandler(r, "GET", "/post/:id", postHandler, &cache, database)
 	addCacheHandler(r, "GET", "/card/:id", cardHandler, &cache, database)
 	addCacheHandler(r, "GET", "/images/:name", imageHandler, &cache, database)

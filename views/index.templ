@@ -11,10 +11,10 @@ templ MakePosts(posts []Post) {
 		for _, post := range posts {
 			// <article class="rounded-lg border-4 border-solid border-slate-700 place-self-center shadow-md p-6 m-4 max-w-xl w-full">
 			<article class="container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md my-4 p-6 max-w-xxl w-5/6">
-				<h2 class="text-2xl text-gray-400 font-bold mb-2">{ post.Title }</h2>
-				<p class="text-white mb-4">
+				<h2 class="text-2xl text-gray-700 dark:text-gray-400 font-bold mb-2">{ post.Title }</h2>
+				<p class="text-black font-medium dark:text-white mb-4">
 					{ post.Excerpt }
-					<a class="text-blue-400 font-bold underline" href={ templ.URL(fmt.Sprintf("/post/%d", post.Id)) }>read more... </a>
+					<a class="dark:text-blue-400 font-bold underline" href={ templ.URL(fmt.Sprintf("/post/%d", post.Id)) }>read more... </a>
 				</p>
 			</article>
 		}

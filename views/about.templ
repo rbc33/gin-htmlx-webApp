@@ -1,0 +1,11 @@
+package views
+
+import "github.com/rbc33/gocms/common"
+
+templ makeAbout(title string) {
+	@MakeUnderConstruction(title)
+}
+
+templ MakeAboutPage(links []common.Link) {
+	@MakeLayout("About", links, makeAbout("About"))
+}

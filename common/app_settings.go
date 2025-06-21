@@ -89,7 +89,8 @@ func GetTestDatabaseUri() string {
 		return docker_uri
 	}
 
-	return "root:secret@tcp(192.168.0.100:33060)/gocms"
+	// return "root:secret@tcp(192.168.0.100:33060)/gocms"
+	return Settings.DatabaseUri
 }
 
 func GetTestServerAddress() string {

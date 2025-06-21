@@ -2,15 +2,10 @@ package views
 
 import "github.com/rbc33/gocms/common"
 
-templ MakeServices() {
-	<article class="container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md p-6 m-4 max-w-xxl w-4/6">
-		<h1 class="text-2xl text-gray-400 font-bold mb-4">Services</h1>
-		<p class="text-white mb-3">
-			This is a test page for services.
-		</p>
-	</article>
+templ MakeServices(title string) {
+	@MakeUnderConstruction(title)
 }
 
 templ MakeServicesPage(links []common.Link) {
-	@MakeLayout("Services Page", links, MakeServices())
+	@MakeLayout("Services Page", links, MakeServices("Services"))
 }

@@ -29,6 +29,10 @@ func MakeFooter() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!-- --><footer class=\"fixed bg-gray-800 p-4 text-white text-center bottom-0 w-full\">&copy; 2024 GoCMS. All rights no lefts.</footer>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		return nil
 	})
 }

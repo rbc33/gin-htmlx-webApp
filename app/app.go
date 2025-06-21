@@ -26,13 +26,12 @@ func SetupRoutes(settings common.AppSettings, database database.Database) *gin.E
 	// Contact form related endpoints
 	r.POST("/contact-send", makeContactFormHandler())
 
-	// Service
-	r.GET("/services", makeServiceHandler())
-
 	// All cache endpoints
 	cache := MakeCache(4, time.Minute*10, &TimeValidator{})
 	addCacheHandler(r, "GET", "/", homeHandler, &cache, database)
 	addCacheHandler(r, "GET", "/contact", contactHandler, &cache, database)
+	addCacheHandler(r, "GET", "/about", aboutHandler, &cache, database)
+	addCacheHandler(r, "GET", "/services", servicesHandler, &cache, database)
 	addCacheHandler(r, "GET", "/post/:id", postHandler, &cache, database)
 	addCacheHandler(r, "GET", "/card/:id", cardHandler, &cache, database)
 	addCacheHandler(r, "GET", "/images/:name", imageHandler, &cache, database)
@@ -49,6 +48,8 @@ func SetupRoutes(settings common.AppSettings, database database.Database) *gin.E
 	r.Static("/images/data", settings.ImageDirectory)
 	r.Static("/static", "./static")
 	r.StaticFS("/media", http.Dir(settings.ImageDirectory))
+
+	r.NoRoute(notFoundHandler())
 
 	return r
 }
@@ -132,4 +133,18 @@ func homeHandler(c *gin.Context, db database.Database) ([]byte, error) {
 
 	return html_buffer.Bytes(), nil
 
+}
+
+func notFoundHandler() func(*gin.Context) {
+	handler := func(c *gin.Context) {
+		buffer, err := renderHtml(c, views.MakeNotFoundPage(common.Settings.AppNavbar.Links))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, common.ErrorRes("could not render HTML", err))
+			return
+		}
+
+		c.Data(http.StatusOK, "text/html; charset=utf-8", buffer)
+	}
+
+	return handler
 }

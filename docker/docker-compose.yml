@@ -29,7 +29,7 @@ services:
     # - DOCKER_DB_URI=root:secret@tcp(192.168.0.100:33060)/gocms
     volumes:
       - type: bind
-        source: .
+        source: ..
         target: /gocms
       - type: bind
         source: ./.env.compose
@@ -51,7 +51,7 @@ services:
 
     volumes:
       - type: bind
-        source: .
+        source: ..
         target: /gocms
       - type: bind
         source: ./.env.compose

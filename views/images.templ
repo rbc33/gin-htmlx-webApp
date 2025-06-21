@@ -11,9 +11,9 @@ templ makeImages(images []Image) {
 			<h3 class="text-3xl font-bold text-white">No images uploaded</h3>
 		</div>
 	} else {
-		<div class="grid grid-cols-2 gap-4 sm:grid-cols-3  p-4">
+		<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 p-2">
 			for _, image := range images {
-				<div class=" w-fit justify-center">
+				<div class=" w-fit justify-center rounded-lg border p-2 border-gray-300 ">
 					<a href={ templ.URL("/images/" + image.Name) }>
 						<img
 							class="w-fit h-fit max-h-[20rem] overflow-hidden object-contain place-self-center rounded-lg border border-gray-300"
@@ -21,9 +21,7 @@ templ makeImages(images []Image) {
 							alt={ image.Name }
 						/>
 						<div class="p-2">
-            
-							<h2 class="text-lg text-center font-bold text-gray-300 m-2">{ image.Name }</h2>
-
+							<h2 class="text-lg text-center font-bold text-gray-800 dark:text-gray-300 m-1">{ image.Name }</h2>
 						</div>
 					</a>
 				</div>

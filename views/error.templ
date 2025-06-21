@@ -1,0 +1,14 @@
+package views
+
+import "github.com/rbc33/gocms/common"
+
+templ makeError(error_str string) {
+	<article class="text-center">
+		<h1 class="text-gray-800 dark:text-gray-400 my-2 text-3xl font-semibold">Error Occurred!</h1>
+		<p class="text-gray-700 dark:text-gray-300 text-2xl font-medium">{ error_str }</p>
+	</article>
+}
+
+templ MakeErrorPage(error_str string, links []common.Link) {
+	@MakeLayout("Error!", links, makeError(error_str))
+}

@@ -10,7 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import "github.com/rbc33/gocms/common"
 
-func MakeServices() templ.Component {
+func MakeServices(title string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -31,7 +31,7 @@ func MakeServices() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<article class=\"container mx-auto rounded-lg border-4 border-solid border-slate-700 shadow-md p-6 m-4 max-w-xxl w-4/6\"><h1 class=\"text-2xl text-gray-400 font-bold mb-4\">Services</h1><p class=\"text-white mb-3\">This is a test page for services.</p></article>")
+		templ_7745c5c3_Err = MakeUnderConstruction(title).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -60,7 +60,7 @@ func MakeServicesPage(links []common.Link) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = MakeLayout("Services Page", links, MakeServices()).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = MakeLayout("Services Page", links, MakeServices("Services")).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

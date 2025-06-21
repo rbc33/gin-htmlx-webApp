@@ -49,6 +49,8 @@ func SetupRoutes(settings common.AppSettings, database database.Database) *gin.E
 	r.Static("/static", "./static")
 	r.StaticFS("/media", http.Dir(settings.ImageDirectory))
 
+	r.NoRoute(notFoundHandler())
+
 	return r
 }
 
@@ -131,4 +133,18 @@ func homeHandler(c *gin.Context, db database.Database) ([]byte, error) {
 
 	return html_buffer.Bytes(), nil
 
+}
+
+func notFoundHandler() func(*gin.Context) {
+	handler := func(c *gin.Context) {
+		buffer, err := renderHtml(c, views.MakeNotFoundPage(common.Settings.AppNavbar.Links))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, common.ErrorRes("could not render HTML", err))
+			return
+		}
+
+		c.Data(http.StatusOK, "text/html; charset=utf-8", buffer)
+	}
+
+	return handler
 }

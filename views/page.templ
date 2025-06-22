@@ -2,6 +2,12 @@ package views
 
 import "github.com/rbc33/gocms/common"
 
+templ MakePagePage(content string) {
+	<div class="h-auto text-black dark:text-white ">
+		@templ.Raw(content)
+	</div>
+}
+
 templ MakePage(title string, content string, links []common.Link) {
-	@MakeLayout(title, links, templ.Raw(content))
+	@MakeLayout(title, links, MakePagePage(content))
 }

@@ -43,6 +43,7 @@ func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua
 	// Group posts routes and fix ordering
 	posts := r.Group("/posts")
 	{
+		// GET /?offset=10&limit=10
 		posts.GET("", getPostsHandler(database))    // GET /posts
 		posts.GET("/:id", getPostHandler(database)) // GET /posts/:id
 		posts.POST("", postPostHandler(database, shortcode_handlers))
@@ -52,7 +53,9 @@ func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua
 	// CRUD Pages
 	pages := r.Group("/pages")
 	{
-		pages.GET("", getPagesHandler(database)) // GET /pages
+		// GET /pages?offset=10&limit=10
+		pages.GET("", getPagesHandler(database))        // GET /pages
+		pages.GET("/all", getAllPagesHandler(database)) // GET /pages
 		pages.POST("", postPageHandler(database))
 	}
 

@@ -14,35 +14,39 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// GET /pages?offset=10&limit=10
 func getPagesHandler(database database.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		offsetStr := c.DefaultQuery("offset", "")
-		limitStr := c.DefaultQuery("limit", "")
+		// Un valor de 0 para el límite significa "sin límite".
+		offsetStr := c.DefaultQuery("offset", "0")
+		limitStr := c.DefaultQuery("limit", "0")
 
-		var offset, limit int
-		var err error
-
-		// Si offset o limit no están presentes, usa -1 para indicar "sin límite"
-		if offsetStr == "" {
-			offset = -1
-		} else {
-			offset, err = strconv.Atoi(offsetStr)
-			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid offset"})
-				return
-			}
+		offset, err := strconv.Atoi(offsetStr)
+		if err != nil || offset < 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid offset parameter"})
+			return
 		}
 
-		if limitStr == "" {
-			limit = -1
-		} else {
-			limit, err = strconv.Atoi(limitStr)
-			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid limit"})
-				return
-			}
+		limit, err := strconv.Atoi(limitStr)
+		if err != nil || limit < 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid limit parameter"})
+			return
 		}
-		pages, err := database.GetPages(offset, limit)
+
+		// Si no se especifica un límite, se obtienen todas las páginas.
+		// Si se especifica, se usa para la paginación.
+		pages, err := database.GetPages(limit, offset)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"pages": pages})
+	}
+}
+func getAllPagesHandler(database database.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		pages, err := database.GetAllPages()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return

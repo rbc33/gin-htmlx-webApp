@@ -3,6 +3,7 @@ package app
 import (
 	"bytes"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rbc33/gocms/common"
@@ -44,7 +45,19 @@ func pageHandler(c *gin.Context, database database.Database) ([]byte, error) {
 
 func getPagesHandler(c *gin.Context, db database.Database) ([]byte, error) {
 
-	pages, err := db.GetPages(-1, -1)
+	pageNum := 1 // Default to page 0
+	if pageNumQuery := c.Param("num"); pageNumQuery != "" {
+		num, err := strconv.Atoi(pageNumQuery)
+		if err == nil && num > 0 {
+			pageNum = num
+		} else {
+			log.Error().Msgf("Invalid page number: %s", pageNumQuery)
+		}
+	}
+	limit := 10 // or whatever limit you want
+	offset := max((pageNum-1)*limit, 0)
+
+	pages, err := db.GetPages(limit, offset)
 	if err != nil {
 		return nil, err
 	}

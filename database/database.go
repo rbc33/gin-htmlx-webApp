@@ -30,6 +30,7 @@ type Database interface {
 	ChangeCard(uuid string, image_location string, json_data string, schema_name string) error
 	DeleteCard(uuid string) error
 	GetPages(offset int, limit int) ([]common.Page, error)
+	GetAllPages() ([]common.Page, error)
 	AddPage(title string, content string, link string) (int, error)
 	GetPage(link string) (common.Page, error)
 }
@@ -41,15 +42,31 @@ type SqlDatabase struct {
 
 // / GetPosts gets all the posts from the current
 // / database connection.
-func (db SqlDatabase) GetPosts(limit int, offset int) (all_posts []common.Post, err error) {
-	query := "SELECT title, excerpt, id FROM posts LIMIT ? OFFSET ?;"
-	rows, err := db.Connection.Query(query, limit, offset)
-	if err != nil {
-		return make([]common.Post, 0), err
+func (db *SqlDatabase) GetPosts(limit int, offset int) ([]common.Post, error) {
+	all_posts := make([]common.Post, 0)
+	var rows *sql.Rows
+	var err error
+
+	query := "SELECT title, excerpt, id FROM posts"
+	args := make([]interface{}, 0)
+
+	// A limit of 0 or less means no limit.
+	if limit > 0 {
+		query += " LIMIT ?"
+		args = append(args, limit)
+		// OFFSET is only valid with LIMIT
+		if offset > 0 {
+			query += " OFFSET ?"
+			args = append(args, offset)
+		}
 	}
-	defer func() {
-		err = errors.Join(rows.Close())
-	}()
+	query += ";"
+
+	rows, err = db.Connection.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
 	for rows.Next() {
 		var post common.Post
@@ -59,7 +76,7 @@ func (db SqlDatabase) GetPosts(limit int, offset int) (all_posts []common.Post, 
 		all_posts = append(all_posts, post)
 	}
 
-	return all_posts, nil
+	return all_posts, rows.Err()
 }
 
 // return post by id
@@ -68,8 +85,7 @@ func (db *SqlDatabase) GetPost(post_id int) (post common.Post, err error) {
 	if err != nil {
 		return common.Post{}, err
 	}
-	defer rows.Close()
-	rows.Next()
+	defer rows.Close() // QueryRow doesn't need this, but it doesn't hurt
 
 	if err = rows.Scan(&post.Id, &post.Title, &post.Content); err != nil {
 		return common.Post{}, err
@@ -178,7 +194,7 @@ func (db *SqlDatabase) AddImage(uuid string, name string, alt string) error {
 
 // / This function gets a post from the database
 // / with the given ID.
-func (db SqlDatabase) GetCard(uuid string) (card common.Card, err error) {
+func (db *SqlDatabase) GetCard(uuid string) (card common.Card, err error) {
 	rows, err := db.Connection.Query("SELECT image_location, json_data, json_schema FROM cards WHERE uuid=?;", uuid)
 	if err != nil {
 		return common.Card{}, err
@@ -323,7 +339,7 @@ func (db *SqlDatabase) DeleteCard(uuid string) error {
 	return nil
 }
 
-func (db SqlDatabase) AddPage(title string, content string, link string) (int, error) {
+func (db *SqlDatabase) AddPage(title string, content string, link string) (int, error) {
 	res, err := db.Connection.Exec("INSERT INTO pages(content, title, link) VALUES(?, ?, ?)", content, title, link)
 	if err != nil {
 		return -1, err
@@ -340,39 +356,68 @@ func (db SqlDatabase) AddPage(title string, content string, link string) (int, e
 	// future
 	return int(id), nil
 }
-func (db SqlDatabase) GetPages(limit int, offset int) (all_pages []common.Page, err error) {
-	query := "SELECT title, content, link, id FROM pages LIMIT ? OFFSET ?;"
-	rows, err := db.Connection.Query(query, limit, offset)
-	if err != nil {
-		return make([]common.Page, 0), err
+
+func (db *SqlDatabase) GetPages(limit int, offset int) ([]common.Page, error) {
+	all_pages := make([]common.Page, 0)
+	var rows *sql.Rows
+	var err error
+
+	query := "SELECT title, content, link, id FROM pages"
+	args := make([]interface{}, 0)
+
+	// A limit of 0 or less means no limit.
+	if limit > 0 {
+		query += " LIMIT ?"
+		args = append(args, limit)
+		// OFFSET is only valid with LIMIT
+		if offset > 0 {
+			query += " OFFSET ?"
+			args = append(args, offset)
+		}
 	}
-	defer func() {
-		err = errors.Join(rows.Close())
-	}()
+	query += ";"
+
+	rows, err = db.Connection.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
 	for rows.Next() {
 		var page common.Page
 		if err = rows.Scan(&page.Title, &page.Content, &page.Link, &page.Id); err != nil {
-			return make([]common.Page, 0), err
+			return nil, err
 		}
 		all_pages = append(all_pages, page)
 	}
 
-	return all_pages, nil
+	return all_pages, rows.Err()
+}
+func (db *SqlDatabase) GetAllPages() ([]common.Page, error) {
+	all_pages := make([]common.Page, 0)
+	query := "SELECT title, content, link, id FROM pages;"
+	rows, err := db.Connection.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var page common.Page
+		if err = rows.Scan(&page.Title, &page.Content, &page.Link, &page.Id); err != nil {
+			return nil, err
+		}
+		all_pages = append(all_pages, page)
+	}
+
+	return all_pages, rows.Err()
 }
 
-func (db SqlDatabase) GetPage(link string) (common.Page, error) {
-	rows, err := db.Connection.Query("SELECT id, title, content, link FROM pages WHERE link=?;", link)
-	if err != nil {
-		return common.Page{}, err
-	}
-	defer func() {
-		err = errors.Join(err, rows.Close())
-	}()
-
-	page := common.Page{}
-	rows.Next()
-	if err = rows.Scan(&page.Id, &page.Title, &page.Content, &page.Link); err != nil {
+func (db *SqlDatabase) GetPage(link string) (common.Page, error) {
+	query := "SELECT id, title, content, link FROM pages WHERE link=?;"
+	row := db.Connection.QueryRow(query, link)
+	var page common.Page
+	if err := row.Scan(&page.Id, &page.Title, &page.Content, &page.Link); err != nil {
 		return common.Page{}, err
 	}
 

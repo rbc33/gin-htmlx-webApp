@@ -18,34 +18,25 @@ import (
 func getPostsHandler(database database.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Lee offset y limit de la query (?offset=0&limit=10)
-		offsetStr := c.DefaultQuery("offset", "")
-		limitStr := c.DefaultQuery("limit", "")
+		// Un valor de 0 para el límite significa "sin límite".
+		offsetStr := c.DefaultQuery("offset", "0")
+		limitStr := c.DefaultQuery("limit", "0")
 
-		var offset, limit int
-		var err error
-
-		// Si offset o limit no están presentes, usa -1 para indicar "sin límite"
-		if offsetStr == "" {
-			offset = -1
-		} else {
-			offset, err = strconv.Atoi(offsetStr)
-			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid offset"})
-				return
-			}
+		offset, err := strconv.Atoi(offsetStr)
+		if err != nil || offset < 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid offset parameter"})
+			return
 		}
 
-		if limitStr == "" {
-			limit = -1
-		} else {
-			limit, err = strconv.Atoi(limitStr)
-			if err != nil {
-				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid limit"})
-				return
-			}
+		limit, err := strconv.Atoi(limitStr)
+		if err != nil || limit < 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid limit parameter"})
+			return
 		}
 
-		posts, err := database.GetPosts(offset, limit)
+		// Si no se especifica un límite, se obtienen todos los posts.
+		// Si se especifica, se usa para la paginación.
+		posts, err := database.GetPosts(limit, offset)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return

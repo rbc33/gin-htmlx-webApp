@@ -56,6 +56,8 @@ func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua
 		// GET /pages?offset=10&limit=10
 		pages.GET("", getPagesHandler(database)) // GET /pages
 		pages.POST("", postPageHandler(database))
+		pages.PUT("", putPageHandler(database))
+		pages.DELETE("", deletePageHandler(database))
 	}
 
 	// CRUD Images

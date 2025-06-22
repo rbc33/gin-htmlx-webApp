@@ -4,7 +4,7 @@ CREATE TABLE pages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     content TEXT NOT NULL,
     title TEXT NOT NULL,
-    link TEXT NOT NULL
+    link VARCHAR(255) NOT NULL UNIQUE
 
 );
 -- +goose StatementEnd

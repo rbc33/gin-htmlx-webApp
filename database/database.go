@@ -32,6 +32,8 @@ type Database interface {
 	GetPages(offset int, limit int) ([]common.Page, error)
 	AddPage(title string, content string, link string) (int, error)
 	GetPage(link string) (common.Page, error)
+	ChangePage(id int, title string, content string, link string) error
+	DeletePage(link string) error
 }
 
 type SqlDatabase struct {
@@ -402,6 +404,49 @@ func (db *SqlDatabase) GetPage(link string) (common.Page, error) {
 	}
 
 	return page, nil
+}
+
+func (db *SqlDatabase) ChangePage(id int, title string, content string, link string) (err error) {
+	tx, err := db.Connection.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	if len(title) > 0 {
+		_, err := tx.Exec("UPDATE pages SET title = ? WHERE id = ?;", title, id)
+		if err != nil {
+			return err
+		}
+	}
+
+	if len(link) > 0 {
+		_, err := tx.Exec("UPDATE pages SET link = ? WHERE id = ?;", link, id)
+		if err != nil {
+			return err
+		}
+	}
+
+	if len(content) > 0 {
+		_, err := tx.Exec("UPDATE pages SET content = ? WHERE id = ?;", content, id)
+		if err != nil {
+			return err
+		}
+	}
+
+	if err = tx.Commit(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *SqlDatabase) DeletePage(link string) error {
+	if _, err := db.Connection.Exec("DELETE FROM pages WHERE link=?;", link); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func validateJson(json_data string, schema_name string) error {

@@ -15,6 +15,9 @@ type AddPageRequest struct {
 type DeletePostBinding struct {
 	common.IntIdBinding
 }
+type DeletePageBinding struct {
+	Link string `json:"link"`
+}
 
 type AddImageRequest struct {
 	Alt string `json:"alt"`
@@ -33,5 +36,12 @@ type ChangePostRequest struct {
 	Id      int    `json:"id"`
 	Title   string `json:"title"`
 	Excerpt string `json:"excerpt"`
+	Content string `json:"content"`
+}
+
+type ChangePageRequest struct {
+	Id      int    `json:"id"`
+	Title   string `json:"title"`
+	Link    string `json:"link"`
 	Content string `json:"content"`
 }

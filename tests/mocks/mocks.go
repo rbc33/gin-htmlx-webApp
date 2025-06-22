@@ -67,3 +67,9 @@ func (db DatabaseMock) AddPage(title string, content string, link string) (int, 
 func (db DatabaseMock) GetPage(link string) (common.Page, error) {
 	return common.Page{}, fmt.Errorf("not implemented")
 }
+func (db DatabaseMock) ChangePage(id int, title string, content string, link string) (err error) {
+	return fmt.Errorf("not implemented")
+}
+func (db DatabaseMock) DeletePage(link string) error {
+	return fmt.Errorf("not implemented")
+}

@@ -86,74 +86,81 @@ func postPageHandler(database database.Database) func(*gin.Context) {
 	}
 }
 
-// func putPostHandler(database database.Database) func(*gin.Context) {
-// 	return func(c *gin.Context) {
-// 		var change_post_request ChangePostRequest
-// 		decoder := json.NewDecoder(c.Request.Body)
-// 		decoder.DisallowUnknownFields()
+func putPageHandler(database database.Database) func(*gin.Context) {
+	return func(c *gin.Context) {
+		var change_page_request ChangePageRequest
+		decoder := json.NewDecoder(c.Request.Body)
+		decoder.DisallowUnknownFields()
 
-// 		err := decoder.Decode(&change_post_request)
-// 		if err != nil {
-// 			log.Warn().Msgf("could not get post from DB: %v", err)
-// 			c.JSON(http.StatusBadRequest, gin.H{
-// 				"error": "invalid request body",
-// 				"msg":   err.Error(),
-// 			})
-// 			return
-// 		}
+		err := decoder.Decode(&change_page_request)
+		if err != nil {
+			log.Warn().Msgf("could not get page from DB: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "invalid request body",
+				"msg":   err.Error(),
+			})
+			return
+		}
 
-// 		err = database.ChangePost(
-// 			change_post_request.Id,
-// 			change_post_request.Title,
-// 			change_post_request.Excerpt,
-// 			change_post_request.Content,
-// 		)
-// 		if err != nil {
-// 			log.Error().Msgf("failed to change post: %v", err)
-// 			c.JSON(http.StatusBadRequest, gin.H{
-// 				"error": "could not change post",
-// 				"msg":   err.Error(),
-// 			})
-// 			return
-// 		}
+		err = checkRequiredPageData(AddPageRequest{change_page_request.Title, change_page_request.Link, change_page_request.Content})
+		if err != nil {
+			log.Error().Msgf("failed to add post required data is missing: %v", err)
+			c.JSON(http.StatusBadRequest, common.ErrorRes("missing required data", err))
+			return
+		}
 
-// 		c.JSON(http.StatusOK, gin.H{
-// 			"id": change_post_request.Id,
-// 		})
-// 	}
-// }
+		err = database.ChangePage(
+			change_page_request.Id,
+			change_page_request.Title,
+			change_page_request.Content,
+			change_page_request.Link,
+		)
+		if err != nil {
+			log.Error().Msgf("failed to change post: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "could not change post",
+				"msg":   err.Error(),
+			})
+			return
+		}
 
-// func deletePostHandler(database database.Database) func(*gin.Context) {
-// 	return func(c *gin.Context) {
-// 		var delete_post_request DeletePostBinding
-// 		decoder := json.NewDecoder(c.Request.Body)
-// 		decoder.DisallowUnknownFields()
+		c.JSON(http.StatusOK, gin.H{
+			"id": change_page_request.Id,
+		})
+	}
+}
 
-// 		err := decoder.Decode(&delete_post_request)
-// 		if err != nil {
-// 			log.Warn().Msgf("could not delete post: %v", err)
-// 			c.JSON(http.StatusBadRequest, gin.H{
-// 				"error": "invalid request body",
-// 				"msg":   err.Error(),
-// 			})
-// 			return
-// 		}
+func deletePageHandler(database database.Database) func(*gin.Context) {
+	return func(c *gin.Context) {
+		var delete_page_request DeletePageBinding
+		decoder := json.NewDecoder(c.Request.Body)
+		decoder.DisallowUnknownFields()
 
-// 		err = database.DeletePost(delete_post_request.Id)
-// 		if err != nil {
-// 			log.Error().Msgf("failed to delete post: %v", err)
-// 			c.JSON(http.StatusBadRequest, gin.H{
-// 				"error": "could not delete post",
-// 				"msg":   err.Error(),
-// 			})
-// 			return
-// 		}
+		err := decoder.Decode(&delete_page_request)
+		if err != nil {
+			log.Warn().Msgf("could not delete post: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "invalid request body",
+				"msg":   err.Error(),
+			})
+			return
+		}
 
-// 		c.JSON(http.StatusOK, gin.H{
-// 			"id": delete_post_request.Id,
-// 		})
-// 	}
-// }
+		err = database.DeletePage(delete_page_request.Link)
+		if err != nil {
+			log.Error().Msgf("failed to delete post: %v", err)
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "could not delete post",
+				"msg":   err.Error(),
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"link": delete_page_request.Link,
+		})
+	}
+}
 
 func checkRequiredPageData(add_page_request AddPageRequest) error {
 	if strings.TrimSpace(add_page_request.Title) == "" {
@@ -167,6 +174,9 @@ func checkRequiredPageData(add_page_request AddPageRequest) error {
 	err := validateLinkRegex(add_page_request.Link)
 	if err != nil {
 		return err
+	}
+	if len(add_page_request.Link) > 255 {
+		return fmt.Errorf("Link must have less than 255 chars")
 	}
 
 	return nil

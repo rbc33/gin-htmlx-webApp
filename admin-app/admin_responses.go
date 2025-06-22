@@ -1,14 +1,22 @@
 package admin_app
 
+import "github.com/rbc33/gocms/common"
+
 type PageResponse struct {
 	Id   int    `json:"id"`
 	Link string `json:"link"`
+}
+type GetPagesResponse struct {
+	Pages []common.Page `json:"pages"`
 }
 
 type PostIdResponse struct {
 	Id int `json:"id"`
 }
 
+type GetPostsResponse struct {
+	Posts []common.Post `json:"posts"`
+}
 type GetPostResponse struct {
 	Id      int    `json:"id"`
 	Title   string `json:"title"`

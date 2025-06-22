@@ -5,21 +5,7 @@ import "github.com/rbc33/gocms/common"
 templ MakePost(title string, content string) {
 	<article
 		class="
-		prose dark:prose-invert lg:prose-xl
-		w-fit max-w-4xl mx-auto px-6 mt-2 p-8 text-black dark:text-white
-		/* --- ESTILOS PARA EL BLOQUE DE CÓDIGO (<pre>) --- */
-		prose-pre:bg-[#011627]
-		prose-pre:text-black
-		prose-pre:dark:text-white
-		prose-pre:p-6
-		prose-pre:border
-		prose-pre:border-gray-700
-		prose-pre:rounded-lg
-		prose-pre:overflow-x-auto
-		/* --- ESTILOS PARA EL CÓDIGO (<code>) --- */
-		prose-code:text-gray-300 
-		prose-code:text-center 
-	"
+		prose lg:prose-xl dark:prose-invert items-center w-fit  dark:prose-pre:text-gray-300"
 	>
 		<h1 class="my-4 text-gray-800 dark:text-gray-400">{ title }</h1>
 		@templ.Raw(content)

@@ -29,6 +29,7 @@ type Database interface {
 	GetCard(uuid string) (common.Card, error)
 	ChangeCard(uuid string, image_location string, json_data string, schema_name string) error
 	DeleteCard(uuid string) error
+	GetPages(offset int, limit int) ([]common.Page, error)
 	AddPage(title string, content string, link string) (int, error)
 	GetPage(link string) (common.Page, error)
 }
@@ -338,6 +339,26 @@ func (db SqlDatabase) AddPage(title string, content string, link string) (int, e
 	// make sure all IDs are i64 in the
 	// future
 	return int(id), nil
+}
+func (db SqlDatabase) GetPages(limit int, offset int) (all_pages []common.Page, err error) {
+	query := "SELECT title, content, link, id FROM pages LIMIT ? OFFSET ?;"
+	rows, err := db.Connection.Query(query, limit, offset)
+	if err != nil {
+		return make([]common.Page, 0), err
+	}
+	defer func() {
+		err = errors.Join(rows.Close())
+	}()
+
+	for rows.Next() {
+		var page common.Page
+		if err = rows.Scan(&page.Title, &page.Content, &page.Link, &page.Id); err != nil {
+			return make([]common.Page, 0), err
+		}
+		all_pages = append(all_pages, page)
+	}
+
+	return all_pages, nil
 }
 
 func (db SqlDatabase) GetPage(link string) (common.Page, error) {

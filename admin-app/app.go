@@ -40,18 +40,26 @@ func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua
 	})
 
 	// CRUD Posts
-	r.GET("/posts/:id", getPostHandler(database))
-	// r.POST("/posts", postPostHandler(database, shortcode_handlers, post_hook.(plugins.PostHook)))
-	r.POST("/posts", postPostHandler(database, shortcode_handlers))
-	r.PUT("/posts", putPostHandler(database))
-	r.DELETE("/posts", deletePostHandler(database))
+	// Group posts routes and fix ordering
+	posts := r.Group("/posts")
+	{
+		posts.GET("", getPostsHandler(database))    // GET /posts
+		posts.GET("/:id", getPostHandler(database)) // GET /posts/:id
+		posts.POST("", postPostHandler(database, shortcode_handlers))
+		posts.PUT("", putPostHandler(database))
+		posts.DELETE("", deletePostHandler(database))
+	}
+	// CRUD Pages
+	pages := r.Group("/pages")
+	{
+		pages.GET("", getPagesHandler(database)) // GET /pages
+		pages.POST("", postPageHandler(database))
+	}
 
 	// CRUD Images
 	// r.GET("/images/:id", getImageHandler(&database))
 	r.POST("/images", postImageHandler())
 	r.DELETE("/images/:name", deleteImageHandler())
-
-	r.POST("/pages", postPageHandler(database))
 
 	// Card related stuff
 	r.GET("/card/:id", getCardHandler(database))

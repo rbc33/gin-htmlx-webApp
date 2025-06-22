@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -13,6 +14,45 @@ import (
 	"github.com/rs/zerolog/log"
 	lua "github.com/yuin/gopher-lua"
 )
+
+func getPostsHandler(database database.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Lee offset y limit de la query (?offset=0&limit=10)
+		offsetStr := c.DefaultQuery("offset", "")
+		limitStr := c.DefaultQuery("limit", "")
+
+		var offset, limit int
+		var err error
+
+		// Si offset o limit no están presentes, usa -1 para indicar "sin límite"
+		if offsetStr == "" {
+			offset = -1
+		} else {
+			offset, err = strconv.Atoi(offsetStr)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid offset"})
+				return
+			}
+		}
+
+		if limitStr == "" {
+			limit = -1
+		} else {
+			limit, err = strconv.Atoi(limitStr)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid limit"})
+				return
+			}
+		}
+
+		posts, err := database.GetPosts(offset, limit)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, GetPostsResponse{Posts: posts})
+	}
+}
 
 func getPostHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
@@ -36,11 +76,11 @@ func getPostHandler(database database.Database) func(*gin.Context) {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"id":      post.Id,
-			"title":   post.Title,
-			"excerpt": post.Excerpt,
-			"content": post.Content,
+		c.JSON(http.StatusOK, GetPostResponse{
+			Id:      post.Id,
+			Title:   post.Title,
+			Excerpt: post.Excerpt,
+			Content: post.Content,
 		})
 	}
 }

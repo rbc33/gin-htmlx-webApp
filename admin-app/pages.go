@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -13,10 +14,42 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// func getPageHandler(database database.Database) func(*gin.Context) {
-// 	return func(c *gin.Context) {
-// 	}
-// }
+func getPagesHandler(database database.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		offsetStr := c.DefaultQuery("offset", "")
+		limitStr := c.DefaultQuery("limit", "")
+
+		var offset, limit int
+		var err error
+
+		// Si offset o limit no están presentes, usa -1 para indicar "sin límite"
+		if offsetStr == "" {
+			offset = -1
+		} else {
+			offset, err = strconv.Atoi(offsetStr)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid offset"})
+				return
+			}
+		}
+
+		if limitStr == "" {
+			limit = -1
+		} else {
+			limit, err = strconv.Atoi(limitStr)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "invalid limit"})
+				return
+			}
+		}
+		pages, err := database.GetPages(offset, limit)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"pages": pages})
+	}
+}
 
 // postPageHandler if the function handling the endpoint for adding pages
 func postPageHandler(database database.Database) func(*gin.Context) {

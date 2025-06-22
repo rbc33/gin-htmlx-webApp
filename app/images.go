@@ -22,7 +22,7 @@ var valid_extensions = map[string]bool{
 	".gif":  true,
 }
 
-func imagesHandler(c *gin.Context) ([]byte, error) {
+func imagesHandler(c *gin.Context, database database.Database) ([]byte, error) {
 	// TODO: Implement rendering.
 	pageNum := 1 // Default to page 0
 	if pageNumQuery := c.Param("num"); pageNumQuery != "" {
@@ -83,12 +83,12 @@ func imagesHandler(c *gin.Context) ([]byte, error) {
 	if err != nil {
 		log.Error().Msgf("Could not render index: %v", err)
 		return []byte{}, err
- 	}
+	}
 
 	return html_buffer.Bytes(), nil
 }
- 
-func imageHandler(c *gin.Context)  ([]byte, error) {
+
+func imageHandler(c *gin.Context, database database.Database) ([]byte, error) {
 	var get_image_binding common.ImageIdBinding
 	if err := c.ShouldBindUri(&get_image_binding); err != nil {
 		return nil, err

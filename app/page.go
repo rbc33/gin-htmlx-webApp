@@ -41,3 +41,23 @@ func pageHandler(c *gin.Context, database database.Database) ([]byte, error) {
 
 	return html_buffer.Bytes(), nil
 }
+
+func getPagesHandler(c *gin.Context, db database.Database) ([]byte, error) {
+
+	pages, err := db.GetPages(-1, -1)
+	if err != nil {
+		return nil, err
+	}
+
+	// if not cached, create the cache
+	pages_view := views.MakeAllPages(pages, common.Settings.AppNavbar.Links)
+	html_buffer := bytes.NewBuffer(nil)
+
+	err = pages_view.Render(c, html_buffer)
+	if err != nil {
+		log.Error().Msgf("Could not render index: %v", err)
+		return []byte{}, err
+	}
+
+	return html_buffer.Bytes(), nil
+}

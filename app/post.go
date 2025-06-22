@@ -1,7 +1,6 @@
 package app
 
 import (
-	"bytes"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -35,40 +34,36 @@ func mdToHTML(md []byte) []byte {
 
 	return markdown.Render(doc, renderer)
 }
+
 func postHandler(c *gin.Context, database database.Database) ([]byte, error) {
 
 	var post_binding common.PostIdBinding
-	if err := c.ShouldBindUri(&post_binding); err != nil {
+
+	err := c.ShouldBindUri(&post_binding)
+
+	if err != nil || post_binding.Id < 0 {
+
 		err = serveErrorPage(c, "requested invalid post ID", http.StatusBadRequest)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid post ID"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid post ID"})
 		}
+
 		return nil, err
 	}
 
 	// Get the post with the ID
 	post, err := database.GetPost(post_binding.Id)
+
 	if err != nil || post.Content == "" {
-		err = serveErrorPage(c, "post not found", http.StatusNotFound)
+		err = serveErrorPage(c, "given post not found", http.StatusNotFound)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "post not found"})
+			c.JSON(http.StatusNotFound, gin.H{"error": "Post Not Found"})
 		}
 		return nil, err
-
 	}
 
 	// Generate HTML page
 	post.Content = string(mdToHTML([]byte(post.Content)))
-	post_view := views.MakePostPage(post.Title, common.Settings.AppNavbar.Links, post.Content)
-	html_buffer := bytes.NewBuffer(nil)
-	err = post_view.Render(c, html_buffer)
-	if err != nil {
-		err = serveErrorPage(c, "error generating the HTML", http.StatusInternalServerError)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "error generating the HTML"})
-		}
-		return nil, err
-	}
 
-	return html_buffer.Bytes(), nil
+	return renderHtml(c, views.MakePostPage(post.Title, post.Content, common.Settings.AppNavbar.Links))
 }

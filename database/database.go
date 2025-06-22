@@ -80,15 +80,19 @@ func (db *SqlDatabase) GetPosts(limit int, offset int) ([]common.Post, error) {
 	return all_posts, rows.Err()
 }
 
-// return post by id
-func (db *SqlDatabase) GetPost(post_id int) (post common.Post, err error) {
-	rows, err := db.Connection.Query("SELECT id, title, content FROM posts WHERE id=?;", post_id)
+// / This function gets a post from the database
+// / with the given ID.
+func (db SqlDatabase) GetPost(post_id int) (post common.Post, err error) {
+	rows, err := db.Connection.Query("SELECT id, title, content, excerpt FROM posts WHERE id=?;", post_id)
 	if err != nil {
 		return common.Post{}, err
 	}
-	defer rows.Close() // QueryRow doesn't need this, but it doesn't hurt
+	defer func() {
+		err = errors.Join(rows.Close())
+	}()
 
-	if err = rows.Scan(&post.Id, &post.Title, &post.Content); err != nil {
+	rows.Next()
+	if err = rows.Scan(&post.Id, &post.Title, &post.Content, &post.Excerpt); err != nil {
 		return common.Post{}, err
 	}
 

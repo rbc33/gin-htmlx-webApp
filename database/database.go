@@ -30,7 +30,6 @@ type Database interface {
 	ChangeCard(uuid string, image_location string, json_data string, schema_name string) error
 	DeleteCard(uuid string) error
 	GetPages(offset int, limit int) ([]common.Page, error)
-	GetAllPages() ([]common.Page, error)
 	AddPage(title string, content string, link string) (int, error)
 	GetPage(link string) (common.Page, error)
 }
@@ -378,25 +377,6 @@ func (db *SqlDatabase) GetPages(limit int, offset int) ([]common.Page, error) {
 	query += ";"
 
 	rows, err = db.Connection.Query(query, args...)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var page common.Page
-		if err = rows.Scan(&page.Title, &page.Content, &page.Link, &page.Id); err != nil {
-			return nil, err
-		}
-		all_pages = append(all_pages, page)
-	}
-
-	return all_pages, rows.Err()
-}
-func (db *SqlDatabase) GetAllPages() ([]common.Page, error) {
-	all_pages := make([]common.Page, 0)
-	query := "SELECT title, content, link, id FROM pages;"
-	rows, err := db.Connection.Query(query)
 	if err != nil {
 		return nil, err
 	}

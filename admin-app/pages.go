@@ -43,17 +43,6 @@ func getPagesHandler(database database.Database) gin.HandlerFunc {
 		c.JSON(http.StatusOK, gin.H{"pages": pages})
 	}
 }
-func getAllPagesHandler(database database.Database) gin.HandlerFunc {
-	return func(c *gin.Context) {
-
-		pages, err := database.GetAllPages()
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{"pages": pages})
-	}
-}
 
 // postPageHandler if the function handling the endpoint for adding pages
 func postPageHandler(database database.Database) func(*gin.Context) {

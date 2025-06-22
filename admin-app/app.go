@@ -54,8 +54,7 @@ func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua
 	pages := r.Group("/pages")
 	{
 		// GET /pages?offset=10&limit=10
-		pages.GET("", getPagesHandler(database))        // GET /pages
-		pages.GET("/all", getAllPagesHandler(database)) // GET /pages
+		pages.GET("", getPagesHandler(database)) // GET /pages
 		pages.POST("", postPageHandler(database))
 	}
 

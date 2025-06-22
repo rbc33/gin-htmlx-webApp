@@ -10,6 +10,7 @@ type DatabaseMock struct {
 	GetPostHandler  func(int) (common.Post, error)
 	GetPostsHandler func(int, int) ([]common.Post, error)
 	AddPageHandler  func(string, string, string) (int, error)
+	GetPagesHandler func(int, int) ([]common.Page, error)
 }
 
 func (db DatabaseMock) GetPosts(offset int, limit int) ([]common.Post, error) {
@@ -17,6 +18,12 @@ func (db DatabaseMock) GetPosts(offset int, limit int) ([]common.Post, error) {
 		return db.GetPostsHandler(offset, limit)
 	}
 	return nil, fmt.Errorf("GetPostsHandler not set")
+}
+func (db DatabaseMock) GetPages(offset int, limit int) ([]common.Page, error) {
+	if db.GetPostsHandler != nil {
+		return db.GetPagesHandler(offset, limit)
+	}
+	return nil, fmt.Errorf("GetPageHandler not set")
 }
 func (db DatabaseMock) GetPost(post_id int) (common.Post, error) {
 	if db.GetPostHandler != nil {

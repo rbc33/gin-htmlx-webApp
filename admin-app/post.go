@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/database"
+	"github.com/rbc33/gocms/plugins"
 	"github.com/rs/zerolog/log"
 	lua "github.com/yuin/gopher-lua"
 )
@@ -77,7 +78,7 @@ func getPostHandler(database database.Database) func(*gin.Context) {
 }
 
 // func postPostHandler(database database.Database, shortcode_handlers map[string]*lua.LState, post_hook plugins.PostHook) func(*gin.Context) {
-func postPostHandler(database database.Database, shortcode_handlers map[string]*lua.LState) func(*gin.Context) {
+func postPostHandler(database database.Database, shortcode_handlers map[string]*lua.LState, post_hook *plugins.PostHook) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var add_post_request AddPostRequest
 		if c.Request.Body == nil {
@@ -99,27 +100,16 @@ func postPostHandler(database database.Database, shortcode_handlers map[string]*
 			c.JSON(http.StatusBadRequest, common.ErrorRes("missing required data", err))
 		}
 
-		// TODO : Move this into the plugin
-		// altered_post := post_hook.UpdatePost(add_post_request.Title, add_post_request.Content, add_post_request.Excerpt, shortcode_handlers)
+		altered_post := post_hook.UpdatePost(add_post_request.Title, add_post_request.Excerpt, add_post_request.Content, shortcode_handlers)
 
-		transformed_content, err := transformContent(add_post_request.Content, shortcode_handlers)
-		if err != nil {
-			log.Warn().Msgf("could not transform post: %v", err)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "invalid request body",
-				"msg":   err.Error(),
-			})
-			return
-		}
-
-		fmt.Print("Title: ", add_post_request.Title)
-		fmt.Print("Excerpt: ", add_post_request.Excerpt)
-		fmt.Print("Content: ", transformed_content)
+		fmt.Print("Title: ", altered_post.Title)
+		fmt.Print("Excerpt: ", altered_post.Excerpt)
+		fmt.Print("Content: ", altered_post.Content)
 
 		id, err := database.AddPost(
-			add_post_request.Title,
-			add_post_request.Excerpt,
-			transformed_content,
+			altered_post.Title,
+			altered_post.Excerpt,
+			altered_post.Content,
 		)
 		if err != nil {
 			log.Error().Msgf("failed to add post: %v", err)

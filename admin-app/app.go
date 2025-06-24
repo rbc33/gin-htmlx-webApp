@@ -2,11 +2,13 @@ package admin_app
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/database"
+	"github.com/rbc33/gocms/plugins"
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -24,21 +26,19 @@ func LoadShortcodesHandlers(shortcodes []common.Shortcode) (map[string]*lua.LSta
 	return shorcodes_handlers, nil
 }
 
-// func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua.LState, database database.Database, hooks map[string]plugins.Hook) *gin.Engine {
-func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua.LState, database database.Database) *gin.Engine {
+func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua.LState, database database.Database, hooks map[string]plugins.Hook) *gin.Engine {
+	// func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua.LState, database database.Database) *gin.Engine {
 
 	r := gin.Default()
 	r.MaxMultipartMemory = 1
 
-	// post_hook, ok := hooks["add_post"]
-	// if !ok {
-	// 	log.Fatalf("could not find add_post hook")
-	// }
-
+	post_hook, ok := hooks["add_post"]
+	if !ok {
+		log.Fatalf("could not find add_post hook")
+	}
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "admin pong"})
 	})
-
 	// CRUD Posts
 	// Group posts routes and fix ordering
 	posts := r.Group("/posts")
@@ -46,7 +46,7 @@ func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua
 		// GET /?offset=10&limit=10
 		posts.GET("", getPostsHandler(database))    // GET /posts
 		posts.GET("/:id", getPostHandler(database)) // GET /posts/:id
-		posts.POST("", postPostHandler(database, shortcode_handlers))
+		posts.POST("", postPostHandler(database, shortcode_handlers, post_hook.(*plugins.PostHook)))
 		posts.PUT("", putPostHandler(database))
 		posts.DELETE("", deletePostHandler(database))
 	}

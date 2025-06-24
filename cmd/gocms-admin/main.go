@@ -12,6 +12,7 @@ import (
 	admin_app "github.com/rbc33/gocms/admin-app"
 	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/database"
+	"github.com/rbc33/gocms/plugins"
 
 	// "github.com/rbc33/gocms/plugins"
 	"github.com/rs/zerolog/log"
@@ -58,19 +59,19 @@ func main() {
 	// TODO : we probably want to refactor loadShortcodeHandler
 	// TODO : into loadPluginHandlers instead
 
-	// post_hook := plugins.PostHook{}
-	// image_plugin := plugins.Plugin{
-	// 	ScriptName: "img",
-	// 	Id:         "img-plugin",
-	// }
-	// post_hook.Register(image_plugin)
-	// // img, _ := shortcode_handlers["img"]
-	// hooks_map := map[string]plugins.Hook{
-	// 	"add_post": post_hook,
-	// }
+	post_hook := &plugins.PostHook{}
+	image_plugin := plugins.Plugin{
+		ScriptName: "img",
+		Id:         "img-plugin",
+	}
+	post_hook.Register(image_plugin)
+	// img, _ := shortcode_handlers["img"]
+	hooks_map := map[string]plugins.Hook{
+		"add_post": post_hook,
+	}
 
-	// r := admin_app.SetupRoutes(common.Settings, shortcode_handlers, &db_connection, hooks_map)
-	r := admin_app.SetupRoutes(common.Settings, shortcode_handlers, &db_connection)
+	r := admin_app.SetupRoutes(common.Settings, shortcode_handlers, &db_connection, hooks_map)
+	// r := admin_app.SetupRoutes(common.Settings, shortcode_handlers, &db_connection)
 	err = r.Run(fmt.Sprintf(":%s", Port))
 	if err != nil {
 		log.Error().Msgf("could not run app: %v", err)

@@ -11,6 +11,7 @@ import (
 
 	admin_app "github.com/rbc33/gocms/admin-app"
 	"github.com/rbc33/gocms/common"
+	"github.com/rbc33/gocms/plugins"
 	"github.com/rbc33/gocms/tests/mocks"
 	test "github.com/rbc33/gocms/tests/system_tests/helpers"
 	"github.com/rs/zerolog/log"
@@ -38,7 +39,19 @@ func TestCreatePost_Success(t *testing.T) {
 	}
 
 	database_mock := mocks.DatabaseMock{}
-	r := admin_app.SetupRoutes(app_settings, shortcode_handlers, database_mock)
+	post_hook := &plugins.PostHook{}
+	image_plugin := plugins.Plugin{
+		ScriptName: "img",
+		Id:         "img-plugin",
+	}
+	post_hook.Register(image_plugin)
+	// img, _ := shortcode_handlers["img"]
+	hooks_map := map[string]plugins.Hook{
+		"add_post": post_hook,
+	}
+
+	r := admin_app.SetupRoutes(app_settings, shortcode_handlers, database_mock, hooks_map)
+
 	w := httptest.NewRecorder()
 
 	request := postRequest{

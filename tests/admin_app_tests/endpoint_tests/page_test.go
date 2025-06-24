@@ -10,6 +10,7 @@ import (
 
 	admin_app "github.com/rbc33/gocms/admin-app"
 	"github.com/rbc33/gocms/common"
+	"github.com/rbc33/gocms/plugins"
 	"github.com/rbc33/gocms/tests/mocks"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
@@ -34,7 +35,17 @@ func TestAddPageHappyPath(t *testing.T) {
 		os.Exit(-1)
 	}
 
-	router := admin_app.SetupRoutes(app_settings, shortcode_handlers, databaseMock)
+	post_hook := &plugins.PostHook{}
+	image_plugin := plugins.Plugin{
+		ScriptName: "img",
+		Id:         "img-plugin",
+	}
+	post_hook.Register(image_plugin)
+	// img, _ := shortcode_handlers["img"]
+	hooks_map := map[string]plugins.Hook{
+		"add_post": post_hook,
+	}
+	router := admin_app.SetupRoutes(app_settings, shortcode_handlers, databaseMock, hooks_map)
 	responseRecorder := httptest.NewRecorder()
 
 	body, _ := json.Marshal(page_data)

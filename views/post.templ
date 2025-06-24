@@ -12,6 +12,6 @@ templ MakePost(title string, content string) {
 	</article>
 }
 
-templ MakePostPage(title string, links []common.Link, content string) {
+templ MakePostPage(title string, content string, links []common.Link) {
 	@MakeLayout(title, links, MakePost(title, content))
 }

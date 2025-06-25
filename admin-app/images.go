@@ -16,6 +16,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nfnt/resize"
 	"github.com/rbc33/gocms/common"
+	"github.com/rbc33/gocms/metadata"
 	"github.com/rs/zerolog/log"
 )
 
@@ -154,7 +155,8 @@ func postImageHandler() func(*gin.Context) {
 			c.JSON(http.StatusInternalServerError, common.ErrorRes("failed to upload image", err))
 			return
 		}
-
+		name := file.Filename[:len(file.Filename)-len(ext)]
+		metadata.GenerateJson(filename, name, excerpt)
 		// Resize image to 477px width
 		err = resizeImage(image_path, 477)
 		if err != nil {

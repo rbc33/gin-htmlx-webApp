@@ -12,11 +12,6 @@ recaptcha_secret = "6LcEamQrAAAAAHH4Nthgshj10uUmxxmXasW-pcfV"
 app_domain = "localhost"
 
 
-[[card_schema]]
-schema_name = "schema_name1"
-
-[[card_schema]]
-schema_name = "schema_name1"
 
 [[shortcodes]]
 name = "img"

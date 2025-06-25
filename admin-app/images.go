@@ -16,15 +16,16 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/nfnt/resize"
 	"github.com/rbc33/gocms/common"
+	"github.com/rbc33/gocms/metadata"
 	"github.com/rs/zerolog/log"
 )
 
 var allowed_extensions = map[string]bool{
-	".jpeg": true, ".jpg": true, ".png": true,
+	".jpeg": true, ".jpg": true, ".png": true, ".heic": true,
 }
 
 var allowed_content_types = map[string]bool{
-	"image/jpeg": true, "image/png": true, "image/gif": true,
+	"image/jpeg": true, "image/png": true, "image/gif": true, "image/heic": true,
 }
 
 // CRUD Images
@@ -99,7 +100,12 @@ func postImageHandler() func(*gin.Context) {
 			return
 		}
 
-		// Begin saving the file to the filesystem
+		excerpt_text_array := form.Value["excerpt"]
+		excerpt := "unknown"
+		if len(excerpt_text_array) > 0 {
+			excerpt = excerpt_text_array[0]
+		}
+
 		file_array := form.File["file"]
 		if len(file_array) == 0 || file_array[0] == nil {
 			log.Error().Msgf("could not get the file array: %v", err)
@@ -149,7 +155,8 @@ func postImageHandler() func(*gin.Context) {
 			c.JSON(http.StatusInternalServerError, common.ErrorRes("failed to upload image", err))
 			return
 		}
-
+		name := file.Filename[:len(file.Filename)-len(ext)]
+		metadata.GenerateJson(filename, name, excerpt)
 		// Resize image to 477px width
 		err = resizeImage(image_path, 477)
 		if err != nil {

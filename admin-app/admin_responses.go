@@ -34,3 +34,11 @@ type GetImageResponse struct {
 	AltText   string `json:"alt_text"`
 	Extension string `json:"extension"`
 }
+
+type CardIdResponse struct {
+	Id string `json:"id"`
+}
+
+type CardSchemaResponse struct {
+	Id string `json:"uuid"`
+}

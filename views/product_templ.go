@@ -162,7 +162,7 @@ func MakeProductPage(links []common.Link, cards []map[string]interface{}) templ.
 			templ_7745c5c3_Var7 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = MakeLayout("Product Page", links, makeCardGrid(cards)).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = MakeLayout("Product Page", links, makeCardGrid(cards), []string{}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

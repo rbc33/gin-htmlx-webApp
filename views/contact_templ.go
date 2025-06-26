@@ -164,7 +164,7 @@ func MakeContactPage(links []common.Link, recaptcha_sitekey string) templ.Compon
 			templ_7745c5c3_Var6 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = MakeLayout("Contact Us", links, MakeContact(recaptcha_sitekey)).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = MakeLayout("Contact Us", links, MakeContact(recaptcha_sitekey), []string{}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

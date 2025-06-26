@@ -22,5 +22,5 @@ templ MakePosts(posts []Post) {
 }
 
 templ MakeIndex(posts []Post, links []common.Link) {
-	@MakeLayout("Home Page", links, MakePosts(posts))
+	@MakeLayout("Home Page", links, MakePosts(posts), []string{})
 }

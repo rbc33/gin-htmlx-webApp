@@ -7,5 +7,5 @@ templ makeAbout(title string) {
 }
 
 templ MakeAboutPage(links []common.Link) {
-	@MakeLayout("About", links, makeAbout("About"))
+	@MakeLayout("About", links, makeAbout("About"), []string{})
 }

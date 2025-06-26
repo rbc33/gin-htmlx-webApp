@@ -25,5 +25,5 @@ templ MakePages(pages []Page) {
 }
 
 templ MakeAllPages(pages []Page, links []common.Link) {
-	@MakeLayout("Home Page", links, MakePages(pages))
+	@MakeLayout("Home Page", links, MakePages(pages), []string{})
 }

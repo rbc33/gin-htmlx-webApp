@@ -28,14 +28,6 @@ type Database interface {
 	AddImage(uuid string, name string, alt string) error
 	DeleteImage(uuid string) error
 	// GetCard(uuid string) (common.Card, error)
-	AddCard(image string, schema string, content string) (string, error)
-	GetCards(schema_uuid string, limit int, page int) ([]common.Card, error)
-	AddCardSchema(json_schema string, json_title string) (string, error)
-	GetCardSchemas(offset int, limit int) ([]common.CardSchema, error)
-	GetCardSchema(uuid string) (common.CardSchema, error)
-	DeleteCardSchema(uuid string) error
-	ChangeCard(uuid string, image_location string, json_data string, schema_name string) error
-	DeleteCard(uuid string) error
 	GetPages(offset int, limit int) ([]common.Page, error)
 	AddPage(title string, content string, link string) (int, error)
 	GetPage(link string) (common.Page, error)
@@ -46,7 +38,9 @@ type Database interface {
 	ChangeCard(uuid string, image_location string, json_data string, schema_name string) error
 	DeleteCard(uuid string) error
 	AddCardSchema(json_schema string, json_title string) (string, error)
+	GetCardSchemas(offset int, limit int) ([]common.CardSchema, error)
 	GetCardSchema(uuid string) (common.CardSchema, error)
+	DeleteCardSchema(uuid string) error
 }
 
 type SqlDatabase struct {

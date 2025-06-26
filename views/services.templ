@@ -7,5 +7,5 @@ templ MakeServices(title string) {
 }
 
 templ MakeServicesPage(links []common.Link) {
-	@MakeLayout("Services Page", links, MakeServices("Services"))
+	@MakeLayout("Services Page", links, MakeServices("Services"), []string{})
 }

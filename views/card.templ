@@ -17,5 +17,5 @@ templ MakeCard(image string, json_data string) {
 }
 
 templ MakeCardPage(image string, links []common.Link, json_data string) {
-	@MakeLayout("Card Page", links, MakeCard(image, json_data))
+	@MakeLayout("Card Page", links, MakeCard(image, json_data), []string{})
 }

@@ -75,6 +75,12 @@ func (db DatabaseMock) AddCardSchema(json_schema string, json_title string) (str
 func (db DatabaseMock) GetCardSchema(uuid string) (common.CardSchema, error) {
 	return common.CardSchema{}, fmt.Errorf("not implemented")
 }
+func (db DatabaseMock) DeleteCardSchema(uuid string) error {
+	return fmt.Errorf("not implemented")
+}
+func (db DatabaseMock) GetCardSchemas(offset int, limit int) ([]common.CardSchema, error) {
+	return []common.CardSchema{}, fmt.Errorf("not implemented")
+}
 
 func (db DatabaseMock) GetPage(link string) (common.Page, error) {
 	return common.Page{}, fmt.Errorf("not implemented")

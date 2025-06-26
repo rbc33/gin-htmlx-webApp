@@ -30,6 +30,9 @@ type AddImageRequest struct {
 type DeleteImageBinding struct {
 	Name string `uri:"name" binding:"required"`
 }
+type DeleteSchemaBinding struct {
+	Id string `uri:"Uuid" binding:"required"`
+}
 type AddPostRequest struct {
 	Title   string `json:"title"`
 	Excerpt string `json:"excerpt"`

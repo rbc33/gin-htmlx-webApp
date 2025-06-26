@@ -31,7 +31,9 @@ type Database interface {
 	AddCard(image string, schema string, content string) (string, error)
 	GetCards(schema_uuid string, limit int, page int) ([]common.Card, error)
 	AddCardSchema(json_schema string, json_title string) (string, error)
+	GetCardSchemas(offset int, limit int) ([]common.CardSchema, error)
 	GetCardSchema(uuid string) (common.CardSchema, error)
+	DeleteCardSchema(uuid string) error
 	ChangeCard(uuid string, image_location string, json_data string, schema_name string) error
 	DeleteCard(uuid string) error
 	GetPages(offset int, limit int) ([]common.Page, error)
@@ -348,7 +350,7 @@ func (db *SqlDatabase) ChangeCard(uuid string, image_location string, json_data 
 		if image_stat.IsDir() {
 			return fmt.Errorf("given path is a directory: %s", image_stat)
 		}
-		_, err = tx.Exec("UPDATE cards SET image_location = ? WHERE uuid = ?;", image_location, uuid)
+		_, err = tx.Exec("UPDATE cards SET image_location = ? WHERE uuid = UuidFromBin(?9;", image_location, uuid)
 		if err != nil {
 			return err
 		}
@@ -360,7 +362,7 @@ func (db *SqlDatabase) ChangeCard(uuid string, image_location string, json_data 
 		if err != nil {
 			return err
 		}
-		_, err = tx.Exec("UPDATE cards SET json_data = ?, json_schema = ? WHERE uuid = ?;", json_data, schema_name, uuid)
+		_, err = tx.Exec("UPDATE cards SET json_data = ?, json_schema = ? WHERE uuid = UuidFromBin(?);", json_data, schema_name, uuid)
 		if err != nil {
 			return err
 		}
@@ -373,12 +375,13 @@ func (db *SqlDatabase) ChangeCard(uuid string, image_location string, json_data 
 }
 
 func (db *SqlDatabase) DeleteCard(uuid string) error {
-	if _, err := db.Connection.Exec("DELETE FROM cards WHERE uuid=?;", uuid); err != nil {
+	if _, err := db.Connection.Exec("DELETE FROM cards WHERE uuid=UuidFromBin(?);", uuid); err != nil {
 		return err
 	}
 
 	return nil
 }
+
 func (db SqlDatabase) AddCardSchema(json_schema string, json_title string) (string, error) {
 	uuid := uuid.New().String()
 
@@ -422,8 +425,61 @@ func (db SqlDatabase) GetCardSchema(id string) (schema common.CardSchema, err er
 	return schema, nil
 }
 
+func (db *SqlDatabase) DeleteCardSchema(uuid string) error {
+	if _, err := db.Connection.Exec("DELETE FROM card_schemas WHERE uuid=UuidFromBin(?);", uuid); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db SqlDatabase) GetCardSchemas(offset int, limit int) (schemas []common.CardSchema, err error) {
+	all_schemas := []common.CardSchema{}
+	var rows *sql.Rows
+
+	query := "SELECT UuidFromBin(uuid), json_schema, json_title, card_ids FROM card_schemas"
+	args := make([]interface{}, 0)
+
+	// A limit of 0 or less means no limit.
+	if limit > 0 {
+		query += " LIMIT ?"
+		args = append(args, limit)
+		// OFFSET is only valid with LIMIT
+		if offset > 0 {
+			query += " OFFSET ?"
+			args = append(args, offset)
+		}
+	}
+	query += ";"
+
+	rows, err = db.Connection.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var schema common.CardSchema
+		var cardsRaw []byte
+
+		if err = rows.Scan(&schema.Uuid, &schema.Schema, &schema.Title, &cardsRaw); err != nil {
+			return []common.CardSchema{}, err
+		}
+
+		// Aquí parseas el JSON de la base a tu array de Go:
+		if len(cardsRaw) > 0 {
+			if err = json.Unmarshal(cardsRaw, &schema.Cards); err != nil {
+				return []common.CardSchema{}, fmt.Errorf("error unmarshaling card_ids: %w", err)
+			}
+		}
+		all_schemas = append(all_schemas, schema)
+
+	}
+	return all_schemas, rows.Err()
+}
+
 func (db *SqlDatabase) AddPage(title string, content string, link string) (int, error) {
-	res, err := db.Connection.Exec("INSERT INTO pages(content, title, link) VALUES(?, ?, ?)", content, title, link)
+	res, err := db.Connection.Exec("INSERT INTO pages(content, title, link) VALUES(?, ?, ?);", content, title, link)
 	if err != nil {
 		return -1, err
 	}

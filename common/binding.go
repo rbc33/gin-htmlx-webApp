@@ -24,3 +24,7 @@ type ImageIdBinding struct {
 	// This is the uuid of an image to be retrieved
 	Filename string `uri:"name" binding:"required"`
 }
+
+type CardSchemaIdBinding struct {
+	Id string `josn:"uuis" binding:"required"`
+}

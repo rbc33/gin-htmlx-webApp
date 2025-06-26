@@ -65,9 +65,15 @@ func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua
 	r.POST("/images", postImageHandler())
 	r.DELETE("/images/:name", deleteImageHandler())
 
+	r.GET("/cards/:schema", getCardHandler(database))
+	r.GET("/cards/:schema/:limit/:page", getCardHandler(database))
+	r.POST("/cards", postCardHandler(database))
+	r.POST("/card-schemas", postSchemaHandler(database))
+	r.GET("/card-schemas", getSchemasHandler(database))
+	r.DELETE("/card-schemas", deleteCardSchemaHandler(database))
+	r.GET("/card-schemas/:id", getSchemaHandler(database))
 	// Card related stuff
-	r.GET("/card/:id", getCardHandler(database))
-	r.POST("/card", postCardHandler(database))
+	// r.GET("/card/:id", getCardHandler(database))
 	r.PUT("/card", putCardHandler(database))
 	r.DELETE("/card", deleteCardHandler(database))
 

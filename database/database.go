@@ -27,6 +27,15 @@ type Database interface {
 	DeletePost(id int) error
 	AddImage(uuid string, name string, alt string) error
 	DeleteImage(uuid string) error
+	// GetCard(uuid string) (common.Card, error)
+	AddCard(image string, schema string, content string) (string, error)
+	GetCards(schema_uuid string, limit int, page int) ([]common.Card, error)
+	AddCardSchema(json_schema string, json_title string) (string, error)
+	GetCardSchemas(offset int, limit int) ([]common.CardSchema, error)
+	GetCardSchema(uuid string) (common.CardSchema, error)
+	DeleteCardSchema(uuid string) error
+	ChangeCard(uuid string, image_location string, json_data string, schema_name string) error
+	DeleteCard(uuid string) error
 	GetPages(offset int, limit int) ([]common.Page, error)
 	AddPage(title string, content string, link string) (int, error)
 	GetPage(link string) (common.Page, error)
@@ -201,6 +210,31 @@ func (db *SqlDatabase) AddImage(uuid string, name string, alt string) error {
 	return nil
 }
 
+// // / This function gets a post from the database
+// // / with the given ID.
+// func (db *SqlDatabase) GetCard(uuid string) (card common.Card, err error) {
+// 	rows, err := db.Connection.Query("SELECT title, image, schema, content FROM cards WHERE uuid=?;", uuid)
+// 	if err != nil {
+// 		return common.Card{}, err
+// 	}
+// 	defer func() {
+// 		err = errors.Join(rows.Close())
+// 	}()
+
+// 	rows.Next()
+// 	if err = rows.Scan(&card.Title, &card.Image, &card.Schema, &card.Content ); err != nil {
+// 		return common.Card{}, err
+// 	}
+
+// 	// Validate the json
+// 	validateJson(card., card.SchemaName)
+
+// 	return card, nil
+// }
+
+// DeletePost changes a post based on the values
+// provided. Note that empty strings will mean that
+// the value will not be updated.
 func (db *SqlDatabase) DeleteImage(uuid string) error {
 	if _, err := db.Connection.Exec("DELETE FROM image WHERE uuid=?;", uuid); err != nil {
 		return err
@@ -297,6 +331,63 @@ func (db SqlDatabase) GetCards(schema_uuid string, limit int, page int) (all_car
 	return all_cards, nil
 }
 
+func (db *SqlDatabase) ChangeCard(uuid string, image_location string, json_data string, schema_name string) error {
+
+	log.Info().Msgf("changing card")
+
+	tx, err := db.Connection.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if commit_err := tx.Commit(); commit_err != nil {
+			err = errors.Join(err, tx.Rollback(), commit_err)
+		}
+	}()
+
+	if image_location != "" {
+		image_stat, err := os.Stat(image_location)
+		if errors.Is(err, os.ErrNotExist) {
+			return fmt.Errorf("file does not exist: %s", image_location)
+		}
+		if err != nil {
+			return err
+		}
+		if image_stat.IsDir() {
+			return fmt.Errorf("given path is a directory: %s", image_stat)
+		}
+		_, err = tx.Exec("UPDATE cards SET image_location = ? WHERE uuid = UuidFromBin(?9;", image_location, uuid)
+		if err != nil {
+			return err
+		}
+	}
+
+	if json_data != "" && schema_name != "" {
+
+		err = validateJson(json_data, schema_name)
+		if err != nil {
+			return err
+		}
+		_, err = tx.Exec("UPDATE cards SET json_data = ?, json_schema = ? WHERE uuid = UuidFromBin(?);", json_data, schema_name, uuid)
+		if err != nil {
+			return err
+		}
+	}
+
+	if err = tx.Commit(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (db *SqlDatabase) DeleteCard(uuid string) error {
+	if _, err := db.Connection.Exec("DELETE FROM cards WHERE uuid=UuidFromBin(?);", uuid); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (db SqlDatabase) AddCardSchema(json_schema string, json_title string) (string, error) {
 	uuid := uuid.New().String()
 
@@ -340,65 +431,61 @@ func (db SqlDatabase) GetCardSchema(id string) (schema common.CardSchema, err er
 	return schema, nil
 }
 
-func (db *SqlDatabase) ChangeCard(uuid string, image_location string, json_data string, schema_name string) error {
-
-	log.Info().Msgf("changing card")
-
-	tx, err := db.Connection.Begin()
-	if err != nil {
+func (db *SqlDatabase) DeleteCardSchema(uuid string) error {
+	if _, err := db.Connection.Exec("DELETE FROM card_schemas WHERE uuid=UuidFromBin(?);", uuid); err != nil {
 		return err
 	}
-	defer func() {
-		if commit_err := tx.Commit(); commit_err != nil {
-			err = errors.Join(err, tx.Rollback(), commit_err)
-		}
-	}()
 
-	if image_location != "" {
-		image_stat, err := os.Stat(image_location)
-		if errors.Is(err, os.ErrNotExist) {
-			return fmt.Errorf("file does not exist: %s", image_location)
-		}
-		if err != nil {
-			return err
-		}
-		if image_stat.IsDir() {
-			return fmt.Errorf("given path is a directory: %s", image_stat)
-		}
-		_, err = tx.Exec("UPDATE cards SET image_location = ? WHERE uuid = ?;", image_location, uuid)
-		if err != nil {
-			return err
-		}
-	}
-
-	if json_data != "" && schema_name != "" {
-
-		err = validateJson(json_data, schema_name)
-		if err != nil {
-			return err
-		}
-		_, err = tx.Exec("UPDATE cards SET json_data = ?, json_schema = ? WHERE uuid = ?;", json_data, schema_name, uuid)
-		if err != nil {
-			return err
-		}
-	}
-
-	if err = tx.Commit(); err != nil {
-		return err
-	}
 	return nil
 }
 
-func (db *SqlDatabase) DeleteCard(uuid string) error {
-	if _, err := db.Connection.Exec("DELETE FROM cards WHERE uuid=?;", uuid); err != nil {
-		return err
-	}
+func (db SqlDatabase) GetCardSchemas(offset int, limit int) (schemas []common.CardSchema, err error) {
+	all_schemas := []common.CardSchema{}
+	var rows *sql.Rows
 
-	return nil
+	query := "SELECT UuidFromBin(uuid), json_schema, json_title, card_ids FROM card_schemas"
+	args := make([]interface{}, 0)
+
+	// A limit of 0 or less means no limit.
+	if limit > 0 {
+		query += " LIMIT ?"
+		args = append(args, limit)
+		// OFFSET is only valid with LIMIT
+		if offset > 0 {
+			query += " OFFSET ?"
+			args = append(args, offset)
+		}
+	}
+	query += ";"
+
+	rows, err = db.Connection.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var schema common.CardSchema
+		var cardsRaw []byte
+
+		if err = rows.Scan(&schema.Uuid, &schema.Schema, &schema.Title, &cardsRaw); err != nil {
+			return []common.CardSchema{}, err
+		}
+
+		// Aquí parseas el JSON de la base a tu array de Go:
+		if len(cardsRaw) > 0 {
+			if err = json.Unmarshal(cardsRaw, &schema.Cards); err != nil {
+				return []common.CardSchema{}, fmt.Errorf("error unmarshaling card_ids: %w", err)
+			}
+		}
+		all_schemas = append(all_schemas, schema)
+
+	}
+	return all_schemas, rows.Err()
 }
 
 func (db *SqlDatabase) AddPage(title string, content string, link string) (int, error) {
-	res, err := db.Connection.Exec("INSERT INTO pages(content, title, link) VALUES(?, ?, ?)", content, title, link)
+	res, err := db.Connection.Exec("INSERT INTO pages(content, title, link) VALUES(?, ?, ?);", content, title, link)
 	if err != nil {
 		return -1, err
 	}

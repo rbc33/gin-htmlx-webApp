@@ -56,12 +56,40 @@ func (db DatabaseMock) AddImage(postID string, imageData string, imageType strin
 	return fmt.Errorf("not implemented")
 }
 
+//	func (db DatabaseMock) GetCard(uuid string) (common.Card, error) {
+//		return common.Card{}, fmt.Errorf("not implemented")
+//	}
+func (db DatabaseMock) GetCards(schema_uuid string, limit int, page int) ([]common.Card, error) {
+	return []common.Card{}, fmt.Errorf("not implemented")
+}
+
+func (db DatabaseMock) AddCard(image string, schema_uuid string, content string) (string, error) {
+	return "", fmt.Errorf("not implemented")
+}
+func (db DatabaseMock) ChangeCard(uuid string, image_location string, json_data string, schema_data string) error {
+	return fmt.Errorf("not implemented")
+}
+func (db DatabaseMock) DeleteCard(uuid string) error {
+	return fmt.Errorf("not implemented")
+}
 func (db DatabaseMock) DeleteImage(uuid string) error {
 	return fmt.Errorf("not implemented")
 }
 
 func (db DatabaseMock) AddPage(title string, content string, link string) (int, error) {
 	return db.AddPageHandler(title, content, link)
+}
+func (db DatabaseMock) AddCardSchema(json_schema string, json_title string) (string, error) {
+	return "", fmt.Errorf("not implemented")
+}
+func (db DatabaseMock) GetCardSchema(uuid string) (common.CardSchema, error) {
+	return common.CardSchema{}, fmt.Errorf("not implemented")
+}
+func (db DatabaseMock) DeleteCardSchema(uuid string) error {
+	return fmt.Errorf("not implemented")
+}
+func (db DatabaseMock) GetCardSchemas(offset int, limit int) ([]common.CardSchema, error) {
+	return []common.CardSchema{}, fmt.Errorf("not implemented")
 }
 
 func (db DatabaseMock) GetPage(link string) (common.Page, error) {

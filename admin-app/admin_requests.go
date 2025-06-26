@@ -30,6 +30,9 @@ type AddImageRequest struct {
 type DeleteImageBinding struct {
 	Name string `uri:"name" binding:"required"`
 }
+type DeleteSchemaBinding struct {
+	Id string `uri:"Uuid" binding:"required"`
+}
 type AddPostRequest struct {
 	Title   string `json:"title"`
 	Excerpt string `json:"excerpt"`
@@ -93,15 +96,4 @@ func (c *AddCardSchemaRequest) UnmarshalJSON(data []byte) error {
 	}
 
 	return nil
-}
-
-type ChangeCardRequest struct {
-	Uuid          string `json:"uuid"`
-	ImageLocation string `json:"image_location"`
-	JsonData      string `json:"json_data"`
-	SchemaName    string `json:"json_schema"`
-}
-
-type DeleteCardRequest struct {
-	Uuid string `json:"uuid"`
 }

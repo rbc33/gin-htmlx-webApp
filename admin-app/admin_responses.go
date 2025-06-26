@@ -42,3 +42,7 @@ type CardIdResponse struct {
 type CardSchemaResponse struct {
 	Id string `json:"uuid"`
 }
+
+type GetSchemaasResponse struct {
+	Schemas []common.CardSchema `json:"schemas"`
+}

@@ -1,15 +1,15 @@
 -- +goose Up
 -- +goose StatementBegin
-
-CREATE TABLE cards (
+CREATE TABLE card_schemas (
   uuid BINARY(16) PRIMARY KEY NOT NULL,
-  image_location TEXT NOT NULL,
-  json_data JSON NOT NULL,
-  json_schema JSON NOT NULL
+  json_id VARCHAR(50) NOT NULL,
+  json_schema JSON NOT NULL,
+  json_title VARCHAR(50) NOT NULL,
+  card_ids JSON
 );
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE cards;
+DROP TABLE card_schemas;
 -- +goose StatementEnd

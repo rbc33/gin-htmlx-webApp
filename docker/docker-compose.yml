@@ -31,10 +31,10 @@ services:
       - type: bind
         source: ..
         target: /gocms
-      - type: bind
-        source: ./.env.compose
-        target: /gocms/.env
-    command: ["sh", "/gocms/compose-run.sh"]
+    # - type: bind
+    # source: ./.env.compose
+    # target: /gocms/.env
+    command: ["sh", "/gocms/docker/compose-run.sh"]
     depends_on:
       mysql:
         condition: service_healthy
@@ -53,10 +53,10 @@ services:
       - type: bind
         source: ..
         target: /gocms
-      - type: bind
-        source: ./.env.compose
-        target: /gocms/.env
-    command: ["sh", "/gocms/compose-run-admin.sh"]
+    # - type: bind
+    #   source: ../.env.compose
+    #   target: /gocms/.env
+    command: ["sh", "/gocms/docker/compose-run-admin.sh"]
     depends_on:
       mysql:
         condition: service_healthy

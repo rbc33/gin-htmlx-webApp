@@ -12,6 +12,17 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+type ChangeCardRequest struct {
+	Uuid          string `json:"uuid"`
+	ImageLocation string `json:"image_location"`
+	JsonData      string `json:"json_data"`
+	SchemaName    string `json:"json_schema"`
+}
+
+type DeleteCardRequest struct {
+	Uuid string `json:"uuid"`
+}
+
 func getCardHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 
@@ -106,8 +117,8 @@ func postCardHandler(database database.Database) func(*gin.Context) {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"id": id,
+		c.JSON(http.StatusOK, CardIdResponse{
+			id,
 		})
 	}
 }

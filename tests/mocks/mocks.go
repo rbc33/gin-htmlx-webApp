@@ -103,27 +103,3 @@ func (db DatabaseMock) ChangePage(id int, title string, content string, link str
 func (db DatabaseMock) DeletePage(link string) error {
 	return fmt.Errorf("not implemented")
 }
-
-func (db DatabaseMock) AddCard(image string, schema string, content string) (string, error) {
-	return db.AddCardHandler(image, schema, content)
-}
-
-func (db DatabaseMock) GetCards(schema_uuid string, limit int, page int) ([]common.Card, error) {
-	return db.GetCardsHandler(schema_uuid, limit, page)
-}
-
-func (db DatabaseMock) ChangeCard(uuid string, image_location string, json_data string, schema_data string) error {
-	return fmt.Errorf("not implemented")
-}
-
-func (db DatabaseMock) DeleteCard(uuid string) error {
-	return fmt.Errorf("not implemented")
-}
-
-func (db DatabaseMock) GetCardSchema(uuid string) (common.CardSchema, error) {
-	return db.GetCardSchemaHandler(uuid)
-}
-
-func (db DatabaseMock) AddCardSchema(json_schema string, json_title string) (string, error) {
-	return db.AddChardSchemaHandler(json_schema, json_title)
-}

@@ -8,9 +8,6 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-type CardSchema struct {
-	Name string `toml:"schema_name"`
-}
 type Shortcode struct {
 	// name for the shortcode {{name:...:...}}
 	Name string `toml:"name"`

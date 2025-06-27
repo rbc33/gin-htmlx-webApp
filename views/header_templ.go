@@ -8,9 +8,12 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/rbc33/gocms/common"
-import "fmt"
-import components "github.com/rbc33/gocms/views/components"
+import (
+	"fmt"
+	"github.com/rbc33/gocms/common"
+
+	components "github.com/rbc33/gocms/views/components"
+)
 
 func makeDarkModeButton() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -62,12 +65,12 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<header><nav class=\"fixed bg-gray-800 p-4 top-0 w-full inline\"><div class=\"container mx-auto flex justify-between items-center\"><div class=\"flex content-center\"><a href=\"/\" class=\"text-white text-4xl font-bold align-center\">Urchin</a></div><div class=\"flex justify-end items-center\"><div class=\"hidden md:flex space-x-4 items-center\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<nav class=\"bg-gray-800 \"><div class=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\"><div class=\"flex  h-20 items-center justify-between\"><!-- Logo a la izquierda --><div class=\"flex-shrink-0\"><a href=\"#\" class=\"text-white text-3xl font-bold\">GoCMS</a></div><!-- Links a la derecha --><div class=\"flex items-center space-x-4\"><div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, link := range links {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<a class=\"text-gray-100 dark:text-gray-100 hover:text-gray-400 w-auto h-fit inline-block p-3 text-center leading-4 font-bold transition duration-300 ease-in\" href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<a class=\"text-gray-100 hover:text-gray-400 w-auto text-xl inline-block p-3 text-center leading-4 font-bold transition duration-300 ease-in\" href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -83,7 +86,7 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(link.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/header.templ`, Line: 40, Col: 19}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/header.templ`, Line: 44, Col: 19}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -108,7 +111,7 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"md:hidden\"><button id=\"menu-toggle\" class=\"text-gray-100 dark:text-gray-100 hover:text-gray-400 focus:outline-none\"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"></path></svg></button></div></div></div><div id=\"mobile-menu\" class=\"hidden md:hidden\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><div class=\"md:hidden\"><button id=\"menu-toggle\" class=\"text-gray-100 dark:text-gray-100 hover:text-gray-400 focus:outline-none\"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"></path></svg></button></div></div></div><div id=\"mobile-menu\" class=\"hidden md:hidden\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -130,7 +133,7 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(
 				link.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/header.templ`, Line: 60, Col: 14}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/header.templ`, Line: 65, Col: 13}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -147,7 +150,7 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</div></nav></header>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</div></nav><hr class=\"border-t-2 border-gray-300\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

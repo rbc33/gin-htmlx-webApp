@@ -15,7 +15,7 @@ import (
 //
 // The manifest files in "gallery.links" should
 // be relative to the image directory
-func getGalleryImages(gallery common.Gallery, app_settings common.AppSettings) ([]common.Image, error) {
+func getGalleryImages(gallery common.Gallery) ([]common.Image, error) {
 
 	// Get all images from the manifests listed in gallery
 	// image_paths := make([]string, 0)
@@ -60,7 +60,7 @@ func galleryHandler(c *gin.Context, database database.Database) ([]byte, error) 
 	}
 
 	// TODO : Get valid images for a gallery
-	images, err := getGalleryImages(gallery, common.Settings)
+	images, err := getGalleryImages(gallery)
 	if err != nil {
 		return []byte{}, fmt.Errorf("could not get gallery: %v", err)
 	}

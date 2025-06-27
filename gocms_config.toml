@@ -37,8 +37,8 @@ links = [
 
 [navbar.dropdowns]
 Gallery = [
-    { name = "NotCats", href = "/gallery/notcats", title = "Not Cats" },
-    { name = "Cats", href = "/gallery/cats", title = "Cats" },
+    { name = "NotCats", href = "/gallery/NotCats", title = "Not Cats" },
+    { name = "Cats", href = "/gallery/Cats", title = "Cats" },
 ]
 
 # Gallery Settings
@@ -46,7 +46,7 @@ Gallery = [
 [gallery.NotCats]
 name = "Not Cats"
 description = "there are no cats"
-link = "notcats"
+link = "NotCats"
 thumbnail = "images/data/0a5ee342-8bc7-4a03-863f-9dc51350d066.jpg"
 images = [
     "0a5ee342-8bc7-4a03-863f-9dc51350d066.json",
@@ -60,7 +60,7 @@ images = [
 [gallery.cats]
 name = "Cats"
 description = "Pictures of Cats"
-link = "cats"
+link = "Cats"
 thumbnail = "images/data/3a4735f6-949f-4594-8e0f-35f91b0669ae.jpg"
 images = [
    "6c5257d0-89f8-46c1-9032-ca938c308bf6.json",

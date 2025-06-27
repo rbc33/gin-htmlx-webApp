@@ -67,7 +67,7 @@ func MakeLayout(title string, links []common.Link, dropdowns map[string][]common
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<link rel=\"icon\" href=\"/static/assets/favicon.ico\" type=\"image/x-icon\"><link rel=\"stylesheet\" href=\"/static/css/output.css\"></head><body class=\"relative bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-500\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<link rel=\"icon\" href=\"/static/assets/favicon.ico\" type=\"image/x-icon\"><link rel=\"stylesheet\" href=\"/static/css/style.css\"></head><body class=\"relative bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-500\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -75,7 +75,7 @@ func MakeLayout(title string, links []common.Link, dropdowns map[string][]common
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<main class=\"container mx-auto py-24 flex-grow sm:py-32\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<main class=\"container mx-auto flex-grow sm:py-10\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

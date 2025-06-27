@@ -34,7 +34,7 @@ func pageHandler(c *gin.Context, database database.Database) ([]byte, error) {
 
 	// Generate HTML page
 	page.Content = string(mdToHTML([]byte(page.Content)))
-	post_view := views.MakePage(page.Title, page.Content, common.Settings.AppNavbar.Links)
+	post_view := views.MakePage(page.Title, page.Content, common.Settings.AppNavbar.Links, common.Settings.AppNavbar.Dropdowns)
 	html_buffer := bytes.NewBuffer(nil)
 	if err = post_view.Render(c, html_buffer); err != nil {
 		log.Error().Msgf("could not render: %v", err)
@@ -63,7 +63,7 @@ func getPagesHandler(c *gin.Context, db database.Database) ([]byte, error) {
 	}
 
 	// if not cached, create the cache
-	pages_view := views.MakeAllPages(pages, common.Settings.AppNavbar.Links)
+	pages_view := views.MakeAllPages(pages, common.Settings.AppNavbar.Links, common.Settings.AppNavbar.Dropdowns)
 	html_buffer := bytes.NewBuffer(nil)
 
 	err = pages_view.Render(c, html_buffer)

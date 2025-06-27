@@ -16,6 +16,6 @@ templ MakeCard(image string, json_data string) {
 	</article>
 }
 
-templ MakeCardPage(image string, links []common.Link, json_data string) {
-	@MakeLayout("Card Page", links, MakeCard(image, json_data), []string{})
+templ MakeCardPage(image string, links []common.Link, json_data string, dropdowns map[string][]common.Link) {
+	@MakeLayout("Card Page", links, dropdowns, MakeCard(image, json_data), []string{})
 }

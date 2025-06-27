@@ -34,3 +34,39 @@ links = [
     { name = "Images", href = "/images", title = "Images page" },
     { name = "Contact", href = "/contact", title = "Contacts page" },
 ]
+
+[navbar.dropdowns]
+Gallery = [
+    { name = "NotCats", href = "/gallery/notcats", title = "Not Cats" },
+    { name = "Cats", href = "/gallery/cats", title = "Cats" },
+]
+
+# Gallery Settings
+# Paths should be relative to the image directory!
+[gallery.NotCats]
+name = "Not Cats"
+description = "there are no cats"
+link = "notcats"
+thumbnail = "images/data/0a5ee342-8bc7-4a03-863f-9dc51350d066.jpg"
+images = [
+    "0a5ee342-8bc7-4a03-863f-9dc51350d066.json",
+    "96e4ed23-7c35-4201-a420-b268e939946a.json",
+    "a3e0cf67-3523-439e-bd65-8e599059567d.json",
+    "b1a89d25-c406-4982-a0af-2a85bdcc3e33.json",
+    "bfe84d35-4005-4815-8e86-1a4e31d35df9.json",
+    "54781c0b-84c0-449a-9151-96e97b7133d1.json",
+]
+
+[gallery.cats]
+name = "Cats"
+description = "Pictures of Cats"
+link = "cats"
+thumbnail = "images/data/3a4735f6-949f-4594-8e0f-35f91b0669ae.jpg"
+images = [
+   "6c5257d0-89f8-46c1-9032-ca938c308bf6.json",
+   "bbd6ac74-19ad-4fae-8159-c692458d0adb.json",
+   "f266c6fa-d9de-40e2-91bc-2f71f2cfd45d.json",
+   "3a4735f6-949f-4594-8e0f-35f91b0669ae.json",
+
+   
+]

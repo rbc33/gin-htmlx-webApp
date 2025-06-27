@@ -21,6 +21,6 @@ templ MakePosts(posts []Post) {
 	</div>
 }
 
-templ MakeIndex(posts []Post, links []common.Link) {
-	@MakeLayout("Home Page", links, MakePosts(posts), []string{})
+templ MakeIndex(posts []Post, links []common.Link, dropdowns map[string][]common.Link) {
+	@MakeLayout("Home Page", links, dropdowns, MakePosts(posts), []string{})
 }

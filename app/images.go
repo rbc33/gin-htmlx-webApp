@@ -44,7 +44,7 @@ func imagesHandler(c *gin.Context, database database.Database) ([]byte, error) {
 		return []byte{}, err
 	}
 
-	index_view := views.MakeImagesPage(valid_images, common.Settings.AppNavbar.Links)
+	index_view := views.MakeImagesPage(valid_images, common.Settings.AppNavbar.Links, common.Settings.AppNavbar.Dropdowns)
 	html_buffer := bytes.NewBuffer(nil)
 
 	err = index_view.Render(c, html_buffer)
@@ -73,5 +73,5 @@ func imageHandler(c *gin.Context, database database.Database) ([]byte, error) {
 		Ext:  ext,
 	}
 
-	return renderHtml(c, views.MakeImagePage(image, common.Settings.AppNavbar.Links))
+	return renderHtml(c, views.MakeImagePage(image, common.Settings.AppNavbar.Links, common.Settings.AppNavbar.Dropdowns))
 }

@@ -98,6 +98,6 @@ templ makeImages(images []common.Image) {
 	</div>
 }
 
-templ MakeImagesPage(images []common.Image, links []common.Link) {
-	@MakeLayout("Images", links, makeImages(images), []string{"/static/scripts/images.js"})
+templ MakeImagesPage(images []common.Image, links []common.Link, dropdowns map[string][]common.Link) {
+	@MakeLayout("Images", links, dropdowns, makeImages(images), []string{"/static/scripts/images.js"})
 }

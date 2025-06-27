@@ -68,7 +68,7 @@ func makeImage(image Image) templ.Component {
 	})
 }
 
-func MakeImagePage(image Image, links []Link) templ.Component {
+func MakeImagePage(image Image, links []Link, dropdowns map[string][]Link) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -89,7 +89,7 @@ func MakeImagePage(image Image, links []Link) templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = MakeLayout(image.Name, links, makeImage(image), []string{}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = MakeLayout(image.Name, links, dropdowns, makeImage(image), []string{}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

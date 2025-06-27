@@ -24,6 +24,6 @@ templ MakePages(pages []Page) {
 	}
 }
 
-templ MakeAllPages(pages []Page, links []common.Link) {
-	@MakeLayout("Home Page", links, MakePages(pages), []string{})
+templ MakeAllPages(pages []Page, links []common.Link, dropdowns map[string][]common.Link) {
+	@MakeLayout("Home Page", links, dropdowns, MakePages(pages), []string{})
 }

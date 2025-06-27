@@ -64,5 +64,5 @@ func productHandler(c *gin.Context, db database.Database) ([]byte, error) {
 		cards_data = append(cards_data, card_data)
 	}
 
-	return renderHtml(c, views.MakeProductPage(common.Settings.AppNavbar.Links, cards_data))
+	return renderHtml(c, views.MakeProductPage(common.Settings.AppNavbar.Links, cards_data, common.Settings.AppNavbar.Dropdowns))
 }

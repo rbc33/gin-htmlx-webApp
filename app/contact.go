@@ -142,5 +142,5 @@ func makeContactFormHandler() func(*gin.Context) {
 
 // TODO : This is a duplicate of the index handler... abstract
 func contactHandler(c *gin.Context, db database.Database) ([]byte, error) {
-	return renderHtml(c, views.MakeContactPage(common.Settings.AppNavbar.Links, common.Settings.RecaptchaSiteKey))
+	return renderHtml(c, views.MakeContactPage(common.Settings.AppNavbar.Links, common.Settings.RecaptchaSiteKey, common.Settings.AppNavbar.Dropdowns))
 }

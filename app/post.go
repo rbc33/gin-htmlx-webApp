@@ -14,7 +14,7 @@ import (
 )
 
 func serveErrorPage(c *gin.Context, err string, error_code int) error {
-	error_view := views.MakeErrorPage(err, common.Settings.AppNavbar.Links)
+	error_view := views.MakeErrorPage(err, common.Settings.AppNavbar.Links, common.Settings.AppNavbar.Dropdowns)
 	if err := TemplRender(c, error_code, error_view); err != nil {
 		log.Error().Msgf("Could not render: %v", err)
 	}
@@ -65,5 +65,5 @@ func postHandler(c *gin.Context, database database.Database) ([]byte, error) {
 	// Generate HTML page
 	post.Content = string(mdToHTML([]byte(post.Content)))
 
-	return renderHtml(c, views.MakePostPage(post.Title, post.Content, common.Settings.AppNavbar.Links))
+	return renderHtml(c, views.MakePostPage(post.Title, post.Content, common.Settings.AppNavbar.Links, common.Settings.AppNavbar.Dropdowns))
 }

@@ -6,6 +6,6 @@ templ MakeServices(title string) {
 	@MakeUnderConstruction(title)
 }
 
-templ MakeServicesPage(links []common.Link) {
-	@MakeLayout("Services Page", links, MakeServices("Services"), []string{})
+templ MakeServicesPage(links []common.Link, dropdowns map[string][]common.Link) {
+	@MakeLayout("Services Page", links, dropdowns, MakeServices("Services"), []string{})
 }

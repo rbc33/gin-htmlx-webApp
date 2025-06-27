@@ -141,7 +141,7 @@ func makeCardGrid(cards []map[string]interface{}) templ.Component {
 	})
 }
 
-func MakeProductPage(links []common.Link, cards []map[string]interface{}) templ.Component {
+func MakeProductPage(links []common.Link, cards []map[string]interface{}, dropdowns map[string][]common.Link) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -162,7 +162,7 @@ func MakeProductPage(links []common.Link, cards []map[string]interface{}) templ.
 			templ_7745c5c3_Var7 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = MakeLayout("Product Page", links, makeCardGrid(cards), []string{}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = MakeLayout("Product Page", links, dropdowns, makeCardGrid(cards), []string{}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

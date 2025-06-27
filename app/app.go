@@ -36,6 +36,8 @@ func SetupRoutes(settings common.AppSettings, database database.Database) *gin.E
 	addCacheHandler(r, "GET", "/products/:schema", productHandler, &cache, database)
 	addCacheHandler(r, "GET", "/images/:name", imageHandler, &cache, database)
 	addCacheHandler(r, "GET", "/images", imagesHandler, &cache, database)
+	addCacheHandler(r, "GET", "/gallery/:name", galleryHandler, &cache, database)
+
 	// Pages will be querying the page content from the unique
 	// link given at the creation of the page step
 	addCacheHandler(r, "GET", "/pages", getPagesHandler, &cache, database)
@@ -125,7 +127,7 @@ func homeHandler(c *gin.Context, db database.Database) ([]byte, error) {
 	}
 
 	// if not cached, create the cache
-	index_view := views.MakeIndex(posts, common.Settings.AppNavbar.Links)
+	index_view := views.MakeIndex(posts, common.Settings.AppNavbar.Links, common.Settings.AppNavbar.Dropdowns)
 	html_buffer := bytes.NewBuffer(nil)
 	err = index_view.Render(c, html_buffer)
 	if err != nil {
@@ -139,7 +141,7 @@ func homeHandler(c *gin.Context, db database.Database) ([]byte, error) {
 
 func notFoundHandler() func(*gin.Context) {
 	handler := func(c *gin.Context) {
-		buffer, err := renderHtml(c, views.MakeNotFoundPage(common.Settings.AppNavbar.Links))
+		buffer, err := renderHtml(c, views.MakeNotFoundPage(common.Settings.AppNavbar.Links, common.Settings.AppNavbar.Dropdowns))
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, common.ErrorRes("could not render HTML", err))
 			return

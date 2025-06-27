@@ -16,21 +16,23 @@ type Shortcode struct {
 }
 
 type AppSettings struct {
-	DatabaseUri        string       `toml:"MY_SQL_URL"`
-	WebserverPort      string       `toml:"PORT"`
-	WebserverPortAdmin string       `toml:"PORT_ADMIN"`
-	CardSchema         []CardSchema `toml:"card_schema"`
-	Shortcodes         []Shortcode  `toml:"shortcodes"`
-	ImageDirectory     string       `toml:"image_dir"`
-	CacheEnabled       bool         `toml:"cache_enabled"`
-	AppNavbar          Navbar       `toml:"navbar"`
-	RecaptchaSiteKey   string       `toml:"recaptcha_sitekey, omitempty"`
-	RecaptchaSecret    string       `toml:"recaptcha_secret, omitempty"`
-	AppDomain          string       `toml:"app_domain, omitempty"`
+	DatabaseUri        string             `toml:"MY_SQL_URL"`
+	WebserverPort      string             `toml:"PORT"`
+	WebserverPortAdmin string             `toml:"PORT_ADMIN"`
+	CardSchema         []CardSchema       `toml:"card_schema"`
+	Shortcodes         []Shortcode        `toml:"shortcodes"`
+	ImageDirectory     string             `toml:"image_dir"`
+	CacheEnabled       bool               `toml:"cache_enabled"`
+	AppNavbar          Navbar             `toml:"navbar"`
+	RecaptchaSiteKey   string             `toml:"recaptcha_sitekey, omitempty"`
+	RecaptchaSecret    string             `toml:"recaptcha_secret, omitempty"`
+	AppDomain          string             `toml:"app_domain, omitempty"`
+	Galleries          map[string]Gallery `toml:"gallery"`
 }
 
 type Navbar struct {
-	Links []Link `toml:"links"`
+	Links     []Link            `toml:"links"`
+	Dropdowns map[string][]Link `toml:"dropdowns"`
 }
 
 var Settings AppSettings

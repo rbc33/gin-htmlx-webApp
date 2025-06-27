@@ -226,6 +226,6 @@ templ MakeContact(recaptcha_sitekey string) {
 	}
 }
 
-templ MakeContactPage(links []common.Link, recaptcha_sitekey string) {
-	@MakeLayout("Contact Us", links, MakeContact(recaptcha_sitekey), []string{})
+templ MakeContactPage(links []common.Link, recaptcha_sitekey string, dropdowns map[string][]common.Link) {
+	@MakeLayout("Contact Us", links, dropdowns, MakeContact(recaptcha_sitekey), []string{})
 }

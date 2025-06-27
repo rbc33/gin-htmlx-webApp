@@ -8,6 +8,6 @@ templ MakePagePage(content string) {
 	</div>
 }
 
-templ MakePage(title string, content string, links []common.Link) {
-	@MakeLayout(title, links, MakePagePage(content), []string{})
+templ MakePage(title string, content string, links []common.Link, dropdowns map[string][]common.Link) {
+	@MakeLayout(title, links, dropdowns, MakePagePage(content), []string{})
 }

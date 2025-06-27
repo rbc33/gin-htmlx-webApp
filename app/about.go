@@ -8,5 +8,5 @@ import (
 )
 
 func aboutHandler(c *gin.Context, db database.Database) ([]byte, error) {
-	return renderHtml(c, views.MakeAboutPage(common.Settings.AppNavbar.Links))
+	return renderHtml(c, views.MakeAboutPage(common.Settings.AppNavbar.Links, common.Settings.AppNavbar.Dropdowns))
 }

@@ -12,6 +12,6 @@ templ makeImage(image Image) {
 	</div>
 }
 
-templ MakeImagePage(image Image, links []Link) {
-	@MakeLayout(image.Name, links, makeImage(image), []string{})
+templ MakeImagePage(image Image, links []Link, dropdowns map[string][]Link) {
+	@MakeLayout(image.Name, links, dropdowns, makeImage(image), []string{})
 }

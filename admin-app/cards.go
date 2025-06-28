@@ -12,17 +12,6 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type ChangeCardRequest struct {
-	Uuid          string `json:"uuid"`
-	ImageLocation string `json:"image_location"`
-	JsonData      string `json:"json_data"`
-	SchemaName    string `json:"json_schema"`
-}
-
-type DeleteCardRequest struct {
-	Uuid string `json:"uuid"`
-}
-
 func getCardHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 
@@ -98,6 +87,8 @@ func postCardHandler(database database.Database) func(*gin.Context) {
 			c.JSON(http.StatusBadRequest, common.ErrorRes("card schema does not exist", err))
 			return
 		}
+		log.Info().Msgf("schema en req: %v", add_card_request.Schema)
+		log.Info().Msgf("schema en post: %v", schema)
 
 		err = validateCardAgainstSchema(add_card_request.Content, schema.Schema)
 		if err != nil {
@@ -128,6 +119,8 @@ func validateCardAgainstSchema(card_data string, json_schema string) error {
 	// Parse the schema here
 	schema_compiler := jsonschema.NewCompiler()
 	schema, err := schema_compiler.Compile([]byte(json_schema))
+
+	log.Info().Msgf("schema en validate: %v", schema)
 
 	if err != nil {
 		return fmt.Errorf("failed to compile the json_schema from db: %v", err)
@@ -165,7 +158,7 @@ func putCardHandler(database database.Database) func(*gin.Context) {
 		}
 
 		err = database.ChangeCard(
-			change_card_request.Uuid,
+			change_card_request.Id,
 			change_card_request.ImageLocation,
 			change_card_request.JsonData,
 			change_card_request.SchemaName,
@@ -180,7 +173,7 @@ func putCardHandler(database database.Database) func(*gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"id": change_card_request.Uuid,
+			"id": change_card_request.Id,
 		})
 	}
 }
@@ -201,7 +194,7 @@ func deleteCardHandler(database database.Database) func(*gin.Context) {
 			return
 		}
 
-		err = database.DeleteCard(delete_card_request.Uuid)
+		err = database.DeleteCard(delete_card_request.Id)
 		if err != nil {
 			log.Error().Msgf("failed to delete card: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -212,7 +205,7 @@ func deleteCardHandler(database database.Database) func(*gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"id": delete_card_request.Uuid,
+			"id": delete_card_request.Id,
 		})
 	}
 }

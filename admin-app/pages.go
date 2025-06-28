@@ -176,7 +176,7 @@ func checkRequiredPageData(add_page_request AddPageRequest) error {
 		return err
 	}
 	if len(add_page_request.Link) > 255 {
-		return fmt.Errorf("Link must have less than 255 chars")
+		return fmt.Errorf("link must have less than 255 chars")
 	}
 
 	return nil

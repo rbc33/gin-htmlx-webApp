@@ -85,6 +85,7 @@ func getSchemaHandler(database database.Database) func(*gin.Context) {
 		}
 
 		c.JSON(http.StatusOK, common.CardSchema{
+			Uuid:   card_schema.Id,
 			Cards:  schema.Cards,
 			Title:  schema.Title,
 			Schema: schema.Schema,

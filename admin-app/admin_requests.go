@@ -59,6 +59,17 @@ type AddCardRequest struct {
 	Content string `json:"data"`
 }
 
+type ChangeCardRequest struct {
+	Id            string `json:"id"`
+	ImageLocation string `json:"image_location"`
+	JsonData      string `json:"json_data"`
+	SchemaName    string `json:"json_schema"`
+}
+
+type DeleteCardRequest struct {
+	Id string `json:"id"`
+}
+
 type GetCardRequest struct {
 	Schema string `uri:"schema" binding:"required"`
 	Limit  uint32 `uri:"limit"`

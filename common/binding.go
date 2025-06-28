@@ -26,5 +26,5 @@ type ImageIdBinding struct {
 }
 
 type CardSchemaIdBinding struct {
-	Id string `josn:"uuis" binding:"required"`
+	Id string `uri:"id" binding:"required"`
 }

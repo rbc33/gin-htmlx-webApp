@@ -34,6 +34,7 @@ func SetupRoutes(settings common.AppSettings, database database.Database) *gin.E
 	addCacheHandler(r, "GET", "/services", servicesHandler, &cache, database)
 	addCacheHandler(r, "GET", "/post/:id", postHandler, &cache, database)
 	addCacheHandler(r, "GET", "/products/:schema", productHandler, &cache, database)
+	addCacheHandler(r, "GET", "/products/", getSchemasHandler, &cache, database)
 	addCacheHandler(r, "GET", "/images/:name", imageHandler, &cache, database)
 	addCacheHandler(r, "GET", "/images", imagesHandler, &cache, database)
 	addCacheHandler(r, "GET", "/gallery/:name", galleryHandler, &cache, database)

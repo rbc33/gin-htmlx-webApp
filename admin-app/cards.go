@@ -87,8 +87,8 @@ func postCardHandler(database database.Database) func(*gin.Context) {
 			c.JSON(http.StatusBadRequest, common.ErrorRes("card schema does not exist", err))
 			return
 		}
-		log.Info().Msgf("schema en req: %v", add_card_request.Schema)
-		log.Info().Msgf("schema en post: %v", schema)
+		// log.Info().Msgf("schema en req: %v", add_card_request.Schema)
+		// log.Info().Msgf("schema en post: %v", schema)
 
 		err = validateCardAgainstSchema(add_card_request.Content, schema.Schema)
 		if err != nil {
@@ -120,7 +120,7 @@ func validateCardAgainstSchema(card_data string, json_schema string) error {
 	schema_compiler := jsonschema.NewCompiler()
 	schema, err := schema_compiler.Compile([]byte(json_schema))
 
-	log.Info().Msgf("schema en validate: %v", schema)
+	// log.Info().Msgf("schema en validate: %v", schema)
 
 	if err != nil {
 		return fmt.Errorf("failed to compile the json_schema from db: %v", err)

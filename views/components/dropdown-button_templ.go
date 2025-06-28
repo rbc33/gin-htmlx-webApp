@@ -111,14 +111,14 @@ func MakeDropdownButton(name, elem_id string, links []common.Link) templ.Compone
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\" class=\"block text-gray-100 dark:text-gray-100 hover:text-gray-400 w-auto h-fit inline-block p-3 text-center leading-4 font-bold transition duration-300 ease-in\" role=\"menuitem\" tabindex=\"-1\" id=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\" class=\"block text-gray-100 dark:text-gray-100 hover:text-gray-400 w-auto h-fit p-3 text-center leading-4 font-bold transition duration-300 ease-in\" role=\"menuitem\" tabindex=\"-1\" id=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("menu-item-%d", i))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/dropdown-button.templ`, Line: 29, Col: 264}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/dropdown-button.templ`, Line: 29, Col: 251}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -131,7 +131,7 @@ func MakeDropdownButton(name, elem_id string, links []common.Link) templ.Compone
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(link.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/dropdown-button.templ`, Line: 29, Col: 278}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/dropdown-button.templ`, Line: 29, Col: 265}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {

@@ -50,17 +50,13 @@ func productHandler(c *gin.Context, db database.Database) ([]byte, error) {
 	// TODO : deserialise it into a map of interface
 	cards_data := make([]map[string]interface{}, 0)
 	for _, card := range cards {
-		// json_data, err := json.Marshal(card.Content)
-		// if err != nil {
-		// 	// how did we allow this to be stored in the DB?
-		// 	return []byte{}, fmt.Errorf("could not parse card json")
-		// }
-
 		var card_data map[string]interface{}
 		err = json.Unmarshal([]byte(card.Content), &card_data)
 		if err != nil {
 			return []byte{}, fmt.Errorf("could not parse card json")
 		}
+		// Añade el campo image al mapa
+		card_data["image"] = card.Image
 		cards_data = append(cards_data, card_data)
 	}
 

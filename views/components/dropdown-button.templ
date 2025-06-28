@@ -26,7 +26,7 @@ templ MakeDropdownButton(name, elem_id string, links []common.Link) {
 			<div class="py-1" role="none">
 				<!-- Active: "bg-gray-100 text-gray-900 outline-hidden", Not Active: "text-gray-700" -->
 				for i, link := range links {
-					<a href={ templ.URL(link.Href) } class="block text-gray-100 dark:text-gray-100 hover:text-gray-400 w-auto h-fit inline-block p-3 text-center leading-4 font-bold transition duration-300 ease-in" role="menuitem" tabindex="-1" id={ fmt.Sprintf("menu-item-%d", i) }>{ link.Name }</a>
+					<a href={ templ.URL(link.Href) } class="block text-gray-100 dark:text-gray-100 hover:text-gray-400 w-auto h-fit p-3 text-center leading-4 font-bold transition duration-300 ease-in" role="menuitem" tabindex="-1" id={ fmt.Sprintf("menu-item-%d", i) }>{ link.Name }</a>
 				}
 			</div>
 		</div>

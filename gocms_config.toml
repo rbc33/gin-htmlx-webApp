@@ -11,7 +11,8 @@ recaptcha_sitekey = "6LcEamQrAAAAAF3lLged7faFfQW-dU0AQO8MwNgO"
 recaptcha_secret = "6LcEamQrAAAAAHH4Nthgshj10uUmxxmXasW-pcfV"
 app_domain = "localhost"
 
-
+# Sticky posts will be expanded on home
+sticky_posts = [2]
 
 [[shortcodes]]
 name = "img"

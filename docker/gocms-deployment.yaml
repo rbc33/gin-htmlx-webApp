@@ -1,0 +1,211 @@
+# Namespace for all gocms resources
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/name: gocms
+  name: gocms
+---
+# Persistent Volume Claim for the gocms-admin data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gocms-admin-pvc
+  labels:
+    app.kubernetes.io/name: gocms
+  namespace: gocms
+spec:
+  # ReadWriteOnce means the volume can be mounted as read-write by a single node.
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      # Request 1 GiB of storage. Adjust as needed.
+      storage: 1Gi
+---
+# Persistent Volume Claim for the gocms-app data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gocms-app-pvc
+  labels:
+    app.kubernetes.io/name: gocms
+  namespace: gocms
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# Deployment for the gocms-admin application
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gocms-admin
+  namespace: gocms
+  labels:
+    app: gocms-admin
+    app.kubernetes.io/name: gocms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gocms-admin
+      app.kubernetes.io/name: gocms
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: gocms-admin
+        app.kubernetes.io/name: gocms
+    spec:
+      initContainers:
+        - name: copy-app-code
+          image: rbenthem/gocms:prod
+          imagePullPolicy: Always
+          # This command copies the app code from the image (/app) into the
+          # volume (/gocms) only if the volume is empty. This preserves
+          # any changes made in the volume across pod restarts.
+          command:
+            - sh
+            - -c
+            - 'if [ -z "$(ls -A /gocms)" ]; then cp -r /app/. /gocms; fi'
+          volumeMounts:
+            - mountPath: /gocms
+              name: gocms-admin-data
+      containers:
+        - name: gocms-admin
+          image: rbenthem/gocms:prod
+          imagePullPolicy: Always
+          args:
+            - sh
+            - ./docker/compose-run-admin.sh
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gocms-db-credentials
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gocms-db-credentials
+                  key: password
+            - name: DOCKER_DB_URI
+              value: "$(DB_USER):$(DB_PASSWORD)@tcp(mysql.gocms.svc.cluster.local:3306)/gocms"
+          ports:
+            - containerPort: 8081
+              name: http-admin
+          volumeMounts:
+            - mountPath: /gocms
+              name: gocms-admin-data
+      volumes:
+        - name: gocms-admin-data
+          # This volume now uses the PersistentVolumeClaim defined above.
+          persistentVolumeClaim:
+            claimName: gocms-admin-pvc
+---
+# Service to expose the gocms-admin deployment within the cluster
+apiVersion: v1
+kind: Service
+metadata:
+  name: gocms-admin-svc
+  labels:
+    app.kubernetes.io/name: gocms
+  namespace: gocms
+spec:
+  selector:
+    app: gocms-admin
+    app.kubernetes.io/name: gocms
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: http-admin
+  type: ClusterIP
+---
+# Deployment for the main gocms application
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gocms-app
+  namespace: gocms
+  labels:
+    app: gocms-app
+    app.kubernetes.io/name: gocms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gocms-app
+      app.kubernetes.io/name: gocms
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: gocms-app
+        app.kubernetes.io/name: gocms
+    # annotations:
+    #   force-redeploy: "v1" # Cambia este valor (ej: v2, v3) para forzar un redespliegue
+    spec:
+      initContainers:
+        - name: copy-app-code
+          image: rbenthem/gocms:prod
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - 'if [ -z "$(ls -A /gocms)" ]; then cp -r /app/. /gocms; fi'
+          volumeMounts:
+            - mountPath: /gocms
+              name: gocms-app-data
+      containers:
+        - name: gocms-app
+          image: rbenthem/gocms:prod
+          imagePullPolicy: Always
+          args:
+            - sh
+            - ./docker/compose-run.sh
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gocms-db-credentials
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gocms-db-credentials
+                  key: password
+            - name: DOCKER_DB_URI
+              value: "$(DB_USER):$(DB_PASSWORD)@tcp(mysql.gocms.svc.cluster.local:3306)/gocms"
+          ports:
+            - containerPort: 8080
+              name: http-app
+          volumeMounts:
+            - mountPath: /gocms
+              name: gocms-app-data
+      volumes:
+        - name: gocms-app-data
+          persistentVolumeClaim:
+            claimName: gocms-app-pvc
+---
+# Service to expose the main gocms application externally
+apiVersion: v1
+kind: Service
+metadata:
+  name: gocms-app-svc
+  labels:
+    app.kubernetes.io/name: gocms
+  namespace: gocms
+spec:
+  selector:
+    app: gocms-app
+    app.kubernetes.io/name: gocms
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: http-app
+  type: LoadBalancer

@@ -12,7 +12,7 @@ done
 echo "MySQL is ready!"
 
 cd /gocms/migrations
-GOOSE_DRIVER="mysql" GOOSE_DBSTRING="root:root@tcp(mysql:3306)/gocms" goose up
+GOOSE_DRIVER="mysql" GOOSE_DBSTRING="$DOCKER_DB_URI" goose up
 cd /gocms
 # go test ./... -v
 air -c .air.toml

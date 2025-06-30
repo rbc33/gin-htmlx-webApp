@@ -14,10 +14,10 @@ import (
 
 	"github.com/fossoreslp/go-uuid-v4"
 	"github.com/gin-gonic/gin"
-	"github.com/nfnt/resize"
 	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/metadata"
 	"github.com/rs/zerolog/log"
+	"golang.org/x/image/draw"
 )
 
 var allowed_extensions = map[string]bool{
@@ -40,7 +40,7 @@ var allowed_content_types = map[string]bool{
 // 	}
 // }
 
-func resizeImage(srcPath string, width uint) error {
+func resizeImage(srcPath string, width int) error {
 	// Open the source file
 	file, err := os.Open(srcPath)
 	if err != nil {
@@ -54,13 +54,14 @@ func resizeImage(srcPath string, width uint) error {
 		return fmt.Errorf("could not decode image: %v", err)
 	}
 
-	// Calculate height to maintain aspect ratio
+	// Calculate new size
 	bounds := img.Bounds()
-	ratio := float64(bounds.Dy()) / float64(bounds.Dx())
-	height := uint(float64(width) * ratio)
+	ratio := float64(width) / float64(bounds.Dx())
+	newHeight := int(float64(bounds.Dy()) * ratio)
+	dst := image.NewRGBA(image.Rect(0, 0, width, newHeight))
 
-	// Resize
-	resized := resize.Resize(width, height, img, resize.Lanczos3)
+	// Resize using golang.org/x/image/draw
+	draw.CatmullRom.Scale(dst, dst.Bounds(), img, bounds, draw.Over, nil)
 
 	// Create new file
 	out, err := os.Create(srcPath)
@@ -72,12 +73,12 @@ func resizeImage(srcPath string, width uint) error {
 	// Save based on format
 	switch format {
 	case "jpeg", "jpg":
-		err = jpeg.Encode(out, resized, &jpeg.Options{Quality: 85})
+		err = jpeg.Encode(out, dst, &jpeg.Options{Quality: 85})
 	case "png":
-		err = png.Encode(out, resized)
+		err = png.Encode(out, dst)
 	case "gif":
 		// Note: GIF will lose animation
-		err = png.Encode(out, resized)
+		err = png.Encode(out, dst)
 	}
 
 	if err != nil {
@@ -98,12 +99,6 @@ func postImageHandler() func(*gin.Context) {
 			log.Error().Msgf("could not create multipart form: %v", err)
 			c.JSON(http.StatusBadRequest, common.ErrorRes("request type must be `multipart-form`", err))
 			return
-		}
-
-		excerpt_text_array := form.Value["excerpt"]
-		excerpt := "unknown"
-		if len(excerpt_text_array) > 0 {
-			excerpt = excerpt_text_array[0]
 		}
 
 		file_array := form.File["file"]
@@ -155,8 +150,16 @@ func postImageHandler() func(*gin.Context) {
 			c.JSON(http.StatusInternalServerError, common.ErrorRes("failed to upload image", err))
 			return
 		}
+
+		// Generate Json from metadata
+		excerpt_text_array := form.Value["excerpt"]
+		excerpt := "unknown"
+		if len(excerpt_text_array) > 0 {
+			excerpt = excerpt_text_array[0]
+		}
 		name := file.Filename[:len(file.Filename)-len(ext)]
 		metadata.GenerateJson(filename, name, excerpt)
+
 		// Resize image to 477px width
 		err = resizeImage(image_path, 477)
 		if err != nil {

@@ -28,6 +28,7 @@ type AppSettings struct {
 	RecaptchaSecret    string             `toml:"recaptcha_secret, omitempty"`
 	AppDomain          string             `toml:"app_domain, omitempty"`
 	Galleries          map[string]Gallery `toml:"gallery"`
+	StickyPosts        []int              `toml:"sticky_posts"`
 }
 
 type Navbar struct {
@@ -58,12 +59,13 @@ func ReadConfigToml(filepath string) (AppSettings, error) {
 		}
 		return config, fmt.Errorf("undecoded keys found: %s", strings.Join(keys, ", "))
 	}
-	if db_uri := GetTestDatabaseUri(); db_uri != "" {
-		config.DatabaseUri = db_uri
+	// Override with environment variables if they exist, which is common in containers.
+	if dbURI := GetDatabaseURIFromEnv(); dbURI != "" {
+		config.DatabaseUri = dbURI
 	}
 	// Validate required fields
 	if config.DatabaseUri == "" {
-		return config, fmt.Errorf("MY_SQL_URL is required")
+		return config, fmt.Errorf("DatabaseUri is required in config or DOCKER_DB_URI/MY_SQL_URL env var must be set")
 	}
 	if config.WebserverPort == "" {
 		return config, fmt.Errorf("PORT is required")
@@ -79,17 +81,24 @@ func IsDocker() string {
 	return os.Getenv("DOCKER_DB_URI")
 }
 
-func GetTestDatabaseUri() string {
-	if MY_SQL_URL := os.Getenv("MY_SQL_URL"); MY_SQL_URL != "" && os.Getenv("ANDROID_HOME") == "" {
-		return MY_SQL_URL
-	} else if IsGithubActions() {
-		return "root:root@tcp(mysql:3306)/gocms"
-	} else if docker_uri := IsDocker(); docker_uri != "" {
-		return docker_uri
-	}
+func IsKubernetes() bool {
+	return os.Getenv("KUBERNETES_SERVICE_HOST") != ""
+}
 
-	// return "root:secret@tcp(192.168.0.100:33060)/gocms"
-	return Settings.DatabaseUri
+// GetDatabaseURIFromEnv checks environment variables for a database URI in a specific order of precedence.
+// It returns an empty string if no relevant environment variable is found.
+func GetDatabaseURIFromEnv() string {
+	// DOCKER_DB_URI is the primary override for Kubernetes/Docker Compose
+	if dockerURI := os.Getenv("DOCKER_DB_URI"); dockerURI != "" {
+		return dockerURI
+	}
+	if mySQLURL := os.Getenv("MY_SQL_URL"); mySQLURL != "" && os.Getenv("ANDROID_HOME") == "" {
+		return mySQLURL
+	}
+	if IsGithubActions() {
+		return "root:root@tcp(mysql:3306)/gocms"
+	}
+	return "" // No environment override found
 }
 
 func GetTestServerAddress() string {

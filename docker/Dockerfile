@@ -75,4 +75,5 @@ COPY --from=builder /usr/local/bin/tailwindcss /usr/local/bin/
 
 WORKDIR /gocms
 
+
 LABEL maintainer="ricardobenthem@gmail.com"

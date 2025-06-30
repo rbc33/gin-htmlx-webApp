@@ -1,6 +1,8 @@
 module github.com/rbc33/gocms
 
-go 1.24
+go 1.24.3
+
+toolchain go1.24.4
 
 require (
 	github.com/a-h/templ v0.3.865
@@ -21,6 +23,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
 	github.com/tinylib/msgp v1.1.8 // indirect
+	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )
 
@@ -41,6 +44,7 @@ require (
 require (
 	github.com/BurntSushi/toml v1.5.0
 	github.com/bytedance/sonic v1.11.6 // indirect
+	github.com/disintegration/imaging v1.6.2
 	github.com/evanoberholster/imagemeta v0.3.1
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect

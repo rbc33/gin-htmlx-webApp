@@ -126,9 +126,20 @@ func homeHandler(c *gin.Context, db database.Database) ([]byte, error) {
 		log.Error().Msgf("Failed to load posts: %v", err)
 		return []byte("error: Failed to load posts"), err
 	}
+	sticky_posts := make([]common.Post, 0)
+	for _, sticky_post_id := range common.Settings.StickyPosts {
+		post, err := db.GetPost(sticky_post_id)
+		if err != nil {
+			log.Error().Msgf("could not find sticky post `%d`: %v", sticky_post_id, err)
+			continue
+		}
+		post.Content = string(mdToHTML([]byte(post.Content)))
+		sticky_posts = append(sticky_posts, post)
+	}
 
 	// if not cached, create the cache
-	index_view := views.MakeIndex(posts, common.Settings.AppNavbar.Links, common.Settings.AppNavbar.Dropdowns)
+	index_view := views.MakeIndex(posts, sticky_posts, common.Settings.AppNavbar.Links, common.Settings.AppNavbar.Dropdowns)
+	// if not cached, create the cache
 	html_buffer := bytes.NewBuffer(nil)
 	err = index_view.Render(c, html_buffer)
 	if err != nil {

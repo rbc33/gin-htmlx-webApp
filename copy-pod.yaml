@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: copy-files-pod
+  namespace: gocms
+spec:
+  containers:
+  - name: alpine
+    image: alpine
+    command: ["sh", "-c", "mkdir -p /gocms/docker /gocms/migrations && sleep 3600"]
+    volumeMounts:
+    - name: gocms-vol
+      mountPath: /gocms
+  volumes:
+  - name: gocms-vol
+    persistentVolumeClaim:
+      claimName: gocms-data-pvc

@@ -15,7 +15,7 @@ templ MakePages(pages []Page) {
 		<div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4 m-2 mt-4">
 			for _, page := range pages {
 				// <article class="container mx<-auto rounded-lg dark:border-4 dark:border-solid dark:border-blue-300 shadow-lg shadow-gray-600/30 dark:shadow-gray-200/40 my-4 p-6 max-w-4xl w-full">
-				<article class="container mx-auto rounded-lg  shadow-md shadow-gray-600/30 dark:shadow-gray-300 my-4 p-6 max-w-4xl w-full overflow-x-auto">
+				<article class="bg-gray-100 dark:bg-gray-700 rounded-lg shadow-md p-4 overflow-hidden">
 					<h2 class="text-2xl text-gray-700 dark:text-gray-400 font-bold mb-2">{ page.Title }</h2>
 					<a class="dark:text-blue-400 font-bold underline" href={ templ.URL(fmt.Sprintf("/page/%s", page.Link)) }>{ page.Link }</a>
 				</article>

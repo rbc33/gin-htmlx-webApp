@@ -46,7 +46,7 @@ func MakeSchemasList(schemas []CardSchema) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			for _, schema := range schemas {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, " <article class=\"container mx-auto rounded-lg  shadow-md shadow-gray-600/30 dark:shadow-gray-300 my-4 p-6 max-w-4xl w-full overflow-x-auto\"><a class=\"text-2xl text-gray-700 dark:text-gray-400 font-bold mb-2 underline\" href=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, " <article class=\"bg-gray-100 dark:bg-gray-700 rounded-lg p-4 shadow-md overflow-hidden\"><a class=\"text-2xl text-gray-700 dark:text-gray-400 font-bold mb-2 underline\" href=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

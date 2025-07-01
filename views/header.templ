@@ -8,7 +8,7 @@ import (
 )
 
 templ makeDarkModeButton() {
-	<button id="theme-toggle" class="text-gray-300 inline-block focus:outline-none">
+	<button id="theme-toggle" class="text-gray-300 inline-block focus:outline-none mr-2">
 		<svg id="light-icon" class="w-[30px] h-[30px] dark:block hidden">
 			<circle cx="15" cy="15" r="6" fill="currentColor"></circle>
 			<line id="ray" stroke="currentColor" storke-width="2" stroke-linecap="round" x1="15" y1="1" x2="15" y2="4"></line>
@@ -27,48 +27,52 @@ templ makeDarkModeButton() {
 }
 
 templ MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) {
-	<nav class="bg-gray-800 ">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="flex  h-20 items-center justify-between">
-				<!-- Logo a la izquierda -->
-				<div class="flex-shrink-0">
-					<a href="#" class="text-white text-3xl font-bold">GoCMS</a>
-				</div>
-				<!-- Links a la derecha -->
-				<div class="flex items-center space-x-4">
-					<div>
-						for _, link := range links {
-							<a
-								class="text-gray-100 hover:text-gray-400 w-auto text-xl inline-block p-3 text-center leading-4 font-bold transition duration-300 ease-in"
-								href={ templ.URL(link.Href) }
-							>{ link.Name }</a>
-						}
-						for name, dropdown_links := range dropdowns {
-							@components.MakeDropdownButton(name, name, dropdown_links)
-						}
+	<header>
+		<nav class="bg-gray-800 ">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="flex  h-20 items-center justify-between">
+					<!-- Logo a la izquierda -->
+					<div class="flex-shrink-0">
+						<a href="#" class="text-white text-3xl font-bold">GoCMS</a>
 					</div>
-					@makeDarkModeButton()
-				</div>
-				<div class="md:hidden">
-					<button id="menu-toggle" class="text-gray-100 dark:text-gray-100 hover:text-gray-400 focus:outline-none">
-						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-						</svg>
-					</button>
+					<!-- Links a la derecha -->
+					<div class="flex sm:hidden items-center space-x-4">
+						<div>
+							for _, link := range links {
+								<a
+									class="text-gray-100 hover:text-gray-400 w-auto text-xl inline-block p-3 text-center leading-4 font-bold transition duration-300 ease-in"
+									href={ templ.URL(link.Href) }
+								>{ link.Name }</a>
+							}
+							for name, dropdown_links := range dropdowns {
+								@components.MakeDropdownButton(name, name, dropdown_links)
+							}
+						</div>
+					</div>
+					<div class="flex w-fit justify-between items-center">
+						@makeDarkModeButton()
+						<div class="md:hidden">
+							<button id="menu-toggle" class="text-gray-100 dark:text-gray-100 hover:text-gray-400 focus:outline-none">
+								<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+								</svg>
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div id="mobile-menu" class="hidden md:hidden">
-			for _, link := range links {
-				<a class="text-gray-100 dark:text-gray-100 hover:text-gray-400 block px-2 py-1" href={ templ.URL(link.Href) }>
-					{ 
+			<div id="mobile-menu" class="hidden md:hidden">
+				for _, link := range links {
+					<a class="text-gray-100 dark:text-gray-100 hover:text-gray-400 block px-2 py-1" href={ templ.URL(link.Href) }>
+						{ 
 				link.Name }
-				</a>
-			}
-			for name, dropdown_links := range dropdowns {
-				@components.MakeDropdownButton(name, fmt.Sprintf("%s-mobile", name), dropdown_links)
-			}
-		</div>
-	</nav>
-	<hr class="border-t-2 border-gray-300"/>
+					</a>
+				}
+				for name, dropdown_links := range dropdowns {
+					@components.MakeDropdownButton(name, fmt.Sprintf("%s-mobile", name), dropdown_links)
+				}
+			</div>
+		</nav>
+		<hr class="border-t-2 border-gray-300"/>
+	</header>
 }

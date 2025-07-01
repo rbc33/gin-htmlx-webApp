@@ -44,7 +44,15 @@ func getPagesHandler(database database.Database) gin.HandlerFunc {
 	}
 }
 
-// postPageHandler if the function handling the endpoint for adding pages
+// @Summary      Add a new page
+// @Description  Adds a new page to the database.
+// @Tags         pages
+// @Accept       json
+// @Produce      json
+// @Param        page body AddPageRequest true "Page to add"
+// @Success      200 {object} PageResponse
+// @Failure      400 {object} common.ErrorResponse "Invalid request body or data"
+// @Router       /pages [post]
 func postPageHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var add_page_request AddPageRequest
@@ -86,6 +94,15 @@ func postPageHandler(database database.Database) func(*gin.Context) {
 	}
 }
 
+// @Summary      Add a new page
+// @Description  Adds a new page to the database.
+// @Tags         pages
+// @Accept       json
+// @Produce      json
+// @Param        page body ChangePageRequest true "Page to Update"
+// @Success      200 {object} PageResponse
+// @Failure      400 {object} common.ErrorResponse "Invalid request body or data"
+// @Router       /pages [post]
 func putPageHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var change_page_request ChangePageRequest
@@ -130,9 +147,18 @@ func putPageHandler(database database.Database) func(*gin.Context) {
 	}
 }
 
+// @Summary      Delete a page
+// @Description  Deletes a page by its Link.
+// @Tags         pages
+// @Produce      json
+// @Param        link path string true "Page Link"
+// @Success      200 {object} DeletePageRequest
+// @Failure      400 {object} common.ErrorResponse "Invalid link provided"
+// @Failure      404 {object} common.ErrorResponse "Page not found"
+// @Router       /posts/{id} [delete]
 func deletePageHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
-		var delete_page_request DeletePageBinding
+		var delete_page_request DeletePageRequest
 		decoder := json.NewDecoder(c.Request.Body)
 		decoder.DisallowUnknownFields()
 

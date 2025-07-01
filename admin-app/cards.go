@@ -12,6 +12,15 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// @Summary      Get a card list
+// @Description  Retrieves a paginated list of cards by schema UUID.
+// @Tags         posts
+// @Produce      json
+// @Param        schema path int true "schema UUID"
+// @Success      200 {object} GetCardRequest
+// @Failure      400 {object} common.ErrorResponse "Invalid post ID"
+// @Failure      404 {object} common.ErrorResponse "Post not found"
+// @Router       /cards/{schema} [get]
 func getCardHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 
@@ -54,6 +63,15 @@ func getCardHandler(database database.Database) func(*gin.Context) {
 	}
 }
 
+// @Summary      Add a new post
+// @Description  Adds a new post to the database.
+// @Tags         posts
+// @Accept       json
+// @Produce      json
+// @Param        post body AddCardRequest true "Post to add"
+// @Success      200 {object} CardIdResponse
+// @Failure      400 {object} common.ErrorResponse "Invalid request body or missing data"
+// @Router       /cards [post]
 func postCardHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var add_card_request AddCardRequest
@@ -141,6 +159,15 @@ func validateCardAgainstSchema(card_data string, json_schema string) error {
 	return nil
 }
 
+// @Summary      Update an existing card
+// @Description  Updates an existing card with new data.
+// @Tags         cards
+// @Accept       json
+// @Produce      json
+// @Param        card body ChangeCardRequest true "Card data to update"
+// @Success      200 {object} CardIdResponse
+// @Failure      400 {object} common.ErrorResponse "Invalid request body or could not change card"
+// @Router       /card [put]
 func putCardHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var change_card_request ChangeCardRequest

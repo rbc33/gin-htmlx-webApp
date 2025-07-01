@@ -1,3 +1,15 @@
+// @title        GoCMS Admin API
+// @version      1.0.0
+// @description  This is the admin API for the Urchin app.
+// @schemes   http
+// @host      localhost:8081
+// @BasePath  /
+// @contact.name   Ricardo
+// @contact.email  ricardobenthem@gmail.com
+// @license.name  MIT
+// @consumes  application/json
+// @consumes  multipart/form-data
+// @produces  application/json
 package main
 
 import (
@@ -7,6 +19,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	// lua "github.com/yuin/gopher-lua"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	// "github.com/joho/godotenv"
 	admin_app "github.com/rbc33/gocms/admin-app"
@@ -15,6 +29,7 @@ import (
 	"github.com/rbc33/gocms/plugins"
 
 	// "github.com/rbc33/gocms/plugins"
+	_ "github.com/rbc33/gocms/docs"
 	"github.com/rs/zerolog/log"
 )
 
@@ -71,7 +86,9 @@ func main() {
 	}
 
 	r := admin_app.SetupRoutes(common.Settings, shortcode_handlers, &db_connection, hooks_map)
-	// r := admin_app.SetupRoutes(common.Settings, shortcode_handlers, &db_connection)
+	// r := admin_app.SetupRoutes(common.Settings, shortcode_handlers, &db_connection)// Esta línea añade la ruta para la UI de Swagger.
+	// La URL será: http://localhost:8081/swagger/index.html
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	err = r.Run(fmt.Sprintf(":%s", Port))
 	if err != nil {
 		log.Error().Msgf("could not run app: %v", err)

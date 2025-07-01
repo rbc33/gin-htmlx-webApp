@@ -14,6 +14,15 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// @Summary      Add a new card schema
+// @Description  Creates a new card schema by validating and storing the provided JSON schema and title.
+// @Tags         card_schema
+// @Accept       json
+// @Produce      json
+// @Param        schema body AddCardSchemaRequest true "Card schema to add"
+// @Success      200 {object} CardIdResponse
+// @Failure      400 {object} common.ErrorResponse "Invalid request body or schema"
+// @Router       /card_schema [post]
 func postSchemaHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var add_schema_request AddCardSchemaRequest
@@ -62,6 +71,15 @@ func postSchemaHandler(database database.Database) func(*gin.Context) {
 	}
 }
 
+// @Summary      Get a card schema by ID
+// @Description  Retrieves a card schema by its UUID.
+// @Tags         card_schema
+// @Produce      json
+// @Param        id path string true "Card schema UUID"
+// @Success      200 {object} common.CardSchema
+// @Failure      400 {object} common.ErrorResponse "Invalid schema ID"
+// @Failure      404 {object} common.ErrorResponse "Schema not found"
+// @Router       /card_schema/{id} [get]
 func getSchemaHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		// localhost:8080/post/{id}
@@ -93,6 +111,16 @@ func getSchemaHandler(database database.Database) func(*gin.Context) {
 	}
 }
 
+// @Summary      Get list of card schemas
+// @Description  Retrieves a paginated list of card schemas.
+// @Tags         card_schema
+// @Produce      json
+// @Param        offset query int false "Pagination offset" default(0)
+// @Param        limit query int false "Pagination limit (0 means no limit)" default(0)
+// @Success      200 {object} GetSchemaasResponse
+// @Failure      400 {object} common.ErrorResponse "Invalid query parameters"
+// @Failure      500 {object} common.ErrorResponse "Server error"
+// @Router       /card_schema [get]
 func getSchemasHandler(database database.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Lee offset y limit de la query (?offset=0&limit=10)
@@ -142,6 +170,15 @@ func checkSchemaValues(add_schema_request AddCardSchemaRequest) error {
 	return nil
 }
 
+// @Summary      Delete a card schema
+// @Description  Deletes a card schema by its ID.
+// @Tags         card_schema
+// @Accept       json
+// @Produce      json
+// @Param        schema body DeleteSchemaBinding true "ID of the card schema to delete"
+// @Success      200 {object} map[string]string "Deleted schema ID"
+// @Failure      400 {object} common.ErrorResponse "Invalid request or deletion error"
+// @Router       /card_schema [delete]
 func deleteCardSchemaHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var delete_schema_request DeleteSchemaBinding

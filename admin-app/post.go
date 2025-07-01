@@ -16,6 +16,16 @@ import (
 	lua "github.com/yuin/gopher-lua"
 )
 
+// @Summary      Get a list of posts
+// @Description  Retrieves a paginated list of posts.
+// @Tags         posts
+// @Produce      json
+// @Param        offset query int false "Offset for pagination" default(0)
+// @Param        limit  query int false "Limit for pagination. 0 means no limit." default(0)
+// @Success      200 {object} GetPostsResponse
+// @Failure      400 {object} common.ErrorResponse "Invalid offset or limit parameter"
+// @Failure      500 {object} common.ErrorResponse "Internal server error"
+// @Router       /posts [get]
 func getPostsHandler(database database.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Lee offset y limit de la query (?offset=0&limit=10)
@@ -46,6 +56,15 @@ func getPostsHandler(database database.Database) gin.HandlerFunc {
 	}
 }
 
+// @Summary      Get a single post
+// @Description  Retrieves a single post by its ID.
+// @Tags         posts
+// @Produce      json
+// @Param        id path int true "Post ID"
+// @Success      200 {object} GetPostResponse
+// @Failure      400 {object} common.ErrorResponse "Invalid post ID"
+// @Failure      404 {object} common.ErrorResponse "Post not found"
+// @Router       /posts/{id} [get]
 func getPostHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		// localhost:8080/post/{id}
@@ -77,7 +96,15 @@ func getPostHandler(database database.Database) func(*gin.Context) {
 	}
 }
 
-// func postPostHandler(database database.Database, shortcode_handlers map[string]*lua.LState, post_hook plugins.PostHook) func(*gin.Context) {
+// @Summary      Add a new post
+// @Description  Adds a new post to the database.
+// @Tags         posts
+// @Accept       json
+// @Produce      json
+// @Param        post body AddPostRequest true "Post to add"
+// @Success      200 {object} PostIdResponse
+// @Failure      400 {object} common.ErrorResponse "Invalid request body or missing data"
+// @Router       /posts [post]
 func postPostHandler(database database.Database, shortcode_handlers map[string]*lua.LState, post_hook *plugins.PostHook) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var add_post_request AddPostRequest
@@ -123,6 +150,15 @@ func postPostHandler(database database.Database, shortcode_handlers map[string]*
 	}
 }
 
+// @Summary      Update an existing post
+// @Description  Updates an existing post with new data.
+// @Tags         posts
+// @Accept       json
+// @Produce      json
+// @Param        post body ChangePostRequest true "Post data to update"
+// @Success      200 {object} PostIdResponse
+// @Failure      400 {object} common.ErrorResponse "Invalid request body or could not change post"
+// @Router       /posts [put]
 func putPostHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var change_post_request ChangePostRequest
@@ -160,23 +196,25 @@ func putPostHandler(database database.Database) func(*gin.Context) {
 	}
 }
 
+// @Summary      Delete a post
+// @Description  Deletes a post by its ID.
+// @Tags         posts
+// @Produce      json
+// @Param        id body DeletePostRequest true "Post ID to delete"
+// @Success      200 {object} PostIdResponse
+// @Failure      400 {object} common.ErrorResponse "Invalid ID provided"
+// @Failure      404 {object} common.ErrorResponse "Post not found"
+// @Router       /posts [delete]
 func deletePostHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
-		var delete_post_request DeletePostBinding
-		decoder := json.NewDecoder(c.Request.Body)
-		decoder.DisallowUnknownFields()
-
-		err := decoder.Decode(&delete_post_request)
-		if err != nil {
+		var delete_post_request DeletePostRequest
+		if err := c.ShouldBindJSON(&delete_post_request); err != nil {
 			log.Warn().Msgf("could not delete post: %v", err)
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "invalid request body",
-				"msg":   err.Error(),
-			})
+			c.JSON(http.StatusBadRequest, common.ErrorRes("invalid request body", err))
 			return
 		}
 
-		err = database.DeletePost(delete_post_request.Id)
+		err := database.DeletePost(delete_post_request.Id)
 		if err != nil {
 			log.Error().Msgf("failed to delete post: %v", err)
 			c.JSON(http.StatusBadRequest, gin.H{

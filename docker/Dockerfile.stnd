@@ -48,35 +48,37 @@ RUN if [ "$TARGETARCH" = "amd64" ]; then \
     fi \
     && chmod +x /usr/local/bin/tailwindcss
 
-# Final stage - much smaller
-FROM alpine:latest
+WORKDIR /gocms
+
+# Copy all source code and build the application.
+# This runs `templ generate`, `tailwindcss`, and `go build`.
+COPY . .
+RUN make build
+
+# Final stage - much smaller (multistage build)
+FROM alpine:latest AS final
 
 ENV TZ=Europe/London
 ENV PATH="${PATH}:/usr/local/go/bin:/usr/local/bin"
 
 # Install only runtime dependencies
 RUN apk update && apk add --no-cache \
-    ca-certificates \
-    make \
-    git \
-    bash \
-    tzdata \
-    && rm -rf /var/cache/apk/*
+    ca-certificates tzdata && \
+    rm -rf /var/cache/apk/*
 
-# Copy Go from builder
-COPY --from=builder /usr/local/go /usr/local/go
+# Set working directory
+WORKDIR /app
 
-# Copy installed tools from builder
-COPY --from=builder /usr/local/bin/goose /usr/local/bin/
-COPY --from=builder /usr/local/bin/templ /usr/local/bin/
-COPY --from=builder /usr/local/bin/air /usr/local/bin/
-COPY --from=builder /usr/local/bin/golangci-lint /usr/local/bin/
-COPY --from=builder /usr/local/bin/tailwindcss /usr/local/bin/
+# Copy the main binary from the builder stage.
+COPY --from=builder /gocms/tmp/gocms .
 
-WORKDIR /gocms
+# Copy necessary assets.
+# 'static' is copied from the builder because it's processed by tailwind.
+# The 'views' directory is not needed because the templates are compiled into the binary.
+COPY --from=builder /gocms/static ./static/
+COPY gocms_config.toml images ./
 
-# Copy application source code to /app. It will be copied to the persistent volume by an initContainer.
-COPY . /gocms
-RUN air
+# Command to run the main application with the config file.
+CMD ["./gocms", "--config", "gocms_config.toml"]
 
 LABEL maintainer="ricardobenthem@gmail.com"

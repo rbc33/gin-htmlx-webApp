@@ -65,7 +65,7 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<header><nav class=\"bg-gray-800 \"><div class=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\"><div class=\"flex  h-20 items-center justify-between\"><!-- Logo a la izquierda --><div class=\"flex-shrink-0\"><a href=\"#\" class=\"text-white text-3xl font-bold\">GoCMS</a></div><!-- Links a la derecha --><div class=\"flex sm:hidden items-center space-x-4\"><div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<header><nav class=\"bg-gray-800 \"><div class=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\"><div class=\"flex  h-20 items-center justify-between\"><!-- Logo a la izquierda --><div class=\"flex-shrink-0\"><a href=\"#\" class=\"text-white text-3xl font-bold\">GoCMS</a></div><!-- Links a la derecha --><div class=\"hidden md:flex items-center justify-end space-x-4\"><div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

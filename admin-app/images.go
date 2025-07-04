@@ -40,7 +40,7 @@ var allowed_content_types = map[string]bool{
 // 	}
 // }
 
-func resizeImage(srcPath string, width int) error {
+func resizeImage(srcPath string, width int, height int) error {
 	// Open the source file
 	file, err := os.Open(srcPath)
 	if err != nil {
@@ -58,6 +58,13 @@ func resizeImage(srcPath string, width int) error {
 	bounds := img.Bounds()
 	ratio := float64(width) / float64(bounds.Dx())
 	newHeight := int(float64(bounds.Dy()) * ratio)
+	if newHeight > height {
+		newHeight = height
+		width = int(float64(newHeight) / float64(bounds.Dy()) * float64(bounds.Dx()))
+	}
+
+	// Create new image
+
 	dst := image.NewRGBA(image.Rect(0, 0, width, newHeight))
 
 	// Resize using golang.org/x/image/draw
@@ -169,7 +176,7 @@ func postImageHandler() func(*gin.Context) {
 		metadata.GenerateJson(filename, name, excerpt)
 
 		// Resize image to 477px width
-		err = resizeImage(image_path, 477)
+		err = resizeImage(image_path, 477, 620)
 		if err != nil {
 			log.Error().Msgf("could not resize image: %v", err)
 			os.Remove(image_path)

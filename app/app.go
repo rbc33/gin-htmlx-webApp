@@ -25,6 +25,7 @@ func SetupRoutes(settings common.AppSettings, database database.Database) *gin.E
 
 	// Contact form related endpoints
 	r.POST("/contact-send", makeContactFormHandler())
+	r.POST("/webhook", makeWebHookHandler())
 
 	// All cache endpoints
 	cache := MakeCache(4, time.Minute*10, &TimeValidator{})

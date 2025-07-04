@@ -16,7 +16,7 @@ func makeWebHookHandler() func(*gin.Context) {
 		}
 
 		if prc.ProcessState.Success() {
-			log.Info().Msgf("Proceso ejecutado con éxito con salida: \n%v", prc.ProcessState.String)
+			log.Info().Msgf("Process success with output: \n%s", prc.ProcessState.String())
 		}
 	}
 }

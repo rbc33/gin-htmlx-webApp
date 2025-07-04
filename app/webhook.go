@@ -1,6 +1,7 @@
 package app
 
 import (
+	"os"
 	"os/exec"
 
 	"github.com/gin-gonic/gin"
@@ -9,6 +10,10 @@ import (
 
 func makeWebHookHandler() func(*gin.Context) {
 	return func(c *gin.Context) {
+		if c.GetHeader("X-Webhook-Secret") != os.Getenv("GIT_SECRET") {
+			c.AbortWithStatusJSON(401, gin.H{"error": "unauthorized"})
+			return
+		}
 		prc := exec.Command("git", "pull", "origin", "main")
 		err := prc.Run()
 		if err != nil {

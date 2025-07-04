@@ -83,13 +83,13 @@ templ makeImages(images []common.Image) {
       window.addEventListener('load', function() {
         refreshImages({{ images }})
 		        setupArrowNavigation()
-
+				closeIfClickOut()
       });
     </script>
 		for i, image := range images {
 			<!-- <a class="block border border-pastel-blue dark:border-pastel-blue-900 rounded overflow-hidden p-2"
         href={templ.URL("/images/" + image.Name)}> -->
-			<div class="block border border-pastel-blue dark:border-pastel-blue-900 rounded overflow-hidden p-2">
+			<div id="notModal" class="block border border-pastel-blue dark:border-pastel-blue-900 rounded overflow-hidden p-2">
 				<img class="w-full h-48 object-cover" src={ fmt.Sprintf("/images/data/%s", image.Filename) } onclick={ templ.JSFuncCall("showImageModal", i) }/>
 				<div class="p-2">
 					<h2 class="text-sm font-semibold truncate">{ image.Name }</h2>

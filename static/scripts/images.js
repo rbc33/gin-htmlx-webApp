@@ -70,6 +70,18 @@ function setupArrowNavigation() {
 	});
 }
 
+function closeIfClickOut() {
+	const modal = document.getElementById("modal");
+	if (modal) {
+		modal.addEventListener("click", function (event) {
+			console.log(event.target);
+			if (event.target === modal) {
+				modal.close();
+			}
+		});
+	}
+}
+
 function refreshImages(images) {
 	if (!Array.isArray(images)) {
 		console.error("input must be an array of valid images");

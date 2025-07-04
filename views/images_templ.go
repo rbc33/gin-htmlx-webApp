@@ -239,12 +239,12 @@ func makeImages(images []common.Image) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, ")\n\t\t        setupArrowNavigation()\n\n      });\n    </script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, ")\n\t\t        setupArrowNavigation()\n\t\t\t\tcloseIfClickOut()\n      });\n    </script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for i, image := range images {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<!-- <a class=\"block border border-pastel-blue dark:border-pastel-blue-900 rounded overflow-hidden p-2\"\n        href={templ.URL(\"/images/\" + image.Name)}> --> <div class=\"block border border-pastel-blue dark:border-pastel-blue-900 rounded overflow-hidden p-2\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<!-- <a class=\"block border border-pastel-blue dark:border-pastel-blue-900 rounded overflow-hidden p-2\"\n        href={templ.URL(\"/images/\" + image.Name)}> --> <div id=\"notModal\" class=\"block border border-pastel-blue dark:border-pastel-blue-900 rounded overflow-hidden p-2\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

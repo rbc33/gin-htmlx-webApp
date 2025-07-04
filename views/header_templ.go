@@ -36,7 +36,7 @@ func makeDarkModeButton() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<button id=\"theme-toggle\" class=\"text-gray-300 inline-block focus:outline-none mr-2\"><svg id=\"light-icon\" class=\"w-[30px] h-[30px] dark:block hidden\"><circle cx=\"15\" cy=\"15\" r=\"6\" fill=\"currentColor\"></circle> <line id=\"ray\" stroke=\"currentColor\" storke-width=\"2\" stroke-linecap=\"round\" x1=\"15\" y1=\"1\" x2=\"15\" y2=\"4\"></line> <use href=\"#ray\" transform=\"rotate(45 15 15)\"></use> <use href=\"#ray\" transform=\"rotate(90 15 15)\"></use> <use href=\"#ray\" transform=\"rotate(135 15 15)\"></use> <use href=\"#ray\" transform=\"rotate(180 15 15)\"></use> <use href=\"#ray\" transform=\"rotate(225 15 15)\"></use> <use href=\"#ray\" transform=\"rotate(270 15 15)\"></use> <use href=\"#ray\" transform=\"rotate(315 15 15)\"></use></svg> <svg id=\"dark-icon\" class=\"dark:hidden block w-[30px] h-[30px] rotate-[315deg]\"><path fill=\"currentColor\" d=\"M 23, 5 A 12 12 0 1 0 23, 25  A 12 12 0 0 1 23, 5\"></path></svg></button>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<button id=\"theme-toggle\" class=\"text-gray-300 inline-block focus:outline-none\"><svg id=\"light-icon\" class=\"w-[30px] h-[30px] dark:block hidden\"><circle cx=\"15\" cy=\"15\" r=\"6\" fill=\"currentColor\"></circle> <line id=\"ray\" stroke=\"currentColor\" storke-width=\"2\" stroke-linecap=\"round\" x1=\"15\" y1=\"1\" x2=\"15\" y2=\"4\"></line> <use href=\"#ray\" transform=\"rotate(45 15 15)\"></use> <use href=\"#ray\" transform=\"rotate(90 15 15)\"></use> <use href=\"#ray\" transform=\"rotate(135 15 15)\"></use> <use href=\"#ray\" transform=\"rotate(180 15 15)\"></use> <use href=\"#ray\" transform=\"rotate(225 15 15)\"></use> <use href=\"#ray\" transform=\"rotate(270 15 15)\"></use> <use href=\"#ray\" transform=\"rotate(315 15 15)\"></use></svg> <svg id=\"dark-icon\" class=\"dark:hidden block w-[30px] h-[30px] rotate-[315deg]\"><path fill=\"currentColor\" d=\"M 23, 5 A 12 12 0 1 0 23, 25  A 12 12 0 0 1 23, 5\"></path></svg></button>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -65,7 +65,7 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<header><nav class=\"bg-gray-800 \"><div class=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\"><div class=\"flex  h-20 items-center justify-between\"><!-- Logo a la izquierda --><div class=\"flex-shrink-0\"><a href=\"#\" class=\"text-white text-3xl font-bold\">GoCMS</a></div><!-- Links a la derecha --><div class=\"hidden md:flex items-center justify-end space-x-4\"><div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<nav class=\"bg-gray-800 \"><div class=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\"><div class=\"flex  h-20 items-center justify-between\"><!-- Logo a la izquierda --><div class=\"flex-shrink-0\"><a href=\"#\" class=\"text-white text-3xl font-bold\">GoCMS</a></div><!-- Links a la derecha --><div class=\"flex items-center space-x-4\"><div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -86,7 +86,7 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(link.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/header.templ`, Line: 45, Col: 20}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/header.templ`, Line: 44, Col: 19}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -103,7 +103,7 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div><div class=\"flex w-fit justify-between items-center\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -111,7 +111,7 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"md:hidden\"><button id=\"menu-toggle\" class=\"text-gray-100 dark:text-gray-100 hover:text-gray-400 focus:outline-none\"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"></path></svg></button></div></div></div></div></div><div id=\"mobile-menu\" class=\"hidden md:hidden\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><div class=\"md:hidden\"><button id=\"menu-toggle\" class=\"text-gray-100 dark:text-gray-100 hover:text-gray-400 focus:outline-none\"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"></path></svg></button></div></div></div><div id=\"mobile-menu\" class=\"hidden md:hidden\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -133,7 +133,7 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(
 				link.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/header.templ`, Line: 68, Col: 13}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/header.templ`, Line: 65, Col: 13}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -150,7 +150,7 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</div></nav><hr class=\"border-t-2 border-gray-300\"></header>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</div></nav><hr class=\"border-t-2 border-gray-300\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

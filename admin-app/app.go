@@ -29,6 +29,8 @@ func LoadShortcodesHandlers(shortcodes []common.Shortcode) (map[string]*lua.LSta
 func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua.LState, database database.Database, hooks map[string]plugins.Hook) *gin.Engine {
 	// func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua.LState, database database.Database) *gin.Engine {
 
+	gin.SetMode(gin.ReleaseMode)
+
 	r := gin.Default()
 	r.MaxMultipartMemory = 1
 

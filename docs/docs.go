@@ -239,7 +239,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "posts"
+                    "cards"
                 ],
                 "summary": "Add a new post",
                 "parameters": [
@@ -276,7 +276,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "posts"
+                    "cards"
                 ],
                 "summary": "Get a card list",
                 "parameters": [
@@ -399,6 +399,94 @@ const docTemplate = `{
             }
         },
         "/pages": {
+            "get": {
+                "description": "Retrieves a paginated list of pages.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pages"
+                ],
+                "summary": "Get a list of pages",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Pagination offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Pagination limit (0 means no limit)",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of pages",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid offset or limit parameter",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Updates an existing page with new data.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pages"
+                ],
+                "summary": "Update an existing page",
+                "parameters": [
+                    {
+                        "description": "Page data to update",
+                        "name": "post",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admin_app.ChangePageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/admin_app.PostIdResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body or could not change page",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Adds a new page to the database.",
                 "consumes": [
@@ -413,12 +501,12 @@ const docTemplate = `{
                 "summary": "Add a new page",
                 "parameters": [
                     {
-                        "description": "Page to Update",
+                        "description": "Page to add",
                         "name": "page",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/admin_app.ChangePageRequest"
+                            "$ref": "#/definitions/admin_app.AddPageRequest"
                         }
                     }
                 ],
@@ -431,6 +519,47 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Invalid request body or data",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/pages/{link}": {
+            "delete": {
+                "description": "Deletes a page by its Link.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pages"
+                ],
+                "summary": "Delete a page",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Page Link",
+                        "name": "link",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/admin_app.DeletePageRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid link provided",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Page not found",
                         "schema": {
                             "$ref": "#/definitions/common.ErrorResponse"
                         }
@@ -637,45 +766,6 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Post not found",
-                        "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Deletes a page by its Link.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "pages"
-                ],
-                "summary": "Delete a page",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Page Link",
-                        "name": "link",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/admin_app.DeletePageRequest"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid link provided",
-                        "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Page not found",
                         "schema": {
                             "$ref": "#/definitions/common.ErrorResponse"
                         }
@@ -1007,9 +1097,11 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/",
 	Schemes:          []string{"http"},
 	Title:            "GoCMS Admin API",
-	Description:      "This is the admin API for the Urchin app.",
+	Description:      "This is the admin API for the GoCMS app.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
+	LeftDelim:        "{{",
+	RightDelim:       "}}",
 }
 
 func init() {

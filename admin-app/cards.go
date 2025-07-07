@@ -14,7 +14,7 @@ import (
 
 // @Summary      Get a card list
 // @Description  Retrieves a paginated list of cards by schema UUID.
-// @Tags         posts
+// @Tags         cards
 // @Produce      json
 // @Param        schema path int true "schema UUID"
 // @Success      200 {object} GetCardRequest
@@ -65,7 +65,7 @@ func getCardHandler(database database.Database) func(*gin.Context) {
 
 // @Summary      Add a new post
 // @Description  Adds a new post to the database.
-// @Tags         posts
+// @Tags         cards
 // @Accept       json
 // @Produce      json
 // @Param        post body AddCardRequest true "Post to add"
@@ -167,7 +167,7 @@ func validateCardAgainstSchema(card_data string, json_schema string) error {
 // @Param        card body ChangeCardRequest true "Card data to update"
 // @Success      200 {object} CardIdResponse
 // @Failure      400 {object} common.ErrorResponse "Invalid request body or could not change card"
-// @Router       /card [put]
+// @Router       /cards [put]
 func putCardHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var change_card_request ChangeCardRequest
@@ -205,6 +205,15 @@ func putCardHandler(database database.Database) func(*gin.Context) {
 	}
 }
 
+// @Summary      Delete a card
+// @Description  Deletes a card by its ID.
+// @Tags         cards
+// @Produce      json
+// @Param        id body DeletePostRequest true "Card ID to delete"
+// @Success      200 {object} PostIdResponse
+// @Failure      400 {object} common.ErrorResponse "Invalid ID provided"
+// @Failure      404 {object} common.ErrorResponse "Card not found"
+// @Router       /cards [delete]
 func deleteCardHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var delete_card_request DeleteCardRequest

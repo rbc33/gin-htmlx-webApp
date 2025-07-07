@@ -10,6 +10,10 @@ import (
 	"github.com/rbc33/gocms/database"
 	"github.com/rbc33/gocms/plugins"
 	lua "github.com/yuin/gopher-lua"
+
+	_ "github.com/rbc33/gocms/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func LoadShortcodesHandlers(shortcodes []common.Shortcode) (map[string]*lua.LState, error) {
@@ -61,6 +65,8 @@ func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua
 		pages.PUT("", putPageHandler(database))
 		pages.DELETE("", deletePageHandler(database))
 	}
+	// La URL será: http://localhost:8081/swagger/index.html
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// CRUD Images
 	// r.GET("/images/:id", getImageHandler(&database))

@@ -23,7 +23,8 @@ test:
 clean:
 	$(GOCMD) clean
 	rm -rf $(BUILD_DIR)/$(BINARY_NAME)
-
+swagger-generate:
+	swag init -g cmd/gocms-admin/main.go -o docs
 
 install-tools:
 	go install github.com/pressly/goose/v3/cmd/goose@v3.18.0

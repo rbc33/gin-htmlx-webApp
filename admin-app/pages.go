@@ -15,6 +15,17 @@ import (
 )
 
 // GET /pages?offset=10&limit=10
+// @Summary      Get a list of pages
+// @Description  Retrieves a paginated list of pages.
+// @Tags         pages
+// @Accept       json
+// @Produce      json
+// @Param        offset query int false "Pagination offset" default(0)
+// @Param        limit query int false "Pagination limit (0 means no limit)" default(0)
+// @Success      200 {object} map[string]interface{} "List of pages"
+// @Failure      400 {object} common.ErrorResponse "Invalid offset or limit parameter"
+// @Failure      500 {object} common.ErrorResponse "Server error"
+// @Router       /pages [get]
 func getPagesHandler(database database.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Un valor de 0 para el límite significa "sin límite".
@@ -94,15 +105,15 @@ func postPageHandler(database database.Database) func(*gin.Context) {
 	}
 }
 
-// @Summary      Add a new page
-// @Description  Adds a new page to the database.
+// @Summary      Update an existing page
+// @Description  Updates an existing page with new data.
 // @Tags         pages
 // @Accept       json
 // @Produce      json
-// @Param        page body ChangePageRequest true "Page to Update"
-// @Success      200 {object} PageResponse
-// @Failure      400 {object} common.ErrorResponse "Invalid request body or data"
-// @Router       /pages [post]
+// @Param        post body ChangePageRequest true "Page data to update"
+// @Success      200 {object} PostIdResponse
+// @Failure      400 {object} common.ErrorResponse "Invalid request body or could not change page"
+// @Router       /pages [put]
 func putPageHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var change_page_request ChangePageRequest
@@ -155,7 +166,7 @@ func putPageHandler(database database.Database) func(*gin.Context) {
 // @Success      200 {object} DeletePageRequest
 // @Failure      400 {object} common.ErrorResponse "Invalid link provided"
 // @Failure      404 {object} common.ErrorResponse "Page not found"
-// @Router       /posts/{id} [delete]
+// @Router       /pages/{link} [delete]
 func deletePageHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var delete_page_request DeletePageRequest

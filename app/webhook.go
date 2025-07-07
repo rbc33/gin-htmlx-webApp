@@ -40,7 +40,7 @@ func makeWebHookHandler() func(*gin.Context) {
 		}
 
 		if prc.ProcessState.Success() {
-			log.Info().Msgf("Process success with output: \n%s", prc.ProcessState.String())
+			log.Info().Msgf("Process success: %s", prc.ProcessState.String())
 		}
 		c.JSON(200, gin.H{"status": "ok"})
 	}

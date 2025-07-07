@@ -21,46 +21,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/card": {
-            "put": {
-                "description": "Updates an existing card with new data.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cards"
-                ],
-                "summary": "Update an existing card",
-                "parameters": [
-                    {
-                        "description": "Card data to update",
-                        "name": "card",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/admin_app.ChangeCardRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/admin_app.CardIdResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request body or could not change card",
-                        "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/card_schema": {
             "get": {
                 "description": "Retrieves a paginated list of card schemas.",
@@ -230,6 +190,44 @@ const docTemplate = `{
             }
         },
         "/cards": {
+            "put": {
+                "description": "Updates an existing card with new data.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cards"
+                ],
+                "summary": "Update an existing card",
+                "parameters": [
+                    {
+                        "description": "Card data to update",
+                        "name": "card",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admin_app.ChangeCardRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/admin_app.CardIdResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body or could not change card",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Adds a new post to the database.",
                 "consumes": [
@@ -262,6 +260,47 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Invalid request body or missing data",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes a card by its ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cards"
+                ],
+                "summary": "Delete a card",
+                "parameters": [
+                    {
+                        "description": "Card ID to delete",
+                        "name": "id",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admin_app.DeletePostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/admin_app.PostIdResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID provided",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Card not found",
                         "schema": {
                             "$ref": "#/definitions/common.ErrorResponse"
                         }

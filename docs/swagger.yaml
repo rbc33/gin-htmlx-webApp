@@ -290,7 +290,7 @@ info:
   title: GoCMS Admin API
   version: 1.0.0
 paths:
-  /card_schema:
+  /card-schemas:
     delete:
       consumes:
       - application/json
@@ -375,7 +375,7 @@ paths:
       summary: Add a new card schema
       tags:
       - card_schema
-  /card_schema/{id}:
+  /card-schemas/{id}:
     get:
       description: Retrieves a card schema by its UUID.
       parameters:

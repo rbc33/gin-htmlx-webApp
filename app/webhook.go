@@ -12,6 +12,8 @@ func makeWebHookHandler() func(*gin.Context) {
 	return func(c *gin.Context) {
 		if c.GetHeader("X-Webhook-Secret") != os.Getenv("GIT_SECRET") {
 			c.AbortWithStatusJSON(401, gin.H{"error": "unauthorized"})
+			log.Info().Msgf("%s", os.Getenv("GIT_SECRET"))
+			log.Info().Msgf("%s", c.GetHeader("X-Webhook-Secret"))
 			return
 		}
 		prc := exec.Command("git", "pull", "origin", "main")

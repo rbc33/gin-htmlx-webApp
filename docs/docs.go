@@ -21,7 +21,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/card_schema": {
+        "/card-schemas": {
             "get": {
                 "description": "Retrieves a paginated list of card schemas.",
                 "produces": [
@@ -148,7 +148,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/card_schema/{id}": {
+        "/card-schemas/{id}": {
             "get": {
                 "description": "Retrieves a card schema by its UUID.",
                 "produces": [

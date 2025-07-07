@@ -22,7 +22,7 @@ import (
 // @Param        schema body AddCardSchemaRequest true "Card schema to add"
 // @Success      200 {object} CardIdResponse
 // @Failure      400 {object} common.ErrorResponse "Invalid request body or schema"
-// @Router       /card_schema [post]
+// @Router       /card-schemas [post]
 func postSchemaHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var add_schema_request AddCardSchemaRequest
@@ -79,7 +79,7 @@ func postSchemaHandler(database database.Database) func(*gin.Context) {
 // @Success      200 {object} common.CardSchema
 // @Failure      400 {object} common.ErrorResponse "Invalid schema ID"
 // @Failure      404 {object} common.ErrorResponse "Schema not found"
-// @Router       /card_schema/{id} [get]
+// @Router       /card-schemas/{id} [get]
 func getSchemaHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		// localhost:8080/post/{id}
@@ -120,7 +120,7 @@ func getSchemaHandler(database database.Database) func(*gin.Context) {
 // @Success      200 {object} GetSchemaasResponse
 // @Failure      400 {object} common.ErrorResponse "Invalid query parameters"
 // @Failure      500 {object} common.ErrorResponse "Server error"
-// @Router       /card_schema [get]
+// @Router       /card-schemas [get]
 func getSchemasHandler(database database.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Lee offset y limit de la query (?offset=0&limit=10)
@@ -178,7 +178,7 @@ func checkSchemaValues(add_schema_request AddCardSchemaRequest) error {
 // @Param        schema body DeleteSchemaBinding true "ID of the card schema to delete"
 // @Success      200 {object} map[string]string "Deleted schema ID"
 // @Failure      400 {object} common.ErrorResponse "Invalid request or deletion error"
-// @Router       /card_schema [delete]
+// @Router       /card-schemas [delete]
 func deleteCardSchemaHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var delete_schema_request DeleteSchemaBinding

@@ -12,7 +12,6 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// test
 func makeWebHookHandler() func(*gin.Context) {
 	return func(c *gin.Context) {
 		secret := os.Getenv("GIT_SECRET")

@@ -8,6 +8,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+// test
 func makeWebHookHandler() func(*gin.Context) {
 	return func(c *gin.Context) {
 		if c.GetHeader("X-Hub-Signature-256") != os.Getenv("GIT_SECRET") {

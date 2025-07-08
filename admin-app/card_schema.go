@@ -71,7 +71,7 @@ func postSchemaHandler(database database.Database) func(*gin.Context) {
 	}
 }
 
-// @Summary      Get a card schema by ID
+// @Summary      Get a card schema by UUID
 // @Description  Retrieves a card schema by its UUID.
 // @Tags         card_schema
 // @Produce      json

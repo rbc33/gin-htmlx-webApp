@@ -157,7 +157,7 @@ const docTemplate = `{
                 "tags": [
                     "card_schema"
                 ],
-                "summary": "Get a card schema by ID",
+                "summary": "Get a card schema by UUID",
                 "parameters": [
                     {
                         "type": "string",
@@ -320,7 +320,7 @@ const docTemplate = `{
                 "summary": "Get a card list",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "schema UUID",
                         "name": "schema",
                         "in": "path",
@@ -1132,7 +1132,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0.0",
-	Host:             "localhost:8081",
+	Host:             "65.109.135.230:8081",
 	BasePath:         "/",
 	Schemes:          []string{"http"},
 	Title:            "GoCMS Admin API",

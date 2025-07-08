@@ -16,7 +16,7 @@ import (
 // @Description  Retrieves a paginated list of cards by schema UUID.
 // @Tags         cards
 // @Produce      json
-// @Param        schema path int true "schema UUID"
+// @Param        schema path string true "schema UUID"
 // @Success      200 {object} GetCardRequest
 // @Failure      400 {object} common.ErrorResponse "Invalid post ID"
 // @Failure      404 {object} common.ErrorResponse "Post not found"

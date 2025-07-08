@@ -15,7 +15,7 @@
         },
         "version": "1.0.0"
     },
-    "host": "localhost:8081",
+    "host": "65.109.135.230:8081",
     "basePath": "/",
     "paths": {
         "/card-schemas": {
@@ -154,7 +154,7 @@
                 "tags": [
                     "card_schema"
                 ],
-                "summary": "Get a card schema by ID",
+                "summary": "Get a card schema by UUID",
                 "parameters": [
                     {
                         "type": "string",
@@ -317,7 +317,7 @@
                 "summary": "Get a card list",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "schema UUID",
                         "name": "schema",
                         "in": "path",

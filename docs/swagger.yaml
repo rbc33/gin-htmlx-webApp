@@ -279,7 +279,7 @@ definitions:
       title:
         type: string
     type: object
-host: localhost:8081
+host: 65.109.135.230:8081
 info:
   contact:
     email: ricardobenthem@gmail.com
@@ -399,7 +399,7 @@ paths:
           description: Schema not found
           schema:
             $ref: '#/definitions/common.ErrorResponse'
-      summary: Get a card schema by ID
+      summary: Get a card schema by UUID
       tags:
       - card_schema
   /cards:
@@ -488,7 +488,7 @@ paths:
         in: path
         name: schema
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:

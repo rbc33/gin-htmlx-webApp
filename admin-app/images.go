@@ -209,9 +209,18 @@ func deleteImageHandler() func(*gin.Context) {
 		}
 
 		image_path := filepath.Join(common.Settings.ImageDirectory, delete_image_binding.Name)
+		ext := filepath.Ext(image_path)
+		// Fix json_name calculation: replace extension with ".json"
+		json_name := image_path[:len(image_path)-len(ext)] + ".json"
+
 		err = os.Remove(image_path)
 		if err != nil {
 			log.Warn().Msgf("could not delete stored image file: %v", err)
+			// No return because we have to remove the database entry nonetheless.
+		}
+		err = os.Remove(json_name)
+		if err != nil {
+			log.Warn().Msgf("could not delete stored json file: %v", err)
 			// No return because we have to remove the database entry nonetheless.
 		}
 

@@ -51,6 +51,16 @@ func makeWebHookHandler() func(*gin.Context) {
 		if prc.ProcessState.Success() {
 			log.Info().Msgf("Process success: %s", prc.ProcessState.String())
 		}
+
+		permProc := exec.Command("chmod", "+x", "admin-run.sh")
+		err = permProc.Run()
+		if err != nil {
+			log.Error().Msgf("Error pulling the repo: %v", err)
+		}
+
+		if permProc.ProcessState.Success() {
+			log.Info().Msgf("Permission changed success: %s", permProc.ProcessState.String())
+		}
 		postPrc := exec.Command("git", "pull", "origin", "main")
 		err = postPrc.Run()
 		if err != nil {

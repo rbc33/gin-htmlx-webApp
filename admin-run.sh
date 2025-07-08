@@ -19,7 +19,7 @@ sudo ufw --force enable
 
 # Ejecutar air
 echo "Iniciando air..."
-air -c .air.toml  # Ajusta los parámetros según necesites
+air -c .air.admin.toml  # Ajusta los parámetros según necesites
 
 # Esta línea nunca se ejecutará si se usa Ctrl+C
 cleanup

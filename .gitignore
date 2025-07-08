@@ -12,3 +12,5 @@ gocms_config.toml
 media/*
 /utils/
 .DS_Store
+error.log
+error-admin.log

@@ -35,7 +35,7 @@ func main() {
 	config_toml := flag.String("config", "", "path to the config file")
 	flag.Parse()
 
-	common.SetupLogger()
+	common.SetupLogger("error-admin.log")
 
 	if (*config_toml) != "" {
 		log.Info().Msgf("Reading config file %s", *config_toml)

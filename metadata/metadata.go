@@ -131,7 +131,11 @@ func extractPhotoMetadata(filepath, filename, name, excerpt string) (*PhotoMetad
 			return nil, fmt.Errorf("error getting location: %v", err)
 		}
 		// Build location.name as Name, Country
-		locationName = fmt.Sprintf("%s, %s", location.Name, location.Address.Country)
+		if location.Name == "" || location.Address.Country == "" {
+			locationName = fmt.Sprintf("%s%s", location.Name, location.Address.Country)
+		} else {
+			locationName = fmt.Sprintf("%s, %s", location.Name, location.Address.Country)
+		}
 	}
 
 	// Formatear la fecha

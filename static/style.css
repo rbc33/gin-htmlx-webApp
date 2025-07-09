@@ -9,15 +9,7 @@ body {
   background: #E5E5E5;
 }
 
-@font-face {
-  font-family: 'urchin-icons';
-  src: url('../fonts/urchin-icons.eot?7arknw');
-  src: url('../fonts/urchin-icons.ttf?7arknw') format('truetype'),
-    url('../fonts/urchin-icons.woff?7arknw') format('woff');
-  font-weight: normal;
-  font-style: normal;
-  font-display: block;
-}
+
 
 @font-face {
   font-family: 'gocms-icons';

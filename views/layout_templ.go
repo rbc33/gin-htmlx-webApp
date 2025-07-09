@@ -75,7 +75,7 @@ func MakeLayout(title string, links []common.Link, dropdowns map[string][]common
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<main class=\"container mx-auto py-24 flex-grow sm:py-32\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<main class=\"container mx-auto py-16 flex-grow sm:py-16\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

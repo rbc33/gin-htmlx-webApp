@@ -65,12 +65,12 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<nav class=\"bg-gray-800 \"><div class=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8\"><div class=\"flex  h-20 items-center justify-between\"><!-- Logo a la izquierda --><div class=\"flex-shrink-0\"><a href=\"#\" class=\"text-white text-3xl font-bold\">GoCMS</a></div><!-- Links a la derecha --><div class=\"flex items-center space-x-4\"><div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<nav class=\"bg-gray-800 \"><div class=\"max-w-[140rem] mx-auto px-4 sm:px-6 lg:px-8\"><div class=\"flex  h-20 items-center justify-between\"><!-- Logo a la izquierda --><div class=\"flex-shrink-0\"><a href=\"#\" class=\"text-white text-4xl font-bold 2xl:text-5xl\">GoCMS</a></div><!-- Links a la derecha --><div class=\"flex items-center space-x-4\"><div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, link := range links {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<a class=\"text-gray-100 hover:text-gray-400 w-auto text-xl inline-block p-3 text-center leading-4 font-bold transition duration-300 ease-in\" href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<a class=\"text-gray-100 hover:text-gray-400 w-auto text-xl 2xl:text-3xl inline-block p-3 text-center leading-4 font-semibold transition duration-300 ease-in\" href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

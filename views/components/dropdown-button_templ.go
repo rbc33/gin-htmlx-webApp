@@ -45,14 +45,14 @@ func MakeDropdownButton(name, elem_id string, links []common.Link) templ.Compone
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\"><div><!-- TODO: Need to fix the ease-in transition here --><button type=\"button\" class=\"inline-flex w-full justify-center leading-4 gap-x-1.5 rounded-md bg-gray-300 px-3 p-2 font-bold text-gray-400 text-xl shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50\" id=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\"><div><!-- TODO: Need to fix the ease-in transition here --><button type=\"button\" class=\"inline-flex w-full justify-center leading-4 gap-x-1.5 rounded-md bg-gray-300 px-3 p-2 font-bold text-gray-400 text-xl 2xl:text-3xl shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50\" id=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("dropdown-button-%s", elem_id))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/dropdown-button.templ`, Line: 10, Col: 257}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components/dropdown-button.templ`, Line: 10, Col: 270}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {

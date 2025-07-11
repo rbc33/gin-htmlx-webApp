@@ -9,13 +9,23 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// / postPageHandler is the function handling the endpoint for adding new pages
+// @Summary      Add a new permalink
+// @Description  Adds a new permalink to the database.
+// @Tags         permalink
+// @Accept       json
+// @Produce      json
+// @Param        permalink path string true "Permalink"
+// @Param        post_id path int true "Post ID"
+// @Success      200 {object} post_id
+// @Failure      400 {object} common.ErrorResponse "Invalid request body or missing data"
+// @Router       /permalinks/{permalink}/{post_id} [post]
 func postPermalinkHandler(database database.Database) func(*gin.Context) {
 	return func(c *gin.Context) {
-		add_permalink_request := struct {
-			Permalink string `uri:"permalink" binding:"required"`
-			PostId    int    `uri:"post_id" binding:"required"`
-		}{}
+		// add_permalink_request := struct {
+		// 	Permalink string `uri:"permalink" binding:"required"`
+		// 	PostId    int    `uri:"post_id" binding:"required"`
+		// }{}
+		var add_permalink_request AddPermalinkRequest
 
 		err := c.ShouldBindUri(&add_permalink_request)
 		if err != nil {

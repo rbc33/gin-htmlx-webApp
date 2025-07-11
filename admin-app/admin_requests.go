@@ -170,6 +170,18 @@ type AddCardSchemaRequest struct {
 	JsonSchema string `json:"schema"`
 }
 
+// swagger:parameters addPermalinkRequest AddPermalinkRequest
+type AddPermalinkRequest struct {
+	// Permalink string
+	// in: uri
+	// required: true
+	Permalink string `uri:"permalink" binding:"required"`
+	// Post ID associated with the permalink
+	// in: uri
+	// required: true
+	PostId int `uri:"post_id" binding:"required"`
+}
+
 // UnmarshalJSON is a custom unmarshaller for AddCardSchemaRequest that preserves the raw JSON schema string.
 func (c *AddCardSchemaRequest) UnmarshalJSON(data []byte) error {
 

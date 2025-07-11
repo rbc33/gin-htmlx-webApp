@@ -102,9 +102,9 @@ func getPostHandler(database database.Database) func(*gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        post body AddPostRequest true "Post to add"
-// @Success      200 {object} PostIdResponse
+// @Success      201 {object} PostIdResponse
 // @Failure      400 {object} common.ErrorResponse "Invalid request body or missing data"
-// @Router       /posts [post]
+// @Router       /post [post]
 func postPostHandler(database database.Database, shortcode_handlers map[string]*lua.LState, post_hook *plugins.PostHook) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var add_post_request AddPostRequest

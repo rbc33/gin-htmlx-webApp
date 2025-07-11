@@ -2,6 +2,7 @@ package app
 
 import (
 	"bytes"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -16,6 +17,14 @@ import (
 const CACHE_TIMEOUT = 20 * time.Second
 
 type Generator = func(*gin.Context, database.Database) ([]byte, error)
+
+// func permalinkPostHandler(c *gin.Context, app_settings common.AppSettings, db database.Database) ([]byte, error) {
+func permalinkPostHandler(post_id int) func(*gin.Context, database.Database) ([]byte, error) {
+	return func(c *gin.Context, database database.Database) ([]byte, error) {
+		c.Params = append(c.Params, gin.Param{Key: "id", Value: fmt.Sprintf("%d", post_id)})
+		return postHandler(c, database)
+	}
+}
 
 func SetupRoutes(settings common.AppSettings, database database.Database) *gin.Engine {
 
@@ -54,6 +63,14 @@ func SetupRoutes(settings common.AppSettings, database database.Database) *gin.E
 	r.Static("/images/data", settings.ImageDirectory)
 	r.Static("/static", "./static")
 	r.StaticFS("/media", http.Dir(settings.ImageDirectory))
+	permalinks, err := database.GetPermalinks()
+	if err != nil {
+		log.Error().Msgf("could not get permalinks: %v", err)
+	} else {
+		for _, permalink := range permalinks {
+			addCacheHandler(r, "GET", permalink.Path, permalinkPostHandler(permalink.PostId), &cache, database)
+		}
+	}
 
 	r.NoRoute(notFoundHandler())
 

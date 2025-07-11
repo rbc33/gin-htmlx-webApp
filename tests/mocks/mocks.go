@@ -15,6 +15,8 @@ type DatabaseMock struct {
 	GetCardsHandler       func(schema_uuid string, limit int, page int) ([]common.Card, error)
 	AddChardSchemaHandler func(string, string) (string, error)
 	GetCardSchemaHandler  func(uuid string) (common.CardSchema, error)
+	AddPermalinkHandler   func(common.Permalink) (int, error)
+	GetPermalinksHandler  func() ([]common.Permalink, error)
 }
 
 func (db DatabaseMock) GetPosts(offset int, limit int) ([]common.Post, error) {
@@ -102,4 +104,12 @@ func (db DatabaseMock) ChangePage(id int, title string, content string, link str
 
 func (db DatabaseMock) DeletePage(link string) error {
 	return fmt.Errorf("not implemented")
+}
+
+func (db DatabaseMock) AddPermalink(permalink common.Permalink) (int, error) {
+	return db.AddPermalinkHandler(permalink)
+}
+
+func (db DatabaseMock) GetPermalinks() ([]common.Permalink, error) {
+	return []common.Permalink{}, nil
 }

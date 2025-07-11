@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rbc33/gocms/common"
@@ -66,8 +67,14 @@ func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua
 		pages.PUT("", putPageHandler(database))
 		pages.DELETE("", deletePageHandler(database))
 	}
-	// La URL será: http://localhost:8081/swagger/index.html
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// Swagger routes
+	r.GET("/swagger/*any", func(c *gin.Context) {
+		// Don't serve index.html again if it's already handled above
+		if strings.HasSuffix(c.Request.URL.Path, "/swagger/") {
+			c.Request.RequestURI = "/swagger/index.html"
+		}
+		ginSwagger.WrapHandler(swaggerFiles.Handler)(c)
+	})
 
 	// CRUD Images
 	// r.GET("/images/:id", getImageHandler(&database))
@@ -85,6 +92,7 @@ func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua
 	r.POST("/cards", postCardHandler(database))
 	r.PUT("/card", putCardHandler(database))
 	r.DELETE("/card", deleteCardHandler(database))
+	r.POST("/permalinks/:permalink/:post_id", postPermalinkHandler(database))
 
 	return r
 }

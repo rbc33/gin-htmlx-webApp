@@ -606,6 +606,91 @@ const docTemplate = `{
                 }
             }
         },
+        "/permalinks/{permalink}/{post_id}": {
+            "post": {
+                "description": "Adds a new permalink to the database.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "permalink"
+                ],
+                "summary": "Add a new permalink",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Permalink",
+                        "name": "permalink",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Post ID",
+                        "name": "post_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/admin_app.PermalinkIdResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body or missing data",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/post": {
+            "post": {
+                "description": "Adds a new post to the database.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Add a new post",
+                "parameters": [
+                    {
+                        "description": "Post to add",
+                        "name": "post",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/admin_app.AddPostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/admin_app.PostIdResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body or missing data",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/posts": {
             "get": {
                 "description": "Retrieves a paginated list of posts.",
@@ -685,44 +770,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Invalid request body or could not change post",
-                        "schema": {
-                            "$ref": "#/definitions/common.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Adds a new post to the database.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "posts"
-                ],
-                "summary": "Add a new post",
-                "parameters": [
-                    {
-                        "description": "Post to add",
-                        "name": "post",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/admin_app.AddPostRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/admin_app.PostIdResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request body or missing data",
                         "schema": {
                             "$ref": "#/definitions/common.ErrorResponse"
                         }
@@ -1066,6 +1113,15 @@ const docTemplate = `{
                 "link": {
                     "description": "Link of the page",
                     "type": "string"
+                }
+            }
+        },
+        "admin_app.PermalinkIdResponse": {
+            "type": "object",
+            "properties": {
+                "post_id": {
+                    "description": "ID of the post",
+                    "type": "integer"
                 }
             }
         },

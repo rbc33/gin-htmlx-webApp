@@ -16,7 +16,7 @@ import (
 // @Produce      json
 // @Param        permalink path string true "Permalink"
 // @Param        post_id path int true "Post ID"
-// @Success      200 {object} post_id
+// @Success      200 {object} PermalinkIdResponse
 // @Failure      400 {object} common.ErrorResponse "Invalid request body or missing data"
 // @Router       /permalinks/{permalink}/{post_id} [post]
 func postPermalinkHandler(database database.Database) func(*gin.Context) {
@@ -47,8 +47,8 @@ func postPermalinkHandler(database database.Database) func(*gin.Context) {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"id": id,
+		c.JSON(http.StatusOK, PermalinkIdResponse{
+			id,
 		})
 	}
 }

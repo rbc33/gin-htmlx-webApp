@@ -22,6 +22,12 @@ type PostIdResponse struct {
 	Id int `json:"id"`
 }
 
+// swagger:response PermalinkIdResponse
+type PermalinkIdResponse struct {
+	// ID of the post
+	PostId int `json:"post_id"`
+}
+
 // swagger:response GetPostsResponse
 type GetPostsResponse struct {
 	// List of posts

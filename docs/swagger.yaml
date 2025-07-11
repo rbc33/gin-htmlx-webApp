@@ -242,6 +242,12 @@ definitions:
         description: Link of the page
         type: string
     type: object
+  admin_app.PermalinkIdResponse:
+    properties:
+      post_id:
+        description: ID of the post
+        type: integer
+    type: object
   admin_app.PostIdResponse:
     properties:
       id:
@@ -677,6 +683,62 @@ paths:
       summary: Delete a page
       tags:
       - pages
+  /permalinks/{permalink}/{post_id}:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new permalink to the database.
+      parameters:
+      - description: Permalink
+        in: path
+        name: permalink
+        required: true
+        type: string
+      - description: Post ID
+        in: path
+        name: post_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admin_app.PermalinkIdResponse'
+        "400":
+          description: Invalid request body or missing data
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: Add a new permalink
+      tags:
+      - permalink
+  /post:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new post to the database.
+      parameters:
+      - description: Post to add
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/admin_app.AddPostRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/admin_app.PostIdResponse'
+        "400":
+          description: Invalid request body or missing data
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: Add a new post
+      tags:
+      - posts
   /posts:
     delete:
       description: Deletes a post by its ID.
@@ -734,31 +796,6 @@ paths:
           schema:
             $ref: '#/definitions/common.ErrorResponse'
       summary: Get a list of posts
-      tags:
-      - posts
-    post:
-      consumes:
-      - application/json
-      description: Adds a new post to the database.
-      parameters:
-      - description: Post to add
-        in: body
-        name: post
-        required: true
-        schema:
-          $ref: '#/definitions/admin_app.AddPostRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/admin_app.PostIdResponse'
-        "400":
-          description: Invalid request body or missing data
-          schema:
-            $ref: '#/definitions/common.ErrorResponse'
-      summary: Add a new post
       tags:
       - posts
     put:

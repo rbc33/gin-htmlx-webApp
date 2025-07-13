@@ -14,6 +14,7 @@ import (
 // @Tags         permalink
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Param        permalink path string true "Permalink"
 // @Param        post_id path int true "Post ID"
 // @Success      200 {object} PermalinkIdResponse

@@ -9,13 +9,7 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {
-            "name": "Ricardo",
-            "email": "ricardobenthem@gmail.com"
-        },
-        "license": {
-            "name": "MIT"
-        },
+        "contact": {},
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -23,6 +17,11 @@ const docTemplate = `{
     "paths": {
         "/card-schemas": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieves a paginated list of card schemas.",
                 "produces": [
                     "application/json"
@@ -69,6 +68,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Creates a new card schema by validating and storing the provided JSON schema and title.",
                 "consumes": [
                     "application/json"
@@ -107,6 +111,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Deletes a card schema by its ID.",
                 "consumes": [
                     "application/json"
@@ -150,6 +159,11 @@ const docTemplate = `{
         },
         "/card-schemas/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieves a card schema by its UUID.",
                 "produces": [
                     "application/json"
@@ -191,6 +205,11 @@ const docTemplate = `{
         },
         "/cards": {
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Updates an existing card with new data.",
                 "consumes": [
                     "application/json"
@@ -229,6 +248,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Adds a new post to the database.",
                 "consumes": [
                     "application/json"
@@ -267,6 +291,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Deletes a card by its ID.",
                 "produces": [
                     "application/json"
@@ -310,6 +339,11 @@ const docTemplate = `{
         },
         "/cards/{schema}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieves a paginated list of cards by schema UUID.",
                 "produces": [
                     "application/json"
@@ -351,6 +385,11 @@ const docTemplate = `{
         },
         "/images": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Uploads an image file, saves it, and creates minified versions.",
                 "consumes": [
                     "multipart/form-data"
@@ -401,6 +440,11 @@ const docTemplate = `{
         },
         "/images/{name}": {
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Deletes an image file from the server by its filename.",
                 "consumes": [
                     "application/json"
@@ -437,8 +481,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/login": {
+            "post": {
+                "description": "Authenticates user and returns a JWT token.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login user",
+                "parameters": [
+                    {
+                        "description": "User credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.LoginInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/auth.TokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/pages": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieves a paginated list of pages.",
                 "consumes": [
                     "application/json"
@@ -489,6 +578,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Updates an existing page with new data.",
                 "consumes": [
                     "application/json"
@@ -527,6 +621,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Adds a new page to the database.",
                 "consumes": [
                     "application/json"
@@ -567,6 +666,11 @@ const docTemplate = `{
         },
         "/pages/{link}": {
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Deletes a page by its Link.",
                 "produces": [
                     "application/json"
@@ -608,6 +712,11 @@ const docTemplate = `{
         },
         "/permalinks/{permalink}/{post_id}": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Adds a new permalink to the database.",
                 "consumes": [
                     "application/json"
@@ -653,6 +762,11 @@ const docTemplate = `{
         },
         "/post": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Adds a new post to the database.",
                 "consumes": [
                     "application/json"
@@ -693,6 +807,11 @@ const docTemplate = `{
         },
         "/posts": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieves a paginated list of posts.",
                 "produces": [
                     "application/json"
@@ -739,6 +858,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Updates an existing post with new data.",
                 "consumes": [
                     "application/json"
@@ -777,6 +901,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Deletes a post by its ID.",
                 "produces": [
                     "application/json"
@@ -820,6 +949,11 @@ const docTemplate = `{
         },
         "/posts/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieves a single post by its ID.",
                 "produces": [
                     "application/json"
@@ -852,6 +986,77 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Post not found",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "description": "Adds a new User to the database.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Create new User",
+                "parameters": [
+                    {
+                        "description": "User to create",
+                        "name": "post",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.RegisterInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/auth.RegisterResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Returns the currently authenticated user based on JWT token.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Get current user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/common.ErrorResponse"
                         }
@@ -1134,6 +1339,52 @@ const docTemplate = `{
                 }
             }
         },
+        "auth.LoginInput": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.RegisterInput": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.RegisterResponse": {
+            "type": "object",
+            "properties": {
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "auth.TokenResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
         "common.CardSchema": {
             "type": "object",
             "properties": {
@@ -1181,18 +1432,40 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "common.User": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.\nThis is the admin API for the GoCMS app.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0.0",
-	Host:             "65.109.135.230:8081",
-	BasePath:         "/",
-	Schemes:          []string{"http"},
-	Title:            "GoCMS Admin API",
-	Description:      "This is the admin API for the GoCMS app.",
+	Version:          "",
+	Host:             "",
+	BasePath:         "",
+	Schemes:          []string{},
+	Title:            "",
+	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

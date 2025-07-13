@@ -12,11 +12,21 @@ import (
 	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/plugins"
 	"github.com/rbc33/gocms/tests/mocks"
+	"github.com/rbc33/gocms/utils/token"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestAddPageHappyPath(t *testing.T) {
+	if os.Getenv("CI") == "true" {
+		os.Setenv("API_SECRET", "fake_api_secret_for_tests")
+		os.Setenv("TOKEN_HOUR_LIFESPAN", "24")
+	}
+	token, err := token.GenerateToken(1)
+	if err != nil {
+		t.Fatalf("failed to generate token: %v", err)
+	}
+
 	databaseMock := mocks.DatabaseMock{
 		AddPageHandler: func(string, string, string) (int, error) {
 			return 0, nil
@@ -49,9 +59,11 @@ func TestAddPageHappyPath(t *testing.T) {
 	responseRecorder := httptest.NewRecorder()
 
 	body, _ := json.Marshal(page_data)
-	request, _ := http.NewRequest(http.MethodPost, "/pages", bytes.NewBuffer(body))
+	req, _ := http.NewRequest(http.MethodPost, "/pages", bytes.NewBuffer(body))
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Add("content-type", "application/json")
 
-	router.ServeHTTP(responseRecorder, request)
+	router.ServeHTTP(responseRecorder, req)
 
 	assert.Equal(t, http.StatusCreated, responseRecorder.Code)
 	var response admin_app.PageResponse

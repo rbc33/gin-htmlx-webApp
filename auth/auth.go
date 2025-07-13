@@ -6,11 +6,34 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/database"
+	"github.com/rbc33/gocms/utils/token"
 )
 
 type LoginInput struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
+}
+
+func GetCurrentUserHandler(db database.Database) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		user_id, err := token.ExtractTokenID(c)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		u, err := db.GetUserById(user_id)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		u.Password = ""
+
+		c.JSON(http.StatusOK, gin.H{"message": "success", "data": u})
+	}
 }
 
 func LoginHandler(db database.Database) gin.HandlerFunc {

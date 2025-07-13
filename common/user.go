@@ -18,6 +18,7 @@ type User struct {
 	Id       uint   `json:"user_id"`
 	Username string `json:"username"`
 	Password string `json:"password"`
+	// pointer to allow NULL values
 }
 
 func VerifyPassword(password, hashedPassword string) error {

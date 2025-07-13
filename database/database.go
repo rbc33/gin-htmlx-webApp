@@ -44,6 +44,7 @@ type Database interface {
 	GetPermalinks() ([]common.Permalink, error)
 	CreateUser(user common.User) (int, error)
 	GetUserByUsername(username string) (common.User, error)
+	GetUserById(id uint) (common.User, error)
 }
 
 type SqlDatabase struct {
@@ -677,6 +678,22 @@ func (db *SqlDatabase) GetUserByUsername(username string) (common.User, error) {
 
 	query := `SELECT id, username, passwd FROM users WHERE username = ?`
 	row := db.Connection.QueryRow(query, username)
+
+	err := row.Scan(&user.Id, &user.Username, &user.Password)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return common.User{}, errors.New("user not found")
+		}
+		return common.User{}, err
+	}
+
+	return user, nil
+}
+func (db *SqlDatabase) GetUserById(id uint) (common.User, error) {
+	var user common.User
+
+	query := `SELECT id, username, passwd FROM users WHERE id = ?`
+	row := db.Connection.QueryRow(query, id)
 
 	err := row.Scan(&user.Id, &user.Username, &user.Password)
 	if err != nil {

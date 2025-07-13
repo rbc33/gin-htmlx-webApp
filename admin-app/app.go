@@ -3,13 +3,13 @@ package admin_app
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rbc33/gocms/auth"
 	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/database"
+	"github.com/rbc33/gocms/middlewares"
 	"github.com/rbc33/gocms/plugins"
 	lua "github.com/yuin/gopher-lua"
 
@@ -45,57 +45,57 @@ func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua
 	if !ok {
 		log.Fatalf("could not find add_post hook")
 	}
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"message": "admin pong"})
-	})
-	// CRUD Posts
-	// Group posts routes and fix ordering
-	posts := r.Group("/posts")
-	{
-		// GET /?offset=10&limit=10
-		posts.GET("", getPostsHandler(database))    // GET /posts
-		posts.GET("/:id", getPostHandler(database)) // GET /posts/:id
-		posts.POST("", postPostHandler(database, shortcode_handlers, post_hook.(*plugins.PostHook)))
-		posts.PUT("", putPostHandler(database))
-		posts.DELETE("", deletePostHandler(database))
-	}
-	// CRUD Pages
-	pages := r.Group("/pages")
-	{
-		// GET /pages?offset=10&limit=10
-		pages.GET("", getPagesHandler(database)) // GET /pages
-		pages.POST("", postPageHandler(database))
-		pages.PUT("", putPageHandler(database))
-		pages.DELETE("", deletePageHandler(database))
-	}
-	// Swagger routes
+
+	// Public routes
 	r.GET("/swagger/*any", func(c *gin.Context) {
-		// Don't serve index.html again if it's already handled above
 		if strings.HasSuffix(c.Request.URL.Path, "/swagger/") {
 			c.Request.RequestURI = "/swagger/index.html"
 		}
 		ginSwagger.WrapHandler(swaggerFiles.Handler)(c)
 	})
-
-	// CRUD Images
-	// r.GET("/images/:id", getImageHandler(&database))
-	r.POST("/images", postImageHandler())
-	r.DELETE("/images/:name", deleteImageHandler())
-
-	r.GET("/cards/:schema", getCardHandler(database))
-	r.GET("/cards/:schema/:limit/:page", getCardHandler(database))
-	r.POST("/card-schemas", postSchemaHandler(database))
-	r.GET("/card-schemas", getSchemasHandler(database))
-	r.DELETE("/card-schemas", deleteCardSchemaHandler(database))
-	r.GET("/card-schemas/:id", getSchemaHandler(database))
-	// Card related stuff
-	// r.GET("/card/:id", getCardHandler(database))
-	r.POST("/cards", postCardHandler(database))
-	r.PUT("/card", putCardHandler(database))
-	r.DELETE("/card", deleteCardHandler(database))
-	r.POST("/permalinks/:permalink/:post_id", postPermalinkHandler(database))
 	r.POST("/register", auth.CreateRegisterHandler(database))
 	r.POST("/login", auth.LoginHandler(database))
+
+	// Protected routes group with JWT middleware
+	protected := r.Group("/")
+	protected.Use(middlewares.JwtAuthMiddleware()) // replace with your actual middleware function
+
+	// Move posts routes inside protected group
+	posts := protected.Group("/posts")
+	{
+		posts.GET("", getPostsHandler(database))
+		posts.GET("/:id", getPostHandler(database))
+		posts.POST("", postPostHandler(database, shortcode_handlers, post_hook.(*plugins.PostHook)))
+		posts.PUT("", putPostHandler(database))
+		posts.DELETE("", deletePostHandler(database))
+	}
+
+	// Move pages routes inside protected group
+	pages := protected.Group("/pages")
+	{
+		pages.GET("", getPagesHandler(database))
+		pages.POST("", postPageHandler(database))
+		pages.PUT("", putPageHandler(database))
+		pages.DELETE("", deletePageHandler(database))
+	}
+
+	// Similarly, move other routes inside protected group
+
+	protected.POST("/images", postImageHandler())
+	protected.DELETE("/images/:name", deleteImageHandler())
+
+	protected.GET("/cards/:schema", getCardHandler(database))
+	protected.GET("/cards/:schema/:limit/:page", getCardHandler(database))
+	protected.POST("/card-schemas", postSchemaHandler(database))
+	protected.GET("/card-schemas", getSchemasHandler(database))
+	protected.DELETE("/card-schemas", deleteCardSchemaHandler(database))
+	protected.GET("/card-schemas/:id", getSchemaHandler(database))
+
+	protected.POST("/cards", postCardHandler(database))
+	protected.PUT("/card", putCardHandler(database))
+	protected.DELETE("/card", deleteCardHandler(database))
+	protected.POST("/permalinks/:permalink/:post_id", postPermalinkHandler(database))
+	protected.GET("/user", auth.GetCurrentUserHandler(database))
 
 	return r
 }

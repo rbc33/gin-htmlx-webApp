@@ -1,74 +1,67 @@
 package app
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/mail"
-	"net/url"
+
+	"context"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/database"
 	"github.com/rbc33/gocms/views"
 	"github.com/rs/zerolog/log"
+
+	recaptcha "cloud.google.com/go/recaptchaenterprise/v2/apiv1"
+
+	recaptchapb "cloud.google.com/go/recaptchaenterprise/v2/apiv1/recaptchaenterprisepb"
 )
 
-const RECAPTCHA_VERIFY_URL string = "https://www.google.com/recaptcha/api/siteverify"
-
-type RecaptchaResponse struct {
-	Success   bool    `json:"success"`
-	Score     float32 `json:"score"`
-	Timestamp string  `json:"challenge_ts"`
-	Hostname  string  `json:"hostname"`
-	Action    string  `json:"action,omitempty"` // Añadir Action para v3
-}
-
-func verifyRecaptcha(recaptcha_secret string, recaptcha_response string) error {
-	// Validate that the recaptcha response was actually
-	// not a bot by checking the success rate
-	recaptcha_response_data, err := http.PostForm(RECAPTCHA_VERIFY_URL, url.Values{
-		"secret":   {recaptcha_secret},
-		"response": {recaptcha_response},
-	})
+func verifyRecaptchaEnterprise(ctx context.Context, projectID, recaptchaKey, token, expectedAction string) error {
+	client, err := recaptcha.NewClient(ctx)
 	if err != nil {
-		err_str := fmt.Sprintf("could not do recaptcha post request: %s", err)
-		return fmt.Errorf("%s: %s", err_str, err)
+		return fmt.Errorf("error creating reCAPTCHA client: %w", err)
 	}
-	defer recaptcha_response_data.Body.Close()
+	defer client.Close()
 
-	if recaptcha_response_data.StatusCode != http.StatusOK {
-		return fmt.Errorf("invalid recaptcha response: %s", recaptcha_response_data.Status)
+	event := &recaptchapb.Event{
+		Token:   token,
+		SiteKey: recaptchaKey,
 	}
-	var recaptcha_answer RecaptchaResponse
-	recaptcha_response_data_buffer, _ := io.ReadAll(recaptcha_response_data.Body)
-	err = json.Unmarshal(recaptcha_response_data_buffer, &recaptcha_answer)
+
+	assessment := &recaptchapb.Assessment{
+		Event: event,
+	}
+
+	request := &recaptchapb.CreateAssessmentRequest{
+		Assessment: assessment,
+		Parent:     fmt.Sprintf("projects/%s", projectID),
+	}
+
+	response, err := client.CreateAssessment(ctx, request)
 	if err != nil {
-		return fmt.Errorf("could not parse recaptcha response: %s", err)
+		return fmt.Errorf("error calling CreateAssessment: %w", err)
 	}
 
-	// Para reCAPTCHA v3, `Success` debe ser true y `Score` debe estar por encima de un umbral.
-	// También es recomendable verificar `Hostname` y `Action`.
-	expectedAction := "contact_submit" // Debe coincidir con la acción en el frontend
-	// Asegúrate de que common.Settings.AppDomain esté configurado si quieres validar el hostname.
-	isHostnameMismatch := common.Settings.AppDomain != "" && recaptcha_answer.Hostname != common.Settings.AppDomain
-
-	if !recaptcha_answer.Success ||
-		recaptcha_answer.Score < 0.5 || // Ajusta el umbral según sea necesario (ej. 0.5 o 0.7)
-		isHostnameMismatch ||
-		recaptcha_answer.Action != expectedAction {
-		log.Warn().Msgf("Validación de reCAPTCHA v3 fallida. Success: %v, Score: %.2f, Hostname: %s (esperado: %s), Action: %s (esperada: %s), Timestamp: %s",
-			recaptcha_answer.Success,
-			recaptcha_answer.Score,
-			recaptcha_answer.Hostname,
-			common.Settings.AppDomain, // Asegúrate que common.Settings.AppDomain está configurado
-			recaptcha_answer.Action,
-			expectedAction,
-			recaptcha_answer.Timestamp)
-		return fmt.Errorf("could not validate recaptcha") // Mensaje genérico para el usuario
+	if !response.TokenProperties.Valid {
+		return fmt.Errorf("invalid token: %v", response.TokenProperties.InvalidReason)
 	}
-	log.Info().Msgf("Validación de reCAPTCHA v3 exitosa. Score: %.2f, Hostname: %s, Action: %s", recaptcha_answer.Score, recaptcha_answer.Hostname, recaptcha_answer.Action)
+
+	if response.TokenProperties.Action != expectedAction {
+		return fmt.Errorf("unexpected action: got %q, want %q", response.TokenProperties.Action, expectedAction)
+	}
+
+	log.Info().Msgf("reCAPTCHA Enterprise validation succeeded. Score: %.2f", response.RiskAnalysis.Score)
+	for _, reason := range response.RiskAnalysis.Reasons {
+		log.Info().Msgf("Risk reason: %s", reason.String())
+	}
+
+	// You can add threshold check here if desired, e.g.:
+	if response.RiskAnalysis.Score < 0.5 {
+		return fmt.Errorf("low reCAPTCHA score: %.2f", response.RiskAnalysis.Score)
+	}
+
 	return nil
 }
 
@@ -107,7 +100,8 @@ func makeContactFormHandler() func(*gin.Context) {
 		// Make the request to Google's API only if user
 		// configured recatpcha settings
 		if (len(common.Settings.RecaptchaSecret) > 0) && (len(common.Settings.RecaptchaSiteKey) > 0) {
-			err := verifyRecaptcha(common.Settings.RecaptchaSecret, recaptcha_response)
+			ctx := c.Request.Context()
+			err := verifyRecaptchaEnterprise(ctx, "gocms-1750166214215", common.Settings.RecaptchaSiteKey, recaptcha_response, "contact_submit")
 			if err != nil {
 				// El error ya se loguea dentro de verifyRecaptcha si es necesario o aquí en renderErrorPage
 				renderErrorPage(c, email, err)

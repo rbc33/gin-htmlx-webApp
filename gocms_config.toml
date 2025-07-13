@@ -9,7 +9,7 @@ cache_enabled = false
 
 recaptcha_sitekey = "6LcNTmQrAAAAAGrXZo-GdvxarYlFSXu5BVPZYEbi"
 recaptcha_secret = "6LcEamQrAAAAAHH4Nthgshj10uUmxxmXasW-pcfV"
-app_domain = "rbenthem.com"
+app_domain = "localhost"
 
 # Sticky posts will be expanded on home
 sticky_posts = [2]

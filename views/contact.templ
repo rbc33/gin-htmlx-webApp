@@ -50,6 +50,7 @@ templ MakeContactFormRecaptcha(recaptcha_sitekey string) {
 			></textarea>
 		</div>
 		<!-- El div de reCAPTCHA v2 se elimina para usar v3 -->
+		<input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response"/>
 		<div class="text-center pt-6">
 			<button
 				type="button"
@@ -180,9 +181,7 @@ templ MakeContact(recaptcha_sitekey string) {
 		</div>
 	</div>
 	if len(recaptcha_sitekey)>0 {
-		// Carga la API de reCAPTCHA v3. La clave del sitio se usa en el parámetro 'render'.
 		<script src={ "https://www.google.com/recaptcha/api.js?render=" + recaptcha_sitekey } async defer></script>
-		// Script para manejar reCAPTCHA v3 y disparar el evento para HTMX
 		<script>
 			function handleRecaptchaV3AndSubmit() {
 				const form = document.getElementById('demo-form');
@@ -192,8 +191,6 @@ templ MakeContact(recaptcha_sitekey string) {
 				}
 
 				grecaptcha.ready(function() {
-					// La clave del sitio se pasa aquí directamente.
-					// 'action' es opcional pero recomendado para v3, para distinguir diferentes acciones en tu sitio.
 					grecaptcha.execute('{{ recaptcha_sitekey }}', {action: 'contact_submit'}).then(function(token) {
 						let recaptchaInput = form.querySelector('input[name="g-recaptcha-response"]');
 						if (!recaptchaInput) {
@@ -205,18 +202,16 @@ templ MakeContact(recaptcha_sitekey string) {
 						recaptchaInput.value = token;
 						console.log('reCAPTCHA v3 token obtained and set.');
 
-						// Disparamos el evento 'verified' que el formulario HTMX está esperando.
 						htmx.trigger(form, 'verified');
 						console.log('HTMX "verified" event triggered.');
 					});
 				});
 			}
 
-			// Adjuntar el manejador al botón de envío del formulario con ID 'demo-form'
 			document.addEventListener('DOMContentLoaded', function() {
 				const form = document.getElementById('demo-form');
 				if (form) {
-					const submitButton = form.querySelector('button[type="button"]'); // Asegúrate que el botón sigue siendo type="button"
+					const submitButton = form.querySelector('button[type="button"]');
 					if (submitButton) {
 						submitButton.addEventListener('click', handleRecaptchaV3AndSubmit);
 					}

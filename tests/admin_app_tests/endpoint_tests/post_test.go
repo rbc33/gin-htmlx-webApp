@@ -14,6 +14,7 @@ import (
 	"github.com/rbc33/gocms/plugins"
 	"github.com/rbc33/gocms/tests/mocks"
 	test "github.com/rbc33/gocms/tests/system_tests/helpers"
+	"github.com/rbc33/gocms/utils/token"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 )
@@ -31,6 +32,10 @@ type postResponse struct {
 var app_settings = test.GetAppSettings()
 
 func TestCreatePost_Success(t *testing.T) {
+	token, err := token.GenerateToken(1)
+	if err != nil {
+		t.Fatalf("failed to generate token: %v", err)
+	}
 
 	shortcode_handlers, err := admin_app.LoadShortcodesHandlers(common.Settings.Shortcodes)
 	if err != nil {
@@ -63,6 +68,7 @@ func TestCreatePost_Success(t *testing.T) {
 	assert.Nil(t, err)
 
 	req, _ := http.NewRequest("POST", "/posts", bytes.NewReader(request_body))
+	req.Header.Set("Authorization", "Bearer "+token)
 	req.Header.Add("content-type", "application/json")
 	r.ServeHTTP(w, req)
 

@@ -7,16 +7,19 @@ import (
 )
 
 type DatabaseMock struct {
-	GetPostHandler        func(int) (common.Post, error)
-	GetPostsHandler       func(int, int) ([]common.Post, error)
-	AddPageHandler        func(string, string, string) (int, error)
-	GetPagesHandler       func(int, int) ([]common.Page, error)
-	AddCardHandler        func(string, string, string) (string, error)
-	GetCardsHandler       func(schema_uuid string, limit int, page int) ([]common.Card, error)
-	AddChardSchemaHandler func(string, string) (string, error)
-	GetCardSchemaHandler  func(uuid string) (common.CardSchema, error)
-	AddPermalinkHandler   func(common.Permalink) (int, error)
-	GetPermalinksHandler  func() ([]common.Permalink, error)
+	GetPostHandler           func(int) (common.Post, error)
+	GetPostsHandler          func(int, int) ([]common.Post, error)
+	AddPageHandler           func(string, string, string) (int, error)
+	GetPagesHandler          func(int, int) ([]common.Page, error)
+	AddCardHandler           func(string, string, string) (string, error)
+	GetCardsHandler          func(schema_uuid string, limit int, page int) ([]common.Card, error)
+	AddChardSchemaHandler    func(string, string) (string, error)
+	GetCardSchemaHandler     func(uuid string) (common.CardSchema, error)
+	AddPermalinkHandler      func(common.Permalink) (int, error)
+	GetPermalinksHandler     func() ([]common.Permalink, error)
+	CreateUserHandler        func(user common.User) (int, error)
+	GetUserByUsernameHandler func(username string) (common.User, error)
+	GetUserByIdHandler       func(id uint) (common.User, error)
 }
 
 func (db DatabaseMock) GetPosts(offset int, limit int) ([]common.Post, error) {
@@ -112,4 +115,13 @@ func (db DatabaseMock) AddPermalink(permalink common.Permalink) (int, error) {
 
 func (db DatabaseMock) GetPermalinks() ([]common.Permalink, error) {
 	return []common.Permalink{}, nil
+}
+func (db DatabaseMock) CreateUser(user common.User) (int, error) {
+	return db.CreateUserHandler(user)
+}
+func (db DatabaseMock) GetUserByUsername(username string) (common.User, error) {
+	return db.GetUserByUsernameHandler(username)
+}
+func (db DatabaseMock) GetUserById(id uint) (common.User, error) {
+	return db.GetUserByIdHandler(id)
 }

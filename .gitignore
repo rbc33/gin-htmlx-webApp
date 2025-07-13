@@ -9,7 +9,6 @@ tmp/gocms-admin
 tmp/gocms
 gocms_config.toml
 media/*
-/utils/
 .DS_Store
 error.log
 error-admin.log

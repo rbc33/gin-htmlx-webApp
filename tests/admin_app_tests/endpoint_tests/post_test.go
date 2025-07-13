@@ -32,6 +32,10 @@ type postResponse struct {
 var app_settings = test.GetAppSettings()
 
 func TestCreatePost_Success(t *testing.T) {
+	if os.Getenv("CI") == "true" {
+		os.Setenv("API_SECRET", "fake_api_secret_for_tests")
+		os.Setenv("TOKEN_HOUR_LIFESPAN", "24")
+	}
 	token, err := token.GenerateToken(1)
 	if err != nil {
 		t.Fatalf("failed to generate token: %v", err)

@@ -19,6 +19,7 @@ import (
 // @Tags         card_schema
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Param        schema body AddCardSchemaRequest true "Card schema to add"
 // @Success      200 {object} CardIdResponse
 // @Failure      400 {object} common.ErrorResponse "Invalid request body or schema"
@@ -75,6 +76,7 @@ func postSchemaHandler(database database.Database) func(*gin.Context) {
 // @Description  Retrieves a card schema by its UUID.
 // @Tags         card_schema
 // @Produce      json
+// @Security     BearerAuth
 // @Param        id path string true "Card schema UUID"
 // @Success      200 {object} common.CardSchema
 // @Failure      400 {object} common.ErrorResponse "Invalid schema ID"
@@ -115,6 +117,7 @@ func getSchemaHandler(database database.Database) func(*gin.Context) {
 // @Description  Retrieves a paginated list of card schemas.
 // @Tags         card_schema
 // @Produce      json
+// @Security     BearerAuth
 // @Param        offset query int false "Pagination offset" default(0)
 // @Param        limit query int false "Pagination limit (0 means no limit)" default(0)
 // @Success      200 {object} GetSchemaasResponse
@@ -175,6 +178,7 @@ func checkSchemaValues(add_schema_request AddCardSchemaRequest) error {
 // @Tags         card_schema
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Param        schema body DeleteSchemaBinding true "ID of the card schema to delete"
 // @Success      200 {object} map[string]string "Deleted schema ID"
 // @Failure      400 {object} common.ErrorResponse "Invalid request or deletion error"

@@ -20,6 +20,7 @@ import (
 // @Description  Retrieves a paginated list of posts.
 // @Tags         posts
 // @Produce      json
+// @Security     BearerAuth
 // @Param        offset query int false "Offset for pagination" default(0)
 // @Param        limit  query int false "Limit for pagination. 0 means no limit." default(0)
 // @Success      200 {object} GetPostsResponse
@@ -60,6 +61,7 @@ func getPostsHandler(database database.Database) gin.HandlerFunc {
 // @Description  Retrieves a single post by its ID.
 // @Tags         posts
 // @Produce      json
+// @Security     BearerAuth
 // @Param        id path int true "Post ID"
 // @Success      200 {object} GetPostResponse
 // @Failure      400 {object} common.ErrorResponse "Invalid post ID"
@@ -97,6 +99,7 @@ func getPostHandler(database database.Database) func(*gin.Context) {
 }
 
 // @Summary      Add a new post
+// @Security     BearerAuth
 // @Description  Adds a new post to the database.
 // @Tags         posts
 // @Accept       json
@@ -155,6 +158,7 @@ func postPostHandler(database database.Database, shortcode_handlers map[string]*
 // @Tags         posts
 // @Accept       json
 // @Produce      json
+// @Security 		 BearerAuth
 // @Param        post body ChangePostRequest true "Post data to update"
 // @Success      200 {object} PostIdResponse
 // @Failure      400 {object} common.ErrorResponse "Invalid request body or could not change post"
@@ -200,6 +204,7 @@ func putPostHandler(database database.Database) func(*gin.Context) {
 // @Description  Deletes a post by its ID.
 // @Tags         posts
 // @Produce      json
+// @Security 		 BearerAuth
 // @Param        id body DeletePostRequest true "Post ID to delete"
 // @Success      200 {object} PostIdResponse
 // @Failure      400 {object} common.ErrorResponse "Invalid ID provided"

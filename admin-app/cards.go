@@ -16,6 +16,7 @@ import (
 // @Description  Retrieves a paginated list of cards by schema UUID.
 // @Tags         cards
 // @Produce      json
+// @Security     BearerAuth
 // @Param        schema path string true "schema UUID"
 // @Success      200 {object} GetCardRequest
 // @Failure      400 {object} common.ErrorResponse "Invalid post ID"
@@ -68,6 +69,7 @@ func getCardHandler(database database.Database) func(*gin.Context) {
 // @Tags         cards
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Param        post body AddCardRequest true "Post to add"
 // @Success      200 {object} CardIdResponse
 // @Failure      400 {object} common.ErrorResponse "Invalid request body or missing data"
@@ -164,6 +166,7 @@ func validateCardAgainstSchema(card_data string, json_schema string) error {
 // @Tags         cards
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Param        card body ChangeCardRequest true "Card data to update"
 // @Success      200 {object} CardIdResponse
 // @Failure      400 {object} common.ErrorResponse "Invalid request body or could not change card"
@@ -209,6 +212,7 @@ func putCardHandler(database database.Database) func(*gin.Context) {
 // @Description  Deletes a card by its ID.
 // @Tags         cards
 // @Produce      json
+// @Security     BearerAuth
 // @Param        id body DeletePostRequest true "Card ID to delete"
 // @Success      200 {object} PostIdResponse
 // @Failure      400 {object} common.ErrorResponse "Invalid ID provided"

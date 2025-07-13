@@ -1,4 +1,3 @@
-basePath: /
 definitions:
   admin_app.AddCardRequest:
     properties:
@@ -254,6 +253,36 @@ definitions:
         description: ID of the post
         type: integer
     type: object
+  auth.LoginInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  auth.RegisterInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  auth.RegisterResponse:
+    properties:
+      user_id:
+        type: integer
+    type: object
+  auth.TokenResponse:
+    properties:
+      token:
+        type: string
+    type: object
   common.CardSchema:
     properties:
       cards:
@@ -285,16 +314,17 @@ definitions:
       title:
         type: string
     type: object
-host: 65.109.135.230:8081
+  common.User:
+    properties:
+      password:
+        type: string
+      user_id:
+        type: integer
+      username:
+        type: string
+    type: object
 info:
-  contact:
-    email: ricardobenthem@gmail.com
-    name: Ricardo
-  description: This is the admin API for the GoCMS app.
-  license:
-    name: MIT
-  title: GoCMS Admin API
-  version: 1.0.0
+  contact: {}
 paths:
   /card-schemas:
     delete:
@@ -321,6 +351,8 @@ paths:
           description: Invalid request or deletion error
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Delete a card schema
       tags:
       - card_schema
@@ -352,6 +384,8 @@ paths:
           description: Server error
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get list of card schemas
       tags:
       - card_schema
@@ -378,6 +412,8 @@ paths:
           description: Invalid request body or schema
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Add a new card schema
       tags:
       - card_schema
@@ -405,6 +441,8 @@ paths:
           description: Schema not found
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get a card schema by UUID
       tags:
       - card_schema
@@ -433,6 +471,8 @@ paths:
           description: Card not found
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Delete a card
       tags:
       - cards
@@ -458,6 +498,8 @@ paths:
           description: Invalid request body or missing data
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Add a new post
       tags:
       - cards
@@ -483,6 +525,8 @@ paths:
           description: Invalid request body or could not change card
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Update an existing card
       tags:
       - cards
@@ -510,6 +554,8 @@ paths:
           description: Post not found
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get a card list
       tags:
       - cards
@@ -543,6 +589,8 @@ paths:
           description: Server error while saving file
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Upload a new image
       tags:
       - images
@@ -568,9 +616,37 @@ paths:
           description: Invalid or missing filename
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Delete an image
       tags:
       - images
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates user and returns a JWT token.
+      parameters:
+      - description: User credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: Login user
+      tags:
+      - auth
   /pages:
     get:
       consumes:
@@ -603,6 +679,8 @@ paths:
           description: Server error
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get a list of pages
       tags:
       - pages
@@ -628,6 +706,8 @@ paths:
           description: Invalid request body or data
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Add a new page
       tags:
       - pages
@@ -653,6 +733,8 @@ paths:
           description: Invalid request body or could not change page
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Update an existing page
       tags:
       - pages
@@ -680,6 +762,8 @@ paths:
           description: Page not found
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Delete a page
       tags:
       - pages
@@ -710,6 +794,8 @@ paths:
           description: Invalid request body or missing data
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Add a new permalink
       tags:
       - permalink
@@ -736,6 +822,8 @@ paths:
           description: Invalid request body or missing data
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Add a new post
       tags:
       - posts
@@ -764,6 +852,8 @@ paths:
           description: Post not found
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Delete a post
       tags:
       - posts
@@ -795,6 +885,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get a list of posts
       tags:
       - posts
@@ -820,6 +912,8 @@ paths:
           description: Invalid request body or could not change post
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Update an existing post
       tags:
       - posts
@@ -847,9 +941,62 @@ paths:
           description: Post not found
           schema:
             $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get a single post
       tags:
       - posts
-schemes:
-- http
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new User to the database.
+      parameters:
+      - description: User to create
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RegisterInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/auth.RegisterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: Create new User
+      tags:
+      - auth
+  /user:
+    get:
+      description: Returns the currently authenticated user based on JWT token.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get current user
+      tags:
+      - auth
+securityDefinitions:
+  BearerAuth:
+    description: |-
+      Type "Bearer" followed by a space and JWT token.
+      This is the admin API for the GoCMS app.
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

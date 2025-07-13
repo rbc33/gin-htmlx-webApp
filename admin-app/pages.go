@@ -20,6 +20,7 @@ import (
 // @Tags         pages
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Param        offset query int false "Pagination offset" default(0)
 // @Param        limit query int false "Pagination limit (0 means no limit)" default(0)
 // @Success      200 {object} map[string]interface{} "List of pages"
@@ -60,6 +61,7 @@ func getPagesHandler(database database.Database) gin.HandlerFunc {
 // @Tags         pages
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Param        page body AddPageRequest true "Page to add"
 // @Success      200 {object} PageResponse
 // @Failure      400 {object} common.ErrorResponse "Invalid request body or data"
@@ -110,6 +112,7 @@ func postPageHandler(database database.Database) func(*gin.Context) {
 // @Tags         pages
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Param        post body ChangePageRequest true "Page data to update"
 // @Success      200 {object} PostIdResponse
 // @Failure      400 {object} common.ErrorResponse "Invalid request body or could not change page"
@@ -163,6 +166,7 @@ func putPageHandler(database database.Database) func(*gin.Context) {
 // @Tags         pages
 // @Produce      json
 // @Param        link path string true "Page Link"
+// @Security     BearerAuth
 // @Success      200 {object} DeletePageRequest
 // @Failure      400 {object} common.ErrorResponse "Invalid link provided"
 // @Failure      404 {object} common.ErrorResponse "Page not found"

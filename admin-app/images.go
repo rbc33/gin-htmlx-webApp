@@ -100,6 +100,7 @@ func resizeImage(srcPath string, width int, height int) error {
 // @Tags         images
 // @Accept       multipart/form-data
 // @Produce      json
+// @Security     BearerAuth
 // @Param        file formData file true "The image file to upload"
 // @Param        excerpt formData string false "A brief description of the image"
 // @Success      200 {object} ImageIdResponse
@@ -195,6 +196,7 @@ func postImageHandler() func(*gin.Context) {
 // @Tags         images
 // @Accept       json
 // @Produce      json
+// @Security     BearerAuth
 // @Param        name path string true "Image filename to delete"
 // @Success      200 {object} ImageIdResponse
 // @Failure      400 {object} common.ErrorResponse "Invalid or missing filename"

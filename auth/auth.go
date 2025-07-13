@@ -14,6 +14,14 @@ type LoginInput struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// @Summary      Get current user
+// @Description  Returns the currently authenticated user based on JWT token.
+// @Tags         auth
+// @Security     BearerAuth
+// @Produce      json
+// @Success      200 {object} common.User
+// @Failure      400 {object} common.ErrorResponse
+// @Router       /user [get]
 func GetCurrentUserHandler(db database.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
@@ -36,6 +44,19 @@ func GetCurrentUserHandler(db database.Database) gin.HandlerFunc {
 	}
 }
 
+type TokenResponse struct {
+	Token string `json:"token"`
+}
+
+// @Summary      Login user
+// @Description  Authenticates user and returns a JWT token.
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        credentials body LoginInput true "User credentials"
+// @Success      200 {object} TokenResponse
+// @Failure      400 {object} common.ErrorResponse
+// @Router       /login [post]
 func LoginHandler(db database.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
@@ -67,17 +88,19 @@ type RegisterInput struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
+type RegisterResponse struct {
+	Id int `json:"user_id"`
+}
 
 // @Summary      Create new User
 // @Description  Adds a new User to the database.
-// @Tags         register
+// @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Param        post body RegisterInput true "Post to add"
-// @Success      201 {object} PostIdResponse
-// @Failure      400 {object} common.ErrorResponse "Invalid request body or missing data"
-// @Router       /post [post]
-
+// @Param        post body RegisterInput true "User to create"
+// @Success      201 {object} RegisterResponse
+// @Failure      400 {object} common.ErrorResponse
+// @Router       /register [post]
 func CreateRegisterHandler(db database.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
@@ -100,7 +123,7 @@ func CreateRegisterHandler(db database.Database) gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusOK, gin.H{"message": "registration success"})
+		c.JSON(http.StatusConflict, gin.H{"message": "registration success"})
 
 	}
 }

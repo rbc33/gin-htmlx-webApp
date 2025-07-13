@@ -1,3 +1,4 @@
+basePath: /
 definitions:
   admin_app.AddCardRequest:
     properties:
@@ -323,8 +324,16 @@ definitions:
       username:
         type: string
     type: object
+host: localhost:8081
 info:
-  contact: {}
+  contact:
+    email: ricardobenthem@gmail.com
+    name: Ricardo
+  description: This is the admin API for the GoCMS app.
+  license:
+    name: MIT
+  title: GoCMS Admin API
+  version: 1.0.0
 paths:
   /card-schemas:
     delete:
@@ -991,11 +1000,11 @@ paths:
       summary: Get current user
       tags:
       - auth
+schemes:
+- http
 securityDefinitions:
   BearerAuth:
-    description: |-
-      Type "Bearer" followed by a space and JWT token.
-      This is the admin API for the GoCMS app.
+    description: Type "Bearer" followed by a space and JWT token.
     in: header
     name: Authorization
     type: apiKey

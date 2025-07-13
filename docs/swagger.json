@@ -1,8 +1,22 @@
 {
+    "schemes": [
+        "http"
+    ],
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "This is the admin API for the GoCMS app.",
+        "title": "GoCMS Admin API",
+        "contact": {
+            "name": "Ricardo",
+            "email": "ricardobenthem@gmail.com"
+        },
+        "license": {
+            "name": "MIT"
+        },
+        "version": "1.0.0"
     },
+    "host": "localhost:8081",
+    "basePath": "/",
     "paths": {
         "/card-schemas": {
             "get": {
@@ -1439,7 +1453,7 @@
     },
     "securityDefinitions": {
         "BearerAuth": {
-            "description": "Type \"Bearer\" followed by a space and JWT token.\nThis is the admin API for the GoCMS app.",
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"

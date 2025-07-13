@@ -1,7 +1,3 @@
-// @securityDefinitions.apikey BearerAuth
-// @in header
-// @name Authorization
-// @description Type "Bearer" followed by a space and JWT token.
 // @title        GoCMS Admin API
 // @version      1.0.0
 // @description  This is the admin API for the GoCMS app.
@@ -14,6 +10,10 @@
 // @consumes  application/json
 // @consumes  multipart/form-data
 // @produces  application/json
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 package main
 
 import (

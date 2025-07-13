@@ -7,9 +7,9 @@ PORT_ADMIN="8081"
 # Enable/disable endpoint cache
 cache_enabled = false
 
-recaptcha_sitekey = "6LcEamQrAAAAAF3lLged7faFfQW-dU0AQO8MwNgO"
+recaptcha_sitekey = "6LcNTmQrAAAAAGrXZo-GdvxarYlFSXu5BVPZYEbi"
 recaptcha_secret = "6LcEamQrAAAAAHH4Nthgshj10uUmxxmXasW-pcfV"
-app_domain = "localhost"
+app_domain = "rbenthem.com"
 
 # Sticky posts will be expanded on home
 sticky_posts = [2]

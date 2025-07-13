@@ -27,15 +27,22 @@ import (
 	"github.com/rbc33/gocms/plugins"
 
 	// "github.com/rbc33/gocms/plugins"
+	"github.com/joho/godotenv"
 	_ "github.com/rbc33/gocms/docs"
 	"github.com/rs/zerolog/log"
 )
 
 func main() {
+
 	config_toml := flag.String("config", "", "path to the config file")
 	flag.Parse()
 
 	common.SetupLogger("error-admin.log")
+	err := godotenv.Load()
+	if err != nil {
+		log.Error().Msgf("Error loading .env file")
+	}
+	fmt.Println("TOKEN_HOUR_LIFESPAN:", os.Getenv("TOKEN_HOUR_LIFESPAN"))
 
 	if (*config_toml) != "" {
 		log.Info().Msgf("Reading config file %s", *config_toml)

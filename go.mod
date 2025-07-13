@@ -53,6 +53,7 @@ require (
 require (
 	github.com/BurntSushi/toml v1.5.0
 	github.com/bytedance/sonic v1.11.6 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/evanoberholster/imagemeta v0.3.1
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
@@ -63,6 +64,7 @@ require (
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/gomarkdown/markdown v0.0.0-20250311123330-531bef5e742b
 	github.com/google/uuid v1.6.0
+	github.com/joho/godotenv v1.5.1
 	// github.com/joho/godotenv v1.5.1
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kaptinlin/jsonschema v0.4.5

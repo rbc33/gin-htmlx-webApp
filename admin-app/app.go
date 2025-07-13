@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rbc33/gocms/auth"
 	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/database"
 	"github.com/rbc33/gocms/plugins"
@@ -93,6 +94,8 @@ func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua
 	r.PUT("/card", putCardHandler(database))
 	r.DELETE("/card", deleteCardHandler(database))
 	r.POST("/permalinks/:permalink/:post_id", postPermalinkHandler(database))
+	r.POST("/register", auth.CreateRegisterHandler(database))
+	r.POST("/login", auth.LoginHandler(database))
 
 	return r
 }

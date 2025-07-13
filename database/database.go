@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	// "os"
-	"time"
 
 	// "github.com/joho/godotenv"
 	"github.com/google/uuid"
@@ -43,6 +42,8 @@ type Database interface {
 	DeleteCardSchema(uuid string) error
 	AddPermalink(permalink common.Permalink) (int, error)
 	GetPermalinks() ([]common.Permalink, error)
+	CreateUser(user common.User) (int, error)
+	GetUserByUsername(username string) (common.User, error)
 }
 
 type SqlDatabase struct {
@@ -653,26 +654,37 @@ func (db SqlDatabase) GetPermalinks() ([]common.Permalink, error) {
 	return permalinks, nil
 }
 
-func MakeSqlConnection(appSettings common.AppSettings) (database SqlDatabase, err error) {
-	/// Checking the DB connection
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	return SqlDatabase{}, err
-	// }
-	connection_str := appSettings.DatabaseUri
-	db, err := sql.Open("mysql", connection_str)
+func (db *SqlDatabase) CreateUser(user common.User) (int, error) {
+	res, err := db.Connection.Exec("INSERT INTO users(username, passwd) VALUES(?, ?);", user.Username, user.Password)
 	if err != nil {
-		return SqlDatabase{}, err
+		return -1, err
 	}
-	// See "Important settings" section.
-	db.SetConnMaxLifetime(time.Second * 5)
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(10)
 
-	log.Info().Msg(connection_str)
+	id, err := res.LastInsertId()
+	if err != nil {
+		log.Warn().Msgf("could not get last ID: %v", err)
+		return -1, err
+	}
 
-	return SqlDatabase{
-		MY_SQL_URL: connection_str,
-		Connection: db,
-	}, nil
+	// TODO : possibly unsafe int conv,
+	// make sure all IDs are i64 in the
+	// future
+	return int(id), nil
+}
+
+func (db *SqlDatabase) GetUserByUsername(username string) (common.User, error) {
+	var user common.User
+
+	query := `SELECT id, username, passwd FROM users WHERE username = ?`
+	row := db.Connection.QueryRow(query, username)
+
+	err := row.Scan(&user.Id, &user.Username, &user.Password)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return common.User{}, errors.New("user not found")
+		}
+		return common.User{}, err
+	}
+
+	return user, nil
 }

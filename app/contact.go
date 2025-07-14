@@ -2,12 +2,16 @@ package app
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"net/mail"
+	"os"
+	"time"
 
 	"context"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/rbc33/gocms/common"
 	"github.com/rbc33/gocms/database"
 	"github.com/rbc33/gocms/views"
@@ -16,6 +20,7 @@ import (
 	recaptcha "cloud.google.com/go/recaptchaenterprise/v2/apiv1"
 
 	recaptchapb "cloud.google.com/go/recaptchaenterprise/v2/apiv1/recaptchaenterprisepb"
+	"github.com/mailersend/mailersend-go"
 )
 
 func verifyRecaptchaEnterprise(ctx context.Context, projectID, recaptchaKey, token, expectedAction string) error {
@@ -84,7 +89,82 @@ func renderErrorPage(c *gin.Context, email string, originalErr error) {
 	}
 }
 
+func sendEmail(email, name, subject, message string, c *gin.Context) error {
+	mailersendAPIKey := os.Getenv("MAILERSEND_API_KEY")
+	recipientEmail := os.Getenv("RECIPIENT_EMAIL")            // Your email address to receive contact messages
+	verifiedSenderEmail := os.Getenv("VERIFIED_SENDER_EMAIL") // An email address you've verified in MailerSend
+
+	if mailersendAPIKey == "" || recipientEmail == "" || verifiedSenderEmail == "" {
+		error := fmt.Errorf("missing one or more MailerSend environment variables")
+		renderErrorPage(c, email, fmt.Errorf("server email configuration is incomplete"))
+		return error
+	}
+
+	// Create an instance of the mailersend client
+	ms := mailersend.NewMailersend(mailersendAPIKey)
+
+	// Create a context with a timeout for the API call
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second) // Adjust timeout as needed
+	defer cancel()                                                          // Ensures the context is cancelled when the function exits
+
+	// Define the 'From' sender (must be a verified sender in MailerSend)
+	from := mailersend.From{
+		Name:  name,                // The user's name from the form
+		Email: verifiedSenderEmail, // Your verified sender email in MailerSend
+	}
+
+	// Define the recipient (your email address)
+	recipients := []mailersend.Recipient{
+		{
+			Email: recipientEmail,
+			// Name: "Your Name for Contact Form", // Optional: If you want a specific name for yourself
+		},
+	}
+
+	// Create the email message
+	msg := ms.Email.NewMessage()
+
+	msg.SetFrom(from)
+	msg.SetRecipients(recipients)
+	msg.SetSubject("GoCMS Contact: " + subject)
+	msg.SetReplyTo(mailersend.Recipient{Email: email})
+
+	htmlBody := fmt.Sprintf(`
+            <p><strong>Name:</strong> %s</p>
+            <p><strong>Email (from contact form):</strong> %s</p>
+            <p><strong>Subject:</strong> %s</p>
+            <hr>
+            <p><strong>Message:</strong></p>
+            <p style="white-space: pre-wrap;">%s</p>
+        `, name, email, subject, message)
+	msg.SetHTML(htmlBody)
+
+	textBody := fmt.Sprintf("Name: %s\nEmail (from contact form): %s\nSubject: %s\n\nMessage:\n%s",
+		name, email, subject, message)
+	msg.SetText(textBody)
+
+	res, err := ms.Email.Send(ctx, msg)
+	if err != nil {
+		bodyBytes, readErr := io.ReadAll(res.Body)
+		if readErr != nil {
+			log.Error().Err(readErr).Msg("Failed to read MailerSend API response body")
+		} else {
+			log.Error().
+				Int("status_code", res.StatusCode).
+				Bytes("body", bodyBytes).
+				Msg("MailerSend API response error details")
+		}
+		res.Body.Close()
+
+	}
+	return err
+}
+
 func makeContactFormHandler() func(*gin.Context) {
+	err := godotenv.Load()
+	if err != nil {
+		log.Error().Msgf("Error loading .env file")
+	}
 	return func(c *gin.Context) {
 		if err := c.Request.ParseForm(); err != nil {
 			log.Error().Msgf("could not parse form %v", err)
@@ -94,6 +174,7 @@ func makeContactFormHandler() func(*gin.Context) {
 
 		email := c.Request.FormValue("email")
 		name := c.Request.FormValue("name")
+		subject := c.Request.FormValue("subject")
 		message := c.Request.FormValue("message")
 		recaptcha_response := c.Request.FormValue("g-recaptcha-response")
 
@@ -124,6 +205,11 @@ func makeContactFormHandler() func(*gin.Context) {
 		if len(message) > 10000 {
 			// El mensaje de error original decía 1000, pero el código verifica 10000.
 			renderErrorPage(c, email, fmt.Errorf("message too long (10000 chars max)"))
+			return
+		}
+		err = sendEmail(email, name, subject, message, c)
+		if err != nil {
+			renderErrorPage(c, email, err)
 			return
 		}
 

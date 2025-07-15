@@ -1,4 +1,7 @@
 {
+    "schemes": [
+        "http"
+    ],
     "swagger": "2.0",
     "info": {
         "description": "This is the admin API for the GoCMS app.",
@@ -12,6 +15,8 @@
         },
         "version": "1.0.0"
     },
+    "host": "localhost:8081",
+    "basePath": "/",
     "paths": {
         "/card-schemas": {
             "get": {

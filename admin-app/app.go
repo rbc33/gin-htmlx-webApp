@@ -3,6 +3,7 @@ package admin_app
 import (
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -53,7 +54,9 @@ func SetupRoutes(settings common.AppSettings, shortcode_handlers map[string]*lua
 		}
 		ginSwagger.WrapHandler(swaggerFiles.Handler)(c)
 	})
-	r.POST("/register", auth.CreateRegisterHandler(database))
+	if os.Getenv("ENV") != "PROD" {
+		r.POST("/register", auth.CreateRegisterHandler(database))
+	}
 	r.POST("/login", auth.LoginHandler(database))
 
 	// Protected routes group with JWT middleware

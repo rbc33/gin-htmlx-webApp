@@ -1467,9 +1467,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0.0",
-	Host:             "localhost:8081",
+	Host:             "api.rbenthem.com",
 	BasePath:         "/",
-	Schemes:          []string{"http"},
+	Schemes:          []string{"https"},
 	Title:            "GoCMS Admin API",
 	Description:      "This is the admin API for the GoCMS app.",
 	InfoInstanceName: "swagger",

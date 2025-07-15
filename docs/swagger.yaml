@@ -264,21 +264,6 @@ definitions:
     - password
     - username
     type: object
-  auth.RegisterInput:
-    properties:
-      password:
-        type: string
-      username:
-        type: string
-    required:
-    - password
-    - username
-    type: object
-  auth.RegisterResponse:
-    properties:
-      user_id:
-        type: integer
-    type: object
   auth.TokenResponse:
     properties:
       token:
@@ -955,32 +940,6 @@ paths:
       summary: Get a single post
       tags:
       - posts
-  /register:
-    post:
-      consumes:
-      - application/json
-      description: Adds a new User to the database.
-      parameters:
-      - description: User to create
-        in: body
-        name: post
-        required: true
-        schema:
-          $ref: '#/definitions/auth.RegisterInput'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/auth.RegisterResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/common.ErrorResponse'
-      summary: Create new User
-      tags:
-      - auth
   /user:
     get:
       description: Returns the currently authenticated user based on JWT token.

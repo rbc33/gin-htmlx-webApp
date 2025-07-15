@@ -1,4 +1,3 @@
-basePath: /
 definitions:
   admin_app.AddCardRequest:
     properties:
@@ -324,7 +323,6 @@ definitions:
       username:
         type: string
     type: object
-host: localhost:8081
 info:
   contact:
     email: ricardobenthem@gmail.com
@@ -1000,8 +998,6 @@ paths:
       summary: Get current user
       tags:
       - auth
-schemes:
-- http
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and JWT token.

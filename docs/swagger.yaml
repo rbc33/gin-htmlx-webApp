@@ -324,7 +324,7 @@ definitions:
       username:
         type: string
     type: object
-host: api.rbenthem.com, localhost:8081
+host: localhost:8081
 info:
   contact:
     email: ricardobenthem@gmail.com
@@ -1001,7 +1001,6 @@ paths:
       tags:
       - auth
 schemes:
-- https,
 - http
 securityDefinitions:
   BearerAuth:

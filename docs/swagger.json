@@ -1,6 +1,7 @@
 {
     "schemes": [
-        "https"
+        "https,",
+        "http"
     ],
     "swagger": "2.0",
     "info": {
@@ -15,7 +16,7 @@
         },
         "version": "1.0.0"
     },
-    "host": "api.rbenthem.com",
+    "host": "api.rbenthem.com, localhost:8081",
     "basePath": "/",
     "paths": {
         "/card-schemas": {

@@ -33,7 +33,7 @@ func makeWebHookHandler() func(*gin.Context) {
 			c.AbortWithStatusJSON(401, gin.H{"error": "invalid signature"})
 			return
 		}
-		prePrc := exec.Command("git", "pull", "origin", "main")
+		prePrc := exec.Command("git", "stash")
 		err = prePrc.Run()
 		if err != nil {
 			log.Error().Msgf("Error pulling the repo: %v", err)
@@ -42,7 +42,7 @@ func makeWebHookHandler() func(*gin.Context) {
 		if prePrc.ProcessState.Success() {
 			log.Info().Msgf("Preprocess success: %s", prePrc.ProcessState.String())
 		}
-		prc := exec.Command("git", "pull", "origin", "main")
+		prc := exec.Command("git", "pull", "origin", "master", "--rebase")
 		err = prc.Run()
 		if err != nil {
 			log.Error().Msgf("Error pulling the repo: %v", err)
@@ -61,15 +61,7 @@ func makeWebHookHandler() func(*gin.Context) {
 		if permProc.ProcessState.Success() {
 			log.Info().Msgf("Permission changed success: %s", permProc.ProcessState.String())
 		}
-		postPrc := exec.Command("git", "pull", "origin", "main")
-		err = postPrc.Run()
-		if err != nil {
-			log.Error().Msgf("Error pulling the repo: %v", err)
-		}
 
-		if postPrc.ProcessState.Success() {
-			log.Info().Msgf("Process success: %s", postPrc.ProcessState.String())
-		}
 		c.JSON(200, gin.H{"status": "ok"})
 	}
 }

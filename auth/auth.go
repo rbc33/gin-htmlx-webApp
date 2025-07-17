@@ -92,16 +92,6 @@ type RegisterResponse struct {
 	Id int `json:"user_id"`
 }
 
-// // @Summary      Create new User
-// // @Description  Adds a new User to the database.
-// // @Tags         auth
-// // @Accept       json
-// // @Produce      json
-// // @Param        post body RegisterInput true "User to create"
-// // @Success      201 {object} RegisterResponse
-// // @Failure      400 {object} common.ErrorResponse
-// // @Router       /register [post]
-// comment
 func CreateRegisterHandler(db database.Database) gin.HandlerFunc {
 	return func(c *gin.Context) {
 

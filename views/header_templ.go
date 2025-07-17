@@ -123,7 +123,7 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<button id=\"menu-toggle\" class=\"text-gray-100 dark:text-gray-100 hover:text-gray-400 focus:outline-none ml-5\"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"></path></svg></button></div></div></div><div id=\"mobile-menu\" class=\"hidden md:hidden\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<button id=\"menu-toggle\" class=\"text-gray-100 dark:text-gray-100 hover:text-gray-400 focus:outline-none ml-6\"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"></path></svg></button></div></div></div><div id=\"mobile-menu\" class=\"hidden md:hidden\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

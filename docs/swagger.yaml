@@ -162,7 +162,7 @@ definitions:
       id:
         type: integer
     required:
-    - id
+      - id
     type: object
   admin_app.DeleteSchemaBinding:
     properties:
@@ -173,7 +173,7 @@ definitions:
           required: true
         type: string
     required:
-    - id
+      - id
     type: object
   admin_app.GetCardRequest:
     properties:
@@ -194,7 +194,7 @@ definitions:
           required: true
         type: string
     required:
-    - schema
+      - schema
     type: object
   admin_app.GetPostResponse:
     properties:
@@ -216,7 +216,7 @@ definitions:
       posts:
         description: List of posts
         items:
-          $ref: '#/definitions/common.Post'
+          $ref: "#/definitions/common.Post"
         type: array
     type: object
   admin_app.GetSchemaasResponse:
@@ -224,7 +224,7 @@ definitions:
       schemas:
         description: List of card schemas
         items:
-          $ref: '#/definitions/common.CardSchema'
+          $ref: "#/definitions/common.CardSchema"
         type: array
     type: object
   admin_app.ImageIdResponse:
@@ -261,8 +261,8 @@ definitions:
       username:
         type: string
     required:
-    - password
-    - username
+      - password
+      - username
     type: object
   auth.TokenResponse:
     properties:
@@ -323,17 +323,17 @@ paths:
   /card-schemas:
     delete:
       consumes:
-      - application/json
+        - application/json
       description: Deletes a card schema by its ID.
       parameters:
-      - description: ID of the card schema to delete
-        in: body
-        name: schema
-        required: true
-        schema:
-          $ref: '#/definitions/admin_app.DeleteSchemaBinding'
+        - description: ID of the card schema to delete
+          in: body
+          name: schema
+          required: true
+          schema:
+            $ref: "#/definitions/admin_app.DeleteSchemaBinding"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: Deleted schema ID
@@ -344,321 +344,322 @@ paths:
         "400":
           description: Invalid request or deletion error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Delete a card schema
       tags:
-      - card_schema
+        - card_schema
     get:
       description: Retrieves a paginated list of card schemas.
       parameters:
-      - default: 0
-        description: Pagination offset
-        in: query
-        name: offset
-        type: integer
-      - default: 0
-        description: Pagination limit (0 means no limit)
-        in: query
-        name: limit
-        type: integer
+        - default: 0
+          description: Pagination offset
+          in: query
+          name: offset
+          type: integer
+        - default: 0
+          description: Pagination limit (0 means no limit)
+          in: query
+          name: limit
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.GetSchemaasResponse'
+            $ref: "#/definitions/admin_app.GetSchemaasResponse"
         "400":
           description: Invalid query parameters
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
         "500":
           description: Server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get list of card schemas
       tags:
-      - card_schema
+        - card_schema
     post:
       consumes:
-      - application/json
-      description: Creates a new card schema by validating and storing the provided
+        - application/json
+      description:
+        Creates a new card schema by validating and storing the provided
         JSON schema and title.
       parameters:
-      - description: Card schema to add
-        in: body
-        name: schema
-        required: true
-        schema:
-          $ref: '#/definitions/admin_app.AddCardSchemaRequest'
+        - description: Card schema to add
+          in: body
+          name: schema
+          required: true
+          schema:
+            $ref: "#/definitions/admin_app.AddCardSchemaRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.CardIdResponse'
+            $ref: "#/definitions/admin_app.CardIdResponse"
         "400":
           description: Invalid request body or schema
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Add a new card schema
       tags:
-      - card_schema
+        - card_schema
   /card-schemas/{id}:
     get:
       description: Retrieves a card schema by its UUID.
       parameters:
-      - description: Card schema UUID
-        in: path
-        name: id
-        required: true
-        type: string
+        - description: Card schema UUID
+          in: path
+          name: id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/common.CardSchema'
+            $ref: "#/definitions/common.CardSchema"
         "400":
           description: Invalid schema ID
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
         "404":
           description: Schema not found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get a card schema by UUID
       tags:
-      - card_schema
+        - card_schema
   /cards:
     delete:
       description: Deletes a card by its ID.
       parameters:
-      - description: Card ID to delete
-        in: body
-        name: id
-        required: true
-        schema:
-          $ref: '#/definitions/admin_app.DeletePostRequest'
+        - description: Card ID to delete
+          in: body
+          name: id
+          required: true
+          schema:
+            $ref: "#/definitions/admin_app.DeletePostRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.PostIdResponse'
+            $ref: "#/definitions/admin_app.PostIdResponse"
         "400":
           description: Invalid ID provided
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
         "404":
           description: Card not found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Delete a card
       tags:
-      - cards
+        - cards
     post:
       consumes:
-      - application/json
+        - application/json
       description: Adds a new post to the database.
       parameters:
-      - description: Post to add
-        in: body
-        name: post
-        required: true
-        schema:
-          $ref: '#/definitions/admin_app.AddCardRequest'
+        - description: Post to add
+          in: body
+          name: post
+          required: true
+          schema:
+            $ref: "#/definitions/admin_app.AddCardRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.CardIdResponse'
+            $ref: "#/definitions/admin_app.CardIdResponse"
         "400":
           description: Invalid request body or missing data
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Add a new post
       tags:
-      - cards
+        - cards
     put:
       consumes:
-      - application/json
+        - application/json
       description: Updates an existing card with new data.
       parameters:
-      - description: Card data to update
-        in: body
-        name: card
-        required: true
-        schema:
-          $ref: '#/definitions/admin_app.ChangeCardRequest'
+        - description: Card data to update
+          in: body
+          name: card
+          required: true
+          schema:
+            $ref: "#/definitions/admin_app.ChangeCardRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.CardIdResponse'
+            $ref: "#/definitions/admin_app.CardIdResponse"
         "400":
           description: Invalid request body or could not change card
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Update an existing card
       tags:
-      - cards
+        - cards
   /cards/{schema}:
     get:
       description: Retrieves a paginated list of cards by schema UUID.
       parameters:
-      - description: schema UUID
-        in: path
-        name: schema
-        required: true
-        type: string
+        - description: schema UUID
+          in: path
+          name: schema
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.GetCardRequest'
+            $ref: "#/definitions/admin_app.GetCardRequest"
         "400":
           description: Invalid post ID
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
         "404":
           description: Post not found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get a card list
       tags:
-      - cards
+        - cards
   /images:
     post:
       consumes:
-      - multipart/form-data
+        - multipart/form-data
       description: Uploads an image file, saves it, and creates minified versions.
       parameters:
-      - description: The image file to upload
-        in: formData
-        name: file
-        required: true
-        type: file
-      - description: A brief description of the image
-        in: formData
-        name: excerpt
-        type: string
+        - description: The image file to upload
+          in: formData
+          name: file
+          required: true
+          type: file
+        - description: A brief description of the image
+          in: formData
+          name: excerpt
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.ImageIdResponse'
+            $ref: "#/definitions/admin_app.ImageIdResponse"
         "400":
           description: Invalid input, file type, or size
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
         "500":
           description: Server error while saving file
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Upload a new image
       tags:
-      - images
+        - images
   /images/{name}:
     delete:
       consumes:
-      - application/json
+        - application/json
       description: Deletes an image file from the server by its filename.
       parameters:
-      - description: Image filename to delete
-        in: path
-        name: name
-        required: true
-        type: string
+        - description: Image filename to delete
+          in: path
+          name: name
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.ImageIdResponse'
+            $ref: "#/definitions/admin_app.ImageIdResponse"
         "400":
           description: Invalid or missing filename
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Delete an image
       tags:
-      - images
+        - images
   /login:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Authenticates user and returns a JWT token.
       parameters:
-      - description: User credentials
-        in: body
-        name: credentials
-        required: true
-        schema:
-          $ref: '#/definitions/auth.LoginInput'
+        - description: User credentials
+          in: body
+          name: credentials
+          required: true
+          schema:
+            $ref: "#/definitions/auth.LoginInput"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth.TokenResponse'
+            $ref: "#/definitions/auth.TokenResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       summary: Login user
       tags:
-      - auth
+        - auth
   /pages:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Retrieves a paginated list of pages.
       parameters:
-      - default: 0
-        description: Pagination offset
-        in: query
-        name: offset
-        type: integer
-      - default: 0
-        description: Pagination limit (0 means no limit)
-        in: query
-        name: limit
-        type: integer
+        - default: 0
+          description: Pagination offset
+          in: query
+          name: offset
+          type: integer
+        - default: 0
+          description: Pagination limit (0 means no limit)
+          in: query
+          name: limit
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: List of pages
@@ -668,299 +669,299 @@ paths:
         "400":
           description: Invalid offset or limit parameter
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
         "500":
           description: Server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get a list of pages
       tags:
-      - pages
+        - pages
     post:
       consumes:
-      - application/json
+        - application/json
       description: Adds a new page to the database.
       parameters:
-      - description: Page to add
-        in: body
-        name: page
-        required: true
-        schema:
-          $ref: '#/definitions/admin_app.AddPageRequest'
+        - description: Page to add
+          in: body
+          name: page
+          required: true
+          schema:
+            $ref: "#/definitions/admin_app.AddPageRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.PageResponse'
+            $ref: "#/definitions/admin_app.PageResponse"
         "400":
           description: Invalid request body or data
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Add a new page
       tags:
-      - pages
+        - pages
     put:
       consumes:
-      - application/json
+        - application/json
       description: Updates an existing page with new data.
       parameters:
-      - description: Page data to update
-        in: body
-        name: post
-        required: true
-        schema:
-          $ref: '#/definitions/admin_app.ChangePageRequest'
+        - description: Page data to update
+          in: body
+          name: post
+          required: true
+          schema:
+            $ref: "#/definitions/admin_app.ChangePageRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.PostIdResponse'
+            $ref: "#/definitions/admin_app.PostIdResponse"
         "400":
           description: Invalid request body or could not change page
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Update an existing page
       tags:
-      - pages
+        - pages
   /pages/{link}:
     delete:
       description: Deletes a page by its Link.
       parameters:
-      - description: Page Link
-        in: path
-        name: link
-        required: true
-        type: string
+        - description: Page Link
+          in: path
+          name: link
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.DeletePageRequest'
+            $ref: "#/definitions/admin_app.DeletePageRequest"
         "400":
           description: Invalid link provided
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
         "404":
           description: Page not found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Delete a page
       tags:
-      - pages
+        - pages
   /permalinks/{permalink}/{post_id}:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Adds a new permalink to the database.
       parameters:
-      - description: Permalink
-        in: path
-        name: permalink
-        required: true
-        type: string
-      - description: Post ID
-        in: path
-        name: post_id
-        required: true
-        type: integer
+        - description: Permalink
+          in: path
+          name: permalink
+          required: true
+          type: string
+        - description: Post ID
+          in: path
+          name: post_id
+          required: true
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.PermalinkIdResponse'
+            $ref: "#/definitions/admin_app.PermalinkIdResponse"
         "400":
           description: Invalid request body or missing data
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Add a new permalink
       tags:
-      - permalink
+        - permalink
   /post:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Adds a new post to the database.
       parameters:
-      - description: Post to add
-        in: body
-        name: post
-        required: true
-        schema:
-          $ref: '#/definitions/admin_app.AddPostRequest'
+        - description: Post to add
+          in: body
+          name: post
+          required: true
+          schema:
+            $ref: "#/definitions/admin_app.AddPostRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/admin_app.PostIdResponse'
+            $ref: "#/definitions/admin_app.PostIdResponse"
         "400":
           description: Invalid request body or missing data
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Add a new post
       tags:
-      - posts
+        - posts
   /posts:
     delete:
       description: Deletes a post by its ID.
       parameters:
-      - description: Post ID to delete
-        in: body
-        name: id
-        required: true
-        schema:
-          $ref: '#/definitions/admin_app.DeletePostRequest'
+        - description: Post ID to delete
+          in: body
+          name: id
+          required: true
+          schema:
+            $ref: "#/definitions/admin_app.DeletePostRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.PostIdResponse'
+            $ref: "#/definitions/admin_app.PostIdResponse"
         "400":
           description: Invalid ID provided
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
         "404":
           description: Post not found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Delete a post
       tags:
-      - posts
+        - posts
     get:
       description: Retrieves a paginated list of posts.
       parameters:
-      - default: 0
-        description: Offset for pagination
-        in: query
-        name: offset
-        type: integer
-      - default: 0
-        description: Limit for pagination. 0 means no limit.
-        in: query
-        name: limit
-        type: integer
+        - default: 0
+          description: Offset for pagination
+          in: query
+          name: offset
+          type: integer
+        - default: 0
+          description: Limit for pagination. 0 means no limit.
+          in: query
+          name: limit
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.GetPostsResponse'
+            $ref: "#/definitions/admin_app.GetPostsResponse"
         "400":
           description: Invalid offset or limit parameter
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
         "500":
           description: Internal server error
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get a list of posts
       tags:
-      - posts
+        - posts
     put:
       consumes:
-      - application/json
+        - application/json
       description: Updates an existing post with new data.
       parameters:
-      - description: Post data to update
-        in: body
-        name: post
-        required: true
-        schema:
-          $ref: '#/definitions/admin_app.ChangePostRequest'
+        - description: Post data to update
+          in: body
+          name: post
+          required: true
+          schema:
+            $ref: "#/definitions/admin_app.ChangePostRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.PostIdResponse'
+            $ref: "#/definitions/admin_app.PostIdResponse"
         "400":
           description: Invalid request body or could not change post
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Update an existing post
       tags:
-      - posts
+        - posts
   /posts/{id}:
     get:
       description: Retrieves a single post by its ID.
       parameters:
-      - description: Post ID
-        in: path
-        name: id
-        required: true
-        type: integer
+        - description: Post ID
+          in: path
+          name: id
+          required: true
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin_app.GetPostResponse'
+            $ref: "#/definitions/admin_app.GetPostResponse"
         "400":
           description: Invalid post ID
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
         "404":
           description: Post not found
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get a single post
       tags:
-      - posts
+        - posts
   /user:
     get:
       description: Returns the currently authenticated user based on JWT token.
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/common.User'
+            $ref: "#/definitions/common.User"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.ErrorResponse'
+            $ref: "#/definitions/common.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get current user
       tags:
-      - auth
+        - auth
 schemes:
-- https
+  - https
 securityDefinitions:
   BearerAuth:
     description: Type "Bearer" followed by a space and JWT token.

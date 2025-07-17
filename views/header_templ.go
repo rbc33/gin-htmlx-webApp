@@ -65,7 +65,7 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<nav class=\"bg-gray-800 \"><div class=\"max-w-[140rem] mx-auto px-4 sm:px-6 lg:px-8\"><div class=\"flex  h-20 items-center justify-between\"><!-- Logo a la izquierda --><div class=\"flex-shrink-0\"><a href=\"#\" class=\"text-white text-4xl font-bold 2xl:text-5xl\">GoCMS</a></div><!-- Links a la derecha --><div class=\"flex items-center space-x-4\"><div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<nav class=\"bg-gray-800 \"><div class=\"max-w-[140rem] mx-auto px-4 sm:px-6 lg:px-8\"><div class=\"flex  h-20 items-center justify-between\"><!-- Logo a la izquierda --><div class=\"flex-shrink-0\"><a href=\"#\" class=\"text-white text-4xl font-bold 2xl:text-5xl\">GoCMS</a></div><!-- Links a la derecha --><div class=\"hidden md:flex items-center space-x-4\"><div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -115,25 +115,33 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><div class=\"md:hidden\"><button id=\"menu-toggle\" class=\"text-gray-100 dark:text-gray-100 hover:text-gray-400 focus:outline-none\"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"></path></svg></button></div></div></div><div id=\"mobile-menu\" class=\"hidden md:hidden\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><div class=\"md:hidden\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = makeDarkModeButton().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<button id=\"menu-toggle\" class=\"text-gray-100 dark:text-gray-100 hover:text-gray-400 focus:outline-none ml-5\"><svg class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"></path></svg></button></div></div></div><div id=\"mobile-menu\" class=\"hidden md:hidden\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, link := range links {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<a class=\"text-gray-100 dark:text-gray-100 hover:text-gray-400 block px-2 py-1\" href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<a class=\"text-gray-100 dark:text-gray-100 hover:text-gray-400 block px-2 py-1\" href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var5 templ.SafeURL
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL(link.Href))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/header.templ`, Line: 63, Col: 111}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/header.templ`, Line: 64, Col: 111}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -141,13 +149,13 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(
 				link.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/header.templ`, Line: 65, Col: 13}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/header.templ`, Line: 66, Col: 13}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</a> ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</a> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -158,7 +166,7 @@ func MakeNavBar(links []common.Link, dropdowns map[string][]common.Link) templ.C
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</div></nav><hr class=\"border-t-2 border-gray-300\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</div></nav><hr class=\"border-t-2 border-gray-300\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

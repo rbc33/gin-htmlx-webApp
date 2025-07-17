@@ -1,8 +1,8 @@
 // @title        GoCMS Admin API
 // @version      1.0.0
 // @description  This is the admin API for the GoCMS app.
-// @schemes   https
-// @host      api.rbenthem.com
+// @schemes   http
+// @host      localhost:8080
 // @BasePath  /
 // @contact.name   Ricardo
 // @contact.email  ricardobenthem@gmail.com

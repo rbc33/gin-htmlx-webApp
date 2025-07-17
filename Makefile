@@ -11,14 +11,16 @@ GOCMS_ADMIN_PATH=./cmd/$(ADMIN_BINARY_NAME)
 all: build test
 
 
-build: 
+build: tailwindcss
 	$(TEMPL) generate
-	$(TAILWIND) -i ./static/style.css -o ./static/css/style.css -m 
 	$(GOCMD) build -v -o $(BUILD_DIR)/$(BINARY_NAME) $(GOCMS_PATH)
 	$(GOCMD) build -v -o $(BUILD_DIR)/$(ADMIN_BINARY_NAME) $(GOCMS_ADMIN_PATH)
 
 test: 
 	$(GOCMD) test -v ./...
+
+tailwindcss:
+	$(TAILWIND) -i ./static/style.css -o ./static/css/style.css -m 
 
 clean:
 	$(GOCMD) clean
